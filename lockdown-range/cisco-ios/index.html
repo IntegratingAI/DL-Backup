@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-nngjxoq2sD/WKw2Er2vPgU3IzG8U2k1vtNwx3ZKoXV8='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-cLA+seXXBwc4pJpB/Mpr4GEnIkN7jhmvm2/5crowFJ4='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/lockdown-range/cisco-ios/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%96%A5%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -33,7 +33,6 @@
 :root[data-theme="dark"]{ --bg:#111922; --panel:#182330; --ink:#E7EEF6; --muted:#9DACBC; --line:#2B3A4B; --soft:#1F2B3A; --term:#0A121D; --termink:#D6E2F0; --okbg:#143524; --badbg:#3A1B1B; --warnbg:#3A2C12; --dev-fill:#1F2B3A; --dev-stroke:#9DACBC; --ok:#4FBF85; --bad:#F08080; --warn:#E0A94A; --link-up:#4FBF85; --link-down:#F08080; --dev-sel:#E3A24B; }
 
 *,*::before,*::after{ box-sizing:inherit; }
-html{ -webkit-text-size-adjust:100%; }
 body{ margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 var(--sans); min-height:100vh; }
 button,input,select{ font:inherit; color:inherit; }
 button{ cursor:pointer; min-height:32px; border-radius:8px; border:1px solid var(--line); background:var(--panel); padding:4px 12px; }
@@ -230,6 +229,21 @@ footer .spacer{ flex:1; }
   .termhead{ font-size:.8rem; }
 }
 @media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+
+/* support (panel review): contrast, forced colours, print, the shared-computer banner, the Coach control */
+@media (prefers-contrast:more){ :root{ --line:currentColor; } .report li, .hint, .report .hint, button, .levels button{ border:1px solid currentColor; } }
+@media (forced-colors:active){ button, .report li, .hint{ border:1px solid ButtonText; } .meter i, .bar .fill{ background:Highlight; } }
+@media print{ header.top .levels, header.top .theme, nav.series, #machine, footer, .rtoggle, .report .actions, #modal-host .btns, .dbr-copy, .sharebar, .coach{ display:none !important; } .report{ position:static !important; max-height:none !important; overflow:visible !important; width:auto !important; } .report .hint, .report li .hint{ display:block !important; } body{ background:#fff; color:#000; } }
+.sharebar{ display:flex; flex-wrap:wrap; gap:.5rem .8rem; align-items:center; padding:.6rem .9rem; background:var(--soft, #eef3f7); color:var(--ink); border-bottom:1px solid var(--line); font-size:.92rem; max-width:100%; }
+.sharebar button{ font:inherit; font-size:.85rem; padding:.25rem .7rem; border-radius:6px; border:1px solid var(--line); background:var(--panel, #fff); color:var(--ink); cursor:pointer; }
+.coach{ display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; font-size:.82rem; margin:.3rem 0 .6rem; max-width:100%; }
+.coach select{ font:inherit; font-size:.82rem; padding:.15rem .3rem; border-radius:6px; border:1px solid var(--line); background:var(--panel, #fff); color:var(--ink); max-width:100%; }
+.hintstep{ display:block; margin-top:.25rem; font-size:.85rem; }
+.dbr-hints{ font-size:.9rem; margin:.3rem 0; }
+.dbr-reflect{ display:block; margin-top:.8rem; } .dbr-reflect textarea{ width:100%; min-height:3.2em; font:inherit; font-size:.92rem; border:1px solid var(--line); border-radius:6px; padding:.4rem .5rem; background:var(--panel, #fff); color:var(--ink); }
+.dbr-copy{ margin-top:.5rem; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; font-size:.85rem; }
+.dbr-copy textarea{ width:100%; min-height:8em; font:12px/1.4 ui-monospace,Consolas,monospace; }
+.hintmark{ font-size:.78rem; opacity:.8; margin-left:.3rem; }
 </style>
 </head>
 <body>
@@ -4016,7 +4030,7 @@ function loadStore() {
 function saveStoreNow() {
   if (!STORE || !S) return;
   const slot = STORE.scenarios[SC.id] || (STORE.scenarios[SC.id] = {});
-  slot.S = S; STORE.current = SC.id;
+  slot.S = S; STORE.current = SC.id; STORE.lastSeen = Date.now();
   lsSet(STORE_KEY, JSON.stringify(STORE));
 }
 const saveStore = debounce(saveStoreNow, 400);
@@ -4062,12 +4076,29 @@ function evaluate() {
   for (const p of SC.availability) { let hit = false; try { hit = !!p.test(S); } catch (e) { hit = false; } if (hit) { res.failed.push(p); res.score += p.pts; } }
   LAST = res;
   const slot = STORE.scenarios[SC.id] || (STORE.scenarios[SC.id] = {});
-  if (res.score > 0 && (typeof slot.best !== 'number' || res.score > slot.best)) { slot.best = res.score; renderLevels(); }
+  if (res.score > 0 && (typeof slot.best !== 'number' || res.score > slot.best)) { slot.best = res.score; slot.bestHints = hintCount(); slot.bestCoach = coachMode(SC.level); renderLevels(); }
   const sc = $('.score'); sc.textContent = res.score + ' / ' + res.max + ' pts'; sc.classList.toggle('neg', res.score < 0);
   renderReport(res); markTasks(res); markAnswerStates(res);
 }
+/* Coach: how much the Progress Check tells you, chosen apart from the scenario level (the level sets the default) */
+const COACH = [['level', 'Match the level'], ['todo', 'To-do list with hints'], ['areas', 'Remaining by area'], ['passed', 'Passed checks only']];
+function coachMode(lvl) { const v = STORE && STORE.coach; const m = COACH.some(x => x[0] === v) ? v : 'level'; return m === 'level' ? (lvl === 1 ? 'todo' : lvl === 2 ? 'areas' : 'passed') : m; }
+function coachLabel(mode) { return (COACH.find(x => x[0] === mode) || COACH[0])[1]; }
+/* hint steps per check for this attempt: 1 = area and principle shown, 2 = the command shown */
+function hintStep(id) { return (S && S.hints && S.hints[id]) || 0; }
+function setHintStep(id, n) { S.hints = S.hints || {}; if ((S.hints[id] || 0) < n) { S.hints[id] = n; saveStore(); } }
+function hintCount() { const h = (S && S.hints) || {}; return Object.keys(h).filter(k => h[k] > 0).length; }
+function hintCommands() { const h = (S && S.hints) || {}; return Object.keys(h).filter(k => h[k] >= 2).length; }
+function coachControl(lvl) {
+  const wrap = el('div', { class: 'coach' });
+  const id = 'coach-sel'; const lab = el('label', { for: id, text: 'Coach:' });
+  const sel = el('select', { id }); for (const [v, t] of COACH) { const o = el('option', { value: v, text: t }); if ((STORE.coach || 'level') === v) o.selected = true; sel.appendChild(o); }
+  wrap.appendChild(lab); wrap.appendChild(sel); wrap.appendChild(el('span', { class: 'hintmark', text: 'now: ' + coachLabel(coachMode(lvl)) }));
+  return wrap;
+}
 function renderReport(res) {
   const body = $('#rbody'); body.textContent = '';
+  body.appendChild(coachControl(SC.level));
   const lvl = SC.level;
   body.appendChild(el('p', { class: 'scen', text: SC.name + ' - Level ' + lvl + ' (' + SC.levelName + ') - ' + SC.grade + ' level' }));
   body.appendChild(el('p', { class: 'total' + (res.score < 0 ? ' neg' : ''), text: 'Progress: ' + res.score + ' / ' + res.max + ' points' }));
@@ -4082,20 +4113,23 @@ function renderReport(res) {
     body.appendChild(el('h3', { text: 'Availability checks failed' }));
     const ul = el('ul'); for (const p of res.failed) ul.appendChild(el('li', { class: 'avail' }, [el('span', { class: 'mark', text: '!' }), el('span', { class: 't', text: 'Availability check failed: ' + p.title }), el('span', { class: 'pts', text: p.pts + ' pts' })])); body.appendChild(ul);
   }
-  if (lvl === 1 && res.missing.length) {
-    body.appendChild(el('h3', { text: 'Still to do (Recruit training wheels)' }));
+  const mode = coachMode(lvl);
+  if (mode === 'todo' && res.missing.length) {
+    body.appendChild(el('h3', { text: 'Still to do (with hints)' }));
     const ul = el('ul');
     for (const c of res.missing) {
       const li = el('li', { class: 'todo' }, [el('span', { class: 'mark', text: '○' }), el('span', { class: 't', text: c.title }), el('span', { class: 'pts', text: c.pts + ' pts' })]);
-      const b = el('button', { class: 'small', type: 'button', 'aria-expanded': 'false', dataset: { hint: c.id }, text: 'Show hint' });
+      const step = hintStep(c.id), open = !!(RT.openHints && RT.openHints.has(c.id));
+      const b = el('button', { class: 'small', type: 'button', 'aria-expanded': open ? 'true' : 'false', dataset: { hint: c.id }, text: !open ? 'Show hint' : step < 2 ? 'Show the command' : 'Hide hint' });
       li.appendChild(b);
-      const h = el('div', { class: 'hint', hidden: true }, [el('span', { text: c.hint }), el('code', { text: c.fix })]);
+      const kids = [el('span', { class: 'hintstep', text: c.cat + ': ' + c.why })];
+      if (step >= 2) kids.push(el('span', { class: 'hintstep', text: 'Hint: ' + c.hint }), el('code', { text: c.fix }));
+      const h = el('div', { class: 'hint', hidden: !open }, kids);
       h.id = 'hint-' + c.id; b.setAttribute('aria-controls', h.id); li.appendChild(h);
-      if (RT.openHints && RT.openHints.has(c.id)) { h.hidden = false; b.textContent = 'Hide hint'; b.setAttribute('aria-expanded', 'true'); }
       ul.appendChild(li);
     }
     body.appendChild(ul);
-  } else if (lvl === 2) {
+  } else if (mode === 'areas') {
     body.appendChild(el('h3', { text: 'Remaining by hardening area' }));
     const cats = {};
     for (const c of SC.checks) { const k = cats[c.cat] || (cats[c.cat] = { n: 0, found: 0 }); k.n++; if (res.earned.includes(c)) k.found++; }
@@ -4104,7 +4138,8 @@ function renderReport(res) {
     if (!ul.children.length) ul.appendChild(el('li', { class: 'earned', text: 'Every area complete.' }));
     body.appendChild(ul);
   }
-  const timer = el('p', { class: 'timer' }, ['Elapsed: ', el('span', { id: 'elapsed', text: fmtTime(S.elapsed) }), bestOf(SC.id) !== null ? '  ·  Best: ' + bestOf(SC.id) + ' pts' : '']);
+  const slot = STORE.scenarios[SC.id] || {};
+  const timer = el('p', { class: 'timer' }, ['Elapsed: ', el('span', { id: 'elapsed', text: fmtTime(S.elapsed) }), bestOf(SC.id) !== null ? '  ·  Best: ' + bestOf(SC.id) + ' pts' + (slot.bestHints ? ' with ' + slot.bestHints + ' hint' + (slot.bestHints === 1 ? '' : 's') : slot.bestHints === 0 ? ', no hints' : '') + (slot.bestCoach ? ' (' + coachLabel(slot.bestCoach) + ')' : '') : '', '  ·  Hints this attempt: ' + hintCount()]);
   body.appendChild(timer);
   const act = el('div', { class: 'actions' });
   act.appendChild(el('button', { type: 'button', id: 'debrief2', text: 'Finish / Debrief' }));
@@ -4123,7 +4158,7 @@ function renderLevels() {
   for (const sc of SCENARIOS) {
     const b = el('button', { type: 'button', role: 'tab', 'aria-selected': SC && sc.id === SC.id ? 'true' : 'false', dataset: { level: sc.id }, title: sc.name + ' - ' + sc.short + ' (' + sc.grade + ')' });
     b.appendChild(el('span', { class: 'lv', text: sc.level + ' · ' })); b.appendChild(el('span', { text: sc.levelName })); b.appendChild(document.createTextNode(' ')); b.appendChild(el('span', { class: 'gr', text: sc.grade }));
-    const best = bestOf(sc.id); if (best !== null) b.appendChild(el('span', { class: 'best', text: 'best ' + best }));
+    const best = bestOf(sc.id); if (best !== null) { const sl = STORE.scenarios[sc.id] || {}; b.appendChild(el('span', { class: 'best', text: 'best ' + best + (sl.bestHints ? ' · ' + sl.bestHints + ' hint' + (sl.bestHints === 1 ? '' : 's') : '') })); }
     box.appendChild(b);
   }
 }
@@ -4443,18 +4478,41 @@ function openModal(title, bodyNodes, buttons, cls) {
   const first = $('.x', box); setTimeout(() => { try { box.scrollTop = 0; first.focus({ preventScroll: true }); } catch (e) { } }, 0);
 }
 function closeModal() { const host = $('#modal-host'); host.textContent = ''; if (RT.lastFocus && RT.lastFocus.focus) { try { RT.lastFocus.focus(); } catch (e) { } } }
+/* one Defense Ladder unit per check: the scenario's Learn list, chosen by the check's area and title */
+function learnFor(c) {
+  if (c.learn) return c.learn;
+  const L = SC.learn || []; const find = pre => L.find(x => x[0].indexOf(pre) === 0);
+  if (c.cat === CAT.inv) return ['sophomore/s6', 'Sophomore', 'Investigation questions and the change log'];
+  const net = /vlan|trunk|native|rout|ospf|acl|access.list|access-class|subinterface|port.security|portfast|bpdu|dhcp snooping|dtp|redistribut|two.site|site b/i.test(c.title);
+  if (net) return (/ospf|redistribut|two.site|site b|host route/i.test(c.title) && find('senior/')) || find('junior/') || find('senior/') || L[0];
+  return find('sophomore/') || L[0];
+}
+function debriefText(res) {
+  const lines = ['Lockdown Range: Cisco IOS - ' + SC.name + ' (Level ' + SC.level + ', ' + SC.levelName + ', ' + SC.grade + ')', 'Progress ' + res.score + ' / ' + res.max + ' - checks passed ' + res.earned.length + ' of ' + SC.checks.length + ' - availability checks failed ' + res.failed.length + ' - time ' + fmtTime(S.elapsed) + ' - hints ' + hintCount() + ' (' + hintCommands() + ' with the command) - coach: ' + coachLabel(coachMode(SC.level)), ''];
+  for (const c of SC.checks) { const st = hintStep(c.id); lines.push((res.earned.includes(c) ? '[x] ' : '[ ] ') + c.title + ' (' + c.pts + ' pts)' + (st ? '  [hint: ' + (st >= 2 ? 'command shown' : 'principle') + ']' : '')); }
+  for (const p of SC.availability) lines.push((res.failed.includes(p) ? '[!] ' : '[ok] ') + 'Availability: ' + p.title + ' (' + p.pts + ' pts)');
+  const slot = STORE.scenarios[SC.id] || {}; if (slot.reflect) lines.push('', 'What broke, and what I will do first next time:', slot.reflect);
+  return lines.join('\n') + '\n';
+}
 function openDebrief() {
   const res = LAST || { earned: [], missing: [], failed: [], score: 0, max: 100 };
   const sum = el('div', { class: 'sum' }, [el('span', { text: 'Progress: ' + res.score + ' / ' + res.max }), el('span', { text: 'Checks passed: ' + res.earned.length + ' of ' + SC.checks.length }), el('span', { text: 'Availability checks failed: ' + res.failed.length }), el('span', { text: 'Time: ' + fmtTime(S.elapsed) })]);
   const tbl = el('table'); const tr = el('tr'); for (const h of ['', 'Check', 'Pts', 'Fix', 'Why it matters']) tr.appendChild(el('th', { text: h })); tbl.appendChild(el('thead', {}, [tr]));
   const tb = el('tbody');
-  for (const c of SC.checks) { const ok = res.earned.includes(c); const row = el('tr', { class: ok ? 'ok' : 'no' }); row.appendChild(el('td', { text: ok ? '✓' : '✗' })); row.appendChild(el('td', { text: c.title })); row.appendChild(el('td', { text: String(c.pts) })); row.appendChild(el('td', { class: 'fix', text: c.fix })); row.appendChild(el('td', { class: 'why', text: c.why })); tb.appendChild(row); }
+  for (const c of SC.checks) { const ok = res.earned.includes(c); const row = el('tr', { class: ok ? 'ok' : 'no' }); row.appendChild(el('td', { text: ok ? '✓' : '✗' })); row.appendChild(el('td', { text: c.title })); row.appendChild(el('td', { text: String(c.pts) })); row.appendChild(el('td', { class: 'fix', text: c.fix })); { const why = el('td', { class: 'why', text: c.why }); const l = learnFor(c); if (l) { why.appendChild(document.createTextNode(' ')); why.appendChild(el('a', { class: 'learn', href: DL_URL + l[0], target: '_blank', rel: 'noopener', text: 'Learn it: ' + l[2] })); } const st = hintStep(c.id); if (st) why.appendChild(el('span', { class: 'hintmark', text: st >= 2 ? '(command shown)' : '(hint: principle)' })); row.appendChild(why); } tb.appendChild(row); }
   for (const p of SC.availability) { const hit = res.failed.includes(p); const row = el('tr', { class: hit ? 'no' : 'ok' }); row.appendChild(el('td', { text: hit ? '!' : '✓' })); row.appendChild(el('td', { text: 'Availability check: ' + p.title })); row.appendChild(el('td', { text: String(p.pts) })); row.appendChild(el('td', { class: 'fix', text: hit ? 'Failed: undo the change that caused it (see the Scenario Brief).' : 'Passing' })); row.appendChild(el('td', { class: 'why', text: p.why })); tb.appendChild(row); }
   tbl.appendChild(tb);
   const learn = el('p', { class: 'learn' }, [el('strong', { text: SC.grade + ' level. Learn it: ' })]);
   SC.learn.forEach(([hash, grade, title, topic], i) => { if (i) learn.appendChild(document.createTextNode('; ')); learn.appendChild(el('a', { href: DL_URL + hash, target: '_blank', rel: 'noopener', text: 'Defense Ladder › ' + grade + ' › ' + title })); if (topic) learn.appendChild(document.createTextNode(' (' + topic + ')')); });
   learn.appendChild(document.createTextNode('.'));
-  openModal('Debrief — ' + SC.name, [sum, learn, el('div', { class: 'tblwrap' }, [tbl])], [el('button', { type: 'button', dataset: { close: '1' }, text: 'Back to the range' })], 'debrief');
+  const hints = el('p', { class: 'dbr-hints', text: 'Hints this attempt: ' + hintCount() + ' of ' + SC.checks.length + ' checks (' + hintCommands() + ' with the command shown). Coach: ' + coachLabel(coachMode(SC.level)) + '. A pass with no hints on a fresh attempt is the one that counts.' });
+  const slot = STORE.scenarios[SC.id] || (STORE.scenarios[SC.id] = {});
+  const refl = el('label', { class: 'dbr-reflect' }, [el('span', { text: 'What broke, and what will you do first next time? (saved with this scenario)' })]);
+  const ta = el('textarea', { id: 'dbr-reflect' }); ta.value = slot.reflect || ''; ta.addEventListener('input', () => { slot.reflect = ta.value; lsSet(STORE_KEY, JSON.stringify(STORE)); }); refl.appendChild(ta);
+  const copyRow = el('div', { class: 'dbr-copy' }); const cp = el('button', { type: 'button', id: 'dbr-copy', text: 'Copy debrief as text' }); const st = el('span', { role: 'status' }); const out = el('textarea', { hidden: true, 'aria-label': 'Debrief as text' }); out.readOnly = true;
+  cp.addEventListener('click', () => { const txt = debriefText(res); const show = () => { out.hidden = false; out.value = txt; st.textContent = 'Select the text below and copy it.'; }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(() => { st.textContent = 'Copied.'; }, show); else show(); });
+  copyRow.appendChild(cp); copyRow.appendChild(st); copyRow.appendChild(out);
+  openModal('Debrief — ' + SC.name, [sum, hints, learn, el('div', { class: 'tblwrap' }, [tbl]), refl, copyRow], [el('button', { type: 'button', dataset: { close: '1' }, text: 'Back to the range' })], 'debrief');
 }
 function openReset() {
   openModal('Reset lab?', [el('p', { text: 'This reverts "' + SC.name + '" to its snapshot: every device goes back to the way it was handed to you, answers are cleared, and the timer restarts. Your best score for this scenario is kept.' })],
@@ -4474,7 +4532,9 @@ function openHelp() {
     el('li', { text: 'reload boots from startup-config: unsaved work is lost, exactly like the real device. copy running-config startup-config (or write) saves.' }),
     el('li', { text: 'PC tabs are Packet Tracer command prompts: ipconfig, ping, tracert, arp -a, ssh -l user host, telnet host. The IP Configuration button edits the PC addressing.' }),
     el('li', { text: 'Out-of-scope commands answer with a [Range] note instead of pretending to work. Output scrolls without --More-- pauses.' }),
-    el('li', { text: 'Progress is saved in this browser per scenario; Reset lab restores the snapshot and keeps your best score.' }),
+    el('li', { text: 'Progress is saved in this browser per scenario; Reset lab restores the snapshot and keeps your best score, with the hints you used on it.' }),
+    el('li', { text: 'Coach, at the top of the Progress Check, sets how much the panel tells you: the to-do list with hints, the remaining count per area, or passed checks only. A hint opens in two steps: the hardening area and the principle first, then the command.' }),
+    el('li', { text: 'Solution walkthrough for every scenario: cisco-range-reference.txt beside this page (the hub card offers it as a download). Try each scenario on your own first.' }),
   ]);
   const about = el('p', { class: 'about', text: 'About: Lockdown Range is a general networking-security practice lab. Its look and feel is inspired by Cisco Packet Tracer, a free network simulator. Unofficial practice; not affiliated with or endorsed by Cisco. Commands follow Cisco IOS 15 documentation; real devices and releases differ in places.' });
   openModal('Help — keys and conventions', [dl, notes, about], [el('button', { type: 'button', dataset: { close: '1' }, text: 'Close' })], 'help');
@@ -4497,9 +4557,12 @@ function wireUI() {
   $('#activity').addEventListener('input', e => { const q = e.target.dataset && e.target.dataset.q; if (!q) return; S.answers[q] = e.target.value; const st = $('#state-' + q); if (st) { st.textContent = 'Saved.'; st.classList.remove('ok'); } afterChangeNoUI(); });
   $('#report').addEventListener('click', e => {
     const hb = e.target.closest('button[data-hint]');
-    if (hb) { const id = hb.dataset.hint, h = $('#hint-' + id); RT.openHints = RT.openHints || new Set(); const show = h.hidden; h.hidden = !show; hb.textContent = show ? 'Hide hint' : 'Show hint'; hb.setAttribute('aria-expanded', show ? 'true' : 'false'); if (show) RT.openHints.add(id); else RT.openHints.delete(id); return; }
+    if (hb) { const id = hb.dataset.hint; RT.openHints = RT.openHints || new Set(); const open = RT.openHints.has(id), step = hintStep(id);
+      if (!open) { RT.openHints.add(id); setHintStep(id, 1); } else if (step < 2) { setHintStep(id, 2); } else { RT.openHints.delete(id); }
+      renderReport(LAST); const nb = $('button[data-hint="' + id + '"]', $('#rbody')); if (nb) nb.focus(); return; }
     if (e.target.closest('#debrief2')) openDebrief();
   });
+  $('#rbody').addEventListener('change', e => { if (e.target && e.target.id === 'coach-sel') { STORE.coach = e.target.value; lsSet(STORE_KEY, JSON.stringify(STORE)); renderReport(LAST); const s = $('#coach-sel'); if (s) s.focus(); } });
   $('#rtoggle').addEventListener('click', () => { const r = $('#report'); const col = r.classList.toggle('collapsed'); $('#rtoggle').textContent = col ? 'Show' : 'Hide'; $('#rtoggle').setAttribute('aria-expanded', col ? 'false' : 'true'); });
   $('#debrief').addEventListener('click', openDebrief);
   $('#reset').addEventListener('click', openReset);
@@ -4510,6 +4573,17 @@ function wireUI() {
   setInterval(() => { if (!S || document.visibilityState !== 'visible') return; S.elapsed++; const e = $('#elapsed'); if (e) e.textContent = fmtTime(S.elapsed); if (S.elapsed % 15 === 0) saveStoreNow(); }, 1000);
 }
 function afterChangeNoUI() { saveStore(); scheduleEvaluate(); }
+/* a return after 30 minutes or more on a browser that holds progress: another person may have been here */
+function shareBanner() {
+  const has = STORE && Object.keys(STORE.scenarios || {}).some(k => STORE.scenarios[k] && (STORE.scenarios[k].S || typeof STORE.scenarios[k].best === 'number'));
+  const gap = STORE && STORE.lastSeen ? Date.now() - STORE.lastSeen : 0;
+  if (!has || gap < 30 * 60 * 1000) return;
+  const mins = Math.round(gap / 60000); const when = mins < 120 ? mins + ' minutes' : Math.round(mins / 60) + ' hours';
+  const bar = el('div', { class: 'sharebar', role: 'region', 'aria-label': 'Saved progress' }, [el('span', { text: 'This browser last showed the range ' + when + ' ago and holds saved progress. On a shared computer it may be someone else\u2019s.' })]);
+  const keep = el('button', { type: 'button', text: 'Keep my progress' }); keep.addEventListener('click', () => bar.remove());
+  const fresh = el('button', { type: 'button', text: 'Start fresh' }); fresh.addEventListener('click', () => { STORE = { v: 2, current: 's1', scenarios: {}, coach: STORE.coach }; lsSet(STORE_KEY, JSON.stringify(STORE)); location.reload(); });
+  bar.appendChild(keep); bar.appendChild(fresh); document.body.insertBefore(bar, document.body.firstChild);
+}
 function markAnswerStates(res) {
   for (const q of SC.questions) { const st = $('#state-' + q.id); if (!st) continue; const ok = res.earned.some(c => c.id === q.id); st.textContent = ok ? 'Correct - check passed.' : (S.answers[q.id] ? 'Saved (not yet correct).' : 'Answers save as you type; checking is case-insensitive.'); st.classList.toggle('ok', ok); }
 }
@@ -4519,6 +4593,7 @@ function init() {
   const theme = lsGet(THEME_KEY); applyTheme(theme === 'light' || theme === 'dark' ? theme : '');
   loadStore();
   wireUI();
+  shareBanner();
   selectScenario(STORE.current || 's1');
 }
 init();

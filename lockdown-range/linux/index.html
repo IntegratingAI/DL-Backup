@@ -2,7 +2,7 @@
 <html lang="en">
 <head><meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-PI88n/u63pWTWz64N3FABDAschdN2yWfUEDqnsZMggY='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XrF67FaNxRM9LxGvSmtHsidyW9xk84twrmDUDyfJbhE='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/lockdown-range/linux/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%96%A5%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -31,7 +31,7 @@
 :root[data-theme="dark"]{ --bg:#111922; --panel:#182330; --ink:#E7EEF6; --muted:#9DACBC; --line:#2B3A4B; --soft:#1F2B3A; --term:#0A121D; --termink:#D6E2F0; --okbg:#143524; --badbg:#3A1B1B; --warnbg:#3A2C12; }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);min-height:100vh;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);min-height:100vh}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
@@ -257,6 +257,21 @@ table.debrief .why{color:var(--muted);font-size:.85rem}
   .screen{height:min(70vh,560px)}
   .apps{width:calc(100% - 8px)}
 }
+
+/* support (panel review): contrast, forced colours, print, the shared-computer banner, the Coach control */
+@media (prefers-contrast:more){ :root{ --line:currentColor; } .report li, .hint, .report .hint, button, .levels button{ border:1px solid currentColor; } }
+@media (forced-colors:active){ button, .report li, .hint{ border:1px solid ButtonText; } .meter i, .bar .fill{ background:Highlight; } }
+@media print{ header.top .levels, header.top .theme, nav.series, #machine, footer, .report-toggle, .report .fin, .modal-card .close, .dbr-copy, .sharebar, .coach{ display:none !important; } .report{ position:static !important; max-height:none !important; overflow:visible !important; width:auto !important; } .report .hint, .report li .hint{ display:block !important; } body{ background:#fff; color:#000; } }
+.sharebar{ display:flex; flex-wrap:wrap; gap:.5rem .8rem; align-items:center; padding:.6rem .9rem; background:var(--soft, #eef3f7); color:var(--ink); border-bottom:1px solid var(--line); font-size:.92rem; max-width:100%; }
+.sharebar button{ font:inherit; font-size:.85rem; padding:.25rem .7rem; border-radius:6px; border:1px solid var(--line); background:var(--panel, #fff); color:var(--ink); cursor:pointer; }
+.coach{ display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; font-size:.82rem; margin:.3rem 0 .6rem; max-width:100%; }
+.coach select{ font:inherit; font-size:.82rem; padding:.15rem .3rem; border-radius:6px; border:1px solid var(--line); background:var(--panel, #fff); color:var(--ink); max-width:100%; }
+.hintstep{ display:block; margin-top:.25rem; font-size:.85rem; }
+.dbr-hints{ font-size:.9rem; margin:.3rem 0; }
+.dbr-reflect{ display:block; margin-top:.8rem; } .dbr-reflect textarea{ width:100%; min-height:3.2em; font:inherit; font-size:.92rem; border:1px solid var(--line); border-radius:6px; padding:.4rem .5rem; background:var(--panel, #fff); color:var(--ink); }
+.dbr-copy{ margin-top:.5rem; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; font-size:.85rem; }
+.dbr-copy textarea{ width:100%; min-height:8em; font:12px/1.4 ui-monospace,Consolas,monospace; }
+.hintmark{ font-size:.78rem; opacity:.8; margin-left:.3rem; }
 
 </style>
 <style>a.jack{color:inherit;text-decoration:none}a.jack:hover,a.jack:focus-visible{color:var(--ink);text-decoration:underline;text-underline-offset:3px}</style>
@@ -5000,6 +5015,8 @@ const CK = {
   media: pts => ({ id: 'media', title: 'Prohibited media files removed from user home directories', pts, cat: AREA.data, test: () => mediaFiles().length === 0, hint: 'sudo find /home -type f \\( -iname "*.mp3" -o -iname "*.mp4" -o -iname "*.m4a" -o -iname "*.mkv" -o -iname "*.flac" -o -iname "*.wav" -o -iname "*.avi" \\) lists them (check every audio/video extension, not just mp3), then rm each one.', fix: 'sudo find /home -type f \\( -iname "*.mp3" -o -iname "*.mp4" -o -iname "*.m4a" -o -iname "*.mkv" -o -iname "*.flac" -o -iname "*.wav" -o -iname "*.ogg" -o -iname "*.avi" -o -iname "*.mov" -o -iname "*.webm" \\) -delete', why: 'Policy bans media files; they are also where pirated or malicious content hides.' }),
   pkgGone: (name, pts, label, cat) => ({ id: 'pkg-' + name, title: 'Unauthorized software ' + name + ' removed' + (label ? ' (' + label + ')' : ''), pts, cat: cat || AREA.config, test: () => !S.pkgs[name], hint: 'dpkg -l | grep -i ' + name.split('-')[0] + '  then  sudo apt purge ' + name, fix: 'sudo apt purge -y ' + name, why: label ? label + ' has no business on this machine.' : 'Software nobody authorized is attack surface.' }),
   svcOff: (unit, pkg, pts, label) => ({ id: 'svc-' + unit, title: label + ' removed or disabled (' + unit + ')', pts, cat: AREA.config, test: () => !S.pkgs[pkg] || (S.svc[unit] ? (!S.svc[unit].active && !S.svc[unit].enabled) || S.svc[unit].masked : true), hint: 'systemctl status ' + unit + '; sudo systemctl disable --now ' + unit + ' or sudo apt purge ' + pkg + '.', fix: 'sudo apt purge -y ' + pkg + '   (or: sudo systemctl disable --now ' + unit + ')', why: 'Unauthorized listening services are ways in.' }),
+  auditd: pts => ({ id: 'auditd', title: 'Audit daemon running with a rule that watches /etc/sudoers (auditd)', pts, cat: AREA.audit, test: () => { const st = S.svc.auditd; if (!S.pkgs.auditd || !st || !st.active || !st.enabled) return false; const files = FS.list('/etc/audit/rules.d').filter(f => f.endsWith('.rules')); return files.some(f => activeLines(FS.text('/etc/audit/rules.d/' + f) || '').some(l => /^-w\s+\/etc\/sudoers\b.*-p\s+\S*[wa]/.test(l.trim()))); }, hint: 'sudo apt install -y auditd, then write a rule file in /etc/audit/rules.d/ with -w /etc/sudoers -p wa -k sudoers and load it with sudo augenrules --load. systemctl status auditd should say active (running) and enabled.', fix: 'sudo apt install -y auditd\nprintf "%s\\n" "-w /etc/sudoers -p wa -k sudoers" | sudo tee /etc/audit/rules.d/50-sudoers.rules\nsudo augenrules --load\nsudo systemctl enable --now auditd', why: 'Logs are how you prove what changed. A watch on /etc/sudoers records every edit to who can become root, with the account that made it.' }),
+  journalPersist: pts => ({ id: 'journal-persist', title: 'System journal kept across reboots (journald Storage=persistent)', pts, cat: AREA.audit, test: () => { const v = (activeLines(FS.text('/etc/systemd/journald.conf') || '').map(l => l.trim()).filter(l => /^Storage\s*=/.test(l)).pop() || '').split('=')[1]; return /^(persistent|auto)$/i.test((v || '').trim()); }, hint: 'cat /etc/systemd/journald.conf: Storage=volatile keeps the journal in memory, so a reboot erases it. Set Storage=persistent, then sudo systemctl restart systemd-journald.', fix: "sudo sed -i 's/^Storage=.*/Storage=persistent/' /etc/systemd/journald.conf\nsudo systemctl restart systemd-journald", why: 'A journal that lives in RAM vanishes at the first reboot, and the evidence of the break-in goes with it. Persistent storage keeps the trail an investigation needs.' }),
   question: (n, file, answers, pts, learn) => ({ id: 'investigation-' + n, title: 'Investigation ' + n + ' answered', pts, cat: AREA.inv, investigation: true, learn, test: () => answerOk(file, answers), hint: 'Open "' + questionFile(n) + '" on the Desktop, put the answer after ANSWER: and save.', fix: 'Answer: ' + answers[0], why: 'Investigating first makes you read the machine before you change it.' }),
 };
 /* availability checks: breaking something the scenario brief says the business needs */
@@ -5066,10 +5083,10 @@ const SCENARIOS = [
     checks: [CK.userGone('dax', 6), CK.demote('keanu', 6), CK.uid0('sysadm', 7), CK.blankPw('aria', 6),
       { id: 'guest', title: 'Guest session disabled in LightDM (allow-guest=false)', pts: 6, cat: AREA.access, test: () => !guestAllowed(), hint: 'sudo nano /etc/lightdm/lightdm.conf and set allow-guest=false under [Seat:*].', fix: "sudo sed -i 's/^allow-guest=.*/allow-guest=false/' /etc/lightdm/lightdm.conf", why: 'A guest session is an anonymous login: no password, no accountability.' },
       { id: 'autologin', title: 'Automatic login disabled in LightDM', pts: 6, cat: AREA.access, test: () => !autoLoginUser(), hint: 'Remove or blank the autologin-user= line in /etc/lightdm/lightdm.conf.', fix: "sudo sed -i '/^autologin-user/d' /etc/lightdm/lightdm.conf", why: 'Automatic login hands an administrator session to the next person who sits down.' },
-      CK.minlen(6), CK.remember(5), CK.lockout(5),
-      { id: 'nullok', title: 'Empty passwords rejected at sign-in (nullok removed from common-auth)', pts: 4, cat: AREA.acct, test: () => !pamLines('/etc/pam.d/common-auth').some(l => l.module === 'pam_unix.so' && l.args.some(a => a === 'nullok' || a === 'nullok_secure')), hint: 'grep -n nullok /etc/pam.d/common-auth: nullok on the pam_unix line lets an account with an empty password sign in. Remove that word alone (the success=N number differs between machines), and keep a root terminal open while you test with su - labuser.', fix: "sudo sed -i -E 's/[[:space:]]+nullok(_secure)?([[:space:]]|$)/\\2/' /etc/pam.d/common-auth", why: 'nullok is the PAM switch that turns a blank /etc/shadow field into a working login.' },
-      CK.ufw(6, []), CK.autoupd(5, true), CK.media(5), CK.pkgGone('minerd-x', 6, 'cryptocurrency miner', AREA.malware),
-      { id: 'telnet', title: 'Telnet server removed (nothing listening on port 23)', pts: 5, cat: AREA.config, test: () => !listeners().some(l => l.port === 23), hint: 'sudo ss -tulpn shows port 23 (inetd). Check which package really provides the server (dpkg -l | grep -i telnet): on Ubuntu 24.04 / Mint 22 telnetd is only a transitional package and the server is inetutils-telnetd, so purging telnetd alone leaves port 23 open.', fix: 'sudo apt purge -y telnetd inetutils-telnetd   (or: sudo systemctl disable --now inetd)', why: 'Telnet sends passwords in clear text; nothing on a shared PC should offer a remote shell.' },
+      CK.minlen(6), CK.remember(4), CK.lockout(5),
+      { id: 'nullok', title: 'Empty passwords rejected at sign-in (nullok removed from common-auth)', pts: 3, cat: AREA.acct, test: () => !pamLines('/etc/pam.d/common-auth').some(l => l.module === 'pam_unix.so' && l.args.some(a => a === 'nullok' || a === 'nullok_secure')), hint: 'grep -n nullok /etc/pam.d/common-auth: nullok on the pam_unix line lets an account with an empty password sign in. Remove that word alone (the success=N number differs between machines), and keep a root terminal open while you test with su - labuser.', fix: "sudo sed -i -E 's/[[:space:]]+nullok(_secure)?([[:space:]]|$)/\\2/' /etc/pam.d/common-auth", why: 'nullok is the PAM switch that turns a blank /etc/shadow field into a working login.' },
+      CK.ufw(6, []), CK.autoupd(4, true), CK.media(4), CK.pkgGone('minerd-x', 6, 'cryptocurrency miner', AREA.malware), CK.auditd(5),
+      { id: 'telnet', title: 'Telnet server removed (nothing listening on port 23)', pts: 4, cat: AREA.config, test: () => !listeners().some(l => l.port === 23), hint: 'sudo ss -tulpn shows port 23 (inetd). Check which package really provides the server (dpkg -l | grep -i telnet): on Ubuntu 24.04 / Mint 22 telnetd is only a transitional package and the server is inetutils-telnetd, so purging telnetd alone leaves port 23 open.', fix: 'sudo apt purge -y telnetd inetutils-telnetd   (or: sudo systemctl disable --now inetd)', why: 'Telnet sends passwords in clear text; nothing on a shared PC should offer a remote shell.' },
       { id: 'bogus', title: 'Rogue service libupdater disabled or removed', pts: 6, cat: AREA.malware, test: () => { const st = S.svc.libupdater; return !st || st.masked || (!st.active && !st.enabled); }, hint: 'systemctl status libupdater: Restart=always, so kill is not enough. sudo systemctl disable --now libupdater, then remove the unit file and /opt/.libupd.', fix: 'sudo systemctl disable --now libupdater\nsudo rm /etc/systemd/system/libupdater.service && sudo rm -r /opt/.libupd && sudo systemctl daemon-reload', why: 'A homemade unit that restarts itself and listens on a port is a backdoor.' },
       CK.question(1, '/home/labuser/Desktop/Investigation 1.txt', ['sysadm'], 5), CK.question(2, '/home/labuser/Desktop/Investigation 2.txt', ['/home/jace/.hidden_tools'], 5)],
     availability: [AVAIL.authUser(['mkoa', 'hina', 'keanu', 'jace', 'nalu', 'aria'], -8), AVAIL.authAdmin(['mkoa'], -6), AVAIL.self('labuser', -10)],
@@ -5108,6 +5125,7 @@ const SCENARIOS = [
       FS.mk('/var/www/html', { t: 'd', m: 0o755, u: 0, g: 0, mt: daysAgo(38) }); FS.mk('/var/www/html/index.html', { t: 'f', m: 0o644, u: 0, g: 0, mt: daysAgo(20), c: '<!DOCTYPE html>\n<html lang="en"><head><meta charset="utf-8"><title>Mauka Trail Outfitters</title></head>\n<body><h1>Mauka Trail Outfitters</h1><p>Gear for every trail. Holiday sale starts soon.</p></body></html>\n' }); FS.mk('/var/www/html/shop.php', { t: 'f', m: 0o644, u: 33, g: 33, mt: daysAgo(20), c: '<?php\n// shop front page\n$db = new mysqli("localhost", "shop", getenv("SHOP_DB_PW"), "maukashop");\n?>\n' });
       FS.mk('/etc/mysql', { t: 'd', m: 0o755, u: 0, g: 0, mt: daysAgo(38) }); FS.mk('/etc/mysql/mysql.conf.d', { t: 'd', m: 0o755, u: 0, g: 0, mt: daysAgo(38) }); FS.mk('/etc/mysql/mysql.conf.d/mysqld.cnf', { t: 'f', m: 0o644, u: 0, g: 0, mt: daysAgo(38), c: '#\n# The MySQL database server configuration file.\n#\n[mysqld]\nuser            = mysql\npid-file        = /var/run/mysqld/mysqld.pid\nsocket          = /var/run/mysqld/mysqld.sock\nport            = 3306\ndatadir         = /var/lib/mysql\nbind-address            = 127.0.0.1\nlog_error = /var/log/mysql/error.log\n' });
       FS.mk('/srv/ftp', { t: 'd', m: 0o755, u: 0, g: 0, mt: daysAgo(31) });
+      FS.mk('/etc/systemd/journald.conf', { t: 'f', m: 0o644, u: 0, g: 0, mt: daysAgo(30), c: '#  This file is part of systemd.\n#\n#  systemd is free software; you can redistribute it and/or modify it under the\n#  terms of the GNU Lesser General Public License as published by the Free\n#  Software Foundation; either version 2.1 of the License, or (at your option)\n#  any later version.\n#\n# Entries in this file show the compile time defaults. Local configuration\n# should be created by either modifying this file (or a copy of it placed in\n# /etc/ if the original file is shipped in /usr/), or by creating "drop-ins" in\n# the /etc/systemd/journald.conf.d/ directory.\n#\n# See journald.conf(5) for details.\n\n[Journal]\n# intern set volatile to save disk: logs were filling /var\nStorage=volatile\n#Compress=yes\n#Seal=yes\n#SplitMode=uid\n#SyncIntervalSec=5m\n#RateLimitIntervalSec=30s\n#RateLimitBurst=10000\n#SystemMaxUse=\n#SystemKeepFree=\n#SystemMaxFileSize=\n#SystemMaxFiles=100\n#RuntimeMaxUse=\n#RuntimeKeepFree=\n#RuntimeMaxFileSize=\n#RuntimeMaxFiles=100\n#MaxRetentionSec=\n#MaxFileSec=1month\n#ForwardToSyslog=yes\n#ForwardToKMsg=no\n#ForwardToConsole=no\n#ForwardToWall=yes\n#MaxLevelStore=debug\n#MaxLevelSyslog=debug\n#MaxLevelKMsg=notice\n#MaxLevelConsole=info\n#MaxLevelWall=emerg\n#LineMax=48K\n#ReadKMsg=yes\n#Audit=yes\n' });
     },
     authLog: [{ dt: 2000, msg: 'sshd[1522]: Accepted password for vex from 10.20.4.88 port 49210 ssh2' }, { dt: 2001, msg: 'sshd[1522]: pam_unix(sshd:session): session opened for user vex(uid=1006) by (uid=0)' }, { dt: 2100, msg: 'sudo:      vex : user NOT in sudoers ; TTY=pts/1 ; PWD=/home/vex ; USER=root ; COMMAND=/usr/bin/crontab -e' }, { dt: 2200, msg: 'su: (to ops) vex on pts/1' }, { dt: 2201, msg: 'su: pam_unix(su:session): session opened for user ops(uid=0) by vex(uid=1006)' }, { dt: 6000, msg: 'sshd[1809]: Failed password for root from 198.51.100.23 port 55012 ssh2' }, { dt: 6003, msg: 'sshd[1809]: Failed password for root from 198.51.100.23 port 55012 ssh2' }, { dt: 6007, msg: 'sshd[1809]: Accepted password for root from 198.51.100.23 port 55012 ssh2' }],
     lastLog: [{ u: 'vex', tty: 'pts/1', from: '10.20.4.88', ago: 95000, dur: '(00:41)' }, { u: 'root', tty: 'pts/2', from: '198.51.100.23', ago: 80000, dur: '(00:03)' }, { u: 'moana', tty: 'pts/0', from: '10.20.4.9', ago: 200000, dur: '(00:55)' }],
@@ -5118,19 +5136,19 @@ const SCENARIOS = [
       CK.uid0('ops', 5), CK.sshRoot(6), CK.sshEmpty(5), CK.sshTries(4), CK.svcOff('vsftpd', 'vsftpd', 5, 'FTP server (vsftpd)'),
       { id: 'svc-smbd', title: 'Samba file sharing removed or disabled (smbd/nmbd)', pts: 5, cat: AREA.config, test: () => !S.pkgs.samba || (['smbd', 'nmbd'].every(u => !S.svc[u] || S.svc[u].masked || (!S.svc[u].active && !S.svc[u].enabled))), hint: 'systemctl status smbd nmbd; sudo apt purge samba (or disable --now both units).', fix: 'sudo apt purge -y samba   (or: sudo systemctl disable --now smbd nmbd)', why: 'A guest-writable share of the website lets anyone on the LAN change it.' },
       CK.ufw(6, ['ssh', '80/tcp']),
-      { id: 'ipfwd', title: 'IPv4 forwarding disabled at boot (sysctl files)', pts: 5, cat: AREA.config, test: () => (sysctlFileValue('net.ipv4.ip_forward') || '0') === '0', hint: 'grep -rn ip_forward /etc/sysctl.conf /etc/sysctl.d/ shows every file that sets it. Set net.ipv4.ip_forward=0 in /etc/sysctl.conf, which applies last on Ubuntu 24.04, or move the setting to a /etc/sysctl.d/ drop-in and delete the sysctl.conf line; then run sudo sysctl --system.', fix: "sudo sed -i 's/^net.ipv4.ip_forward=1/net.ipv4.ip_forward=0/' /etc/sysctl.conf && sudo sysctl -p", why: 'A forwarding server is a pivot into the rest of the network.' },
+      { id: 'ipfwd', title: 'IPv4 forwarding disabled at boot (sysctl files)', pts: 4, cat: AREA.config, test: () => (sysctlFileValue('net.ipv4.ip_forward') || '0') === '0', hint: 'grep -rn ip_forward /etc/sysctl.conf /etc/sysctl.d/ shows every file that sets it. Set net.ipv4.ip_forward=0 in /etc/sysctl.conf, which applies last on Ubuntu 24.04, or move the setting to a /etc/sysctl.d/ drop-in and delete the sysctl.conf line; then run sudo sysctl --system.', fix: "sudo sed -i 's/^net.ipv4.ip_forward=1/net.ipv4.ip_forward=0/' /etc/sysctl.conf && sudo sysctl -p", why: 'A forwarding server is a pivot into the rest of the network.' },
       { id: 'suid', title: 'Setuid bit removed from /usr/local/bin/lsmon', pts: 6, cat: AREA.access, test: () => { const n = S.fs['/usr/local/bin/lsmon']; return !n || !(n.m & 0o4000); }, hint: 'find / -perm -4000 -type f 2>/dev/null; sudo chmod u-s /usr/local/bin/lsmon (or delete it).', fix: 'sudo rm /usr/local/bin/lsmon   (or: sudo chmod u-s /usr/local/bin/lsmon)', why: 'A setuid copy of a shell gives any local user an instant root shell.' },
       { id: 'rclocal', title: 'Persistence line removed from /etc/rc.local', pts: 6, cat: AREA.malware, test: () => !activeLines(FS.text('/etc/rc.local')).some(l => /sysupd/.test(l)), hint: 'cat /etc/rc.local; delete the /tmp/.sysupd line with sudo nano (then remove /tmp/.sysupd and kill the process).', fix: "sudo sed -i '/sysupd/d' /etc/rc.local && sudo rm -f /tmp/.sysupd && sudo pkill sysupd", why: 'rc.local runs as root at boot: the listener on 4444 returns after every reboot until this line is gone.' },
-      { id: 'cron', title: 'Planted root cron job removed', pts: 5, cat: AREA.malware, test: () => { const sp = activeLines(FS.text('/var/spool/cron/crontabs/root')); const ct = activeLines(FS.text('/etc/crontab')); const cd = FS.list('/etc/cron.d').flatMap(f => activeLines(FS.text('/etc/cron.d/' + f))); return ![].concat(sp, ct, cd).some(l => /sysupd/.test(l)); }, hint: 'sudo crontab -l shows the job; sudo crontab -r removes root\'s crontab (or -e to edit the line out).', fix: 'sudo crontab -r', why: 'Cron restarts the backdoor every 10 minutes even after you kill it.' },
+      { id: 'cron', title: 'Planted root cron job removed', pts: 4, cat: AREA.malware, test: () => { const sp = activeLines(FS.text('/var/spool/cron/crontabs/root')); const ct = activeLines(FS.text('/etc/crontab')); const cd = FS.list('/etc/cron.d').flatMap(f => activeLines(FS.text('/etc/cron.d/' + f))); return ![].concat(sp, ct, cd).some(l => /sysupd/.test(l)); }, hint: 'sudo crontab -l shows the job; sudo crontab -r removes root\'s crontab (or -e to edit the line out).', fix: 'sudo crontab -r', why: 'Cron restarts the backdoor every 10 minutes even after you kill it.' },
       { id: 'shadow-perms', title: '/etc/shadow permissions restored (640 root:shadow)', pts: 5, cat: AREA.access, test: () => { const n = S.fs['/etc/shadow']; return !!n && (n.m & 0o027) === 0 && n.u === 0; }, hint: 'ls -l /etc/shadow shows -rw-r--r--; sudo chmod 640 /etc/shadow.', fix: 'sudo chmod 640 /etc/shadow && sudo chown root:shadow /etc/shadow', why: 'World-readable hashes can be cracked offline by any user.' },
-      { id: 'badrepo', title: 'Untrusted third-party repository removed', pts: 4, cat: AREA.patch, test: () => !aptSources().some(s => /torrentbolt/.test(s.uri)), hint: 'ls /etc/apt/sources.list.d: ubuntu.sources (deb822 format) is the official archive on Ubuntu 24.04; one-line .list files there are still read. sudo rm /etc/apt/sources.list.d/torrentbolt.list; sudo apt update.', fix: 'sudo rm /etc/apt/sources.list.d/torrentbolt.list && sudo apt update', why: 'A [trusted=yes] repository can push any package onto the system.' },
-      CK.updates(4), CK.pkgGone('netprobe-ng', 4, 'network scanner'),
+      { id: 'badrepo', title: 'Untrusted third-party repository removed', pts: 3, cat: AREA.patch, test: () => !aptSources().some(s => /torrentbolt/.test(s.uri)), hint: 'ls /etc/apt/sources.list.d: ubuntu.sources (deb822 format) is the official archive on Ubuntu 24.04; one-line .list files there are still read. sudo rm /etc/apt/sources.list.d/torrentbolt.list; sudo apt update.', fix: 'sudo rm /etc/apt/sources.list.d/torrentbolt.list && sudo apt update', why: 'A [trusted=yes] repository can push any package onto the system.' },
+      CK.updates(3), CK.pkgGone('netprobe-ng', 3, 'network scanner'), CK.journalPersist(5),
       CK.question(1, '/home/labuser/Desktop/Investigation 1.txt', ['4444'], 5, ['s4', 'se1']), CK.question(2, '/home/labuser/Desktop/Investigation 2.txt', ['/usr/local/bin/lsmon'], 5, ['s6', 's3'])],
     availability: [AVAIL.authUser(['moana', 'bkup', 'kai', 'lehua'], -6), AVAIL.authAdmin(['moana'], -5), AVAIL.svc('apache2', 'apache2', 'Apache (apache2)', -8), AVAIL.ssh(-8, 'The scenario brief calls SSH critical. On Ubuntu Server 24.04 ssh.socket (not ssh.service) holds port 22 and starts sshd on demand: stopping or disabling the socket, or leaving sshd_config broken, cuts the administrators off.'), AVAIL.svc('mysql', 'mysql-server', 'MySQL', -5), AVAIL.ufwBlocks(22, 'SSH', -5), AVAIL.ufwBlocks(80, 'web (Apache)', -4), AVAIL.self('labuser', -10)],
   },
 ];
 /* bump when a scenario's planted state changes: a saved lab from an older revision is rebuilt on load (its best score is kept) */
-const SCENARIO_REV = 2;
+const SCENARIO_REV = 3;
 function scenario() { return SCENARIOS.find(s => s.id === S.id) || SCENARIOS[0]; }
 function initialState(id) {
   const sc = SCENARIOS.find(s => s.id === id) || SCENARIOS[0];
@@ -5165,7 +5183,7 @@ let STORE = loadStore() || { current: 'recruit', scenarios: {} };
 let hintOpen = {};
 function persistNow() {
   if (!S) return;
-  STORE.current = S.id;
+  STORE.current = S.id; STORE.lastSeen = Date.now();
   const rec = STORE.scenarios[S.id] || {};
   rec.S = S; rec.best = Math.max(rec.best || 0, lastTotal || 0);
   STORE.scenarios[S.id] = rec;
@@ -5183,30 +5201,48 @@ function evaluate() {
   lastTotal = total; lastResult = { earned, todo, broken, total, max: sc.checks.reduce((a, c) => a + c.pts, 0) };
   const scoreEl = $('.score'); scoreEl.textContent = total + ' / ' + lastResult.max + ' pts'; scoreEl.classList.toggle('neg', total < 0);
   renderReport();
-  const rec = STORE.scenarios[S.id]; if (rec && total > (rec.best || 0)) { rec.best = total; persist(); }
+  const rec = STORE.scenarios[S.id]; if (rec && total > (rec.best || 0)) { rec.best = total; rec.bestHints = hintCount(); rec.bestCoach = coachMode(sc.level); persist(); }
+}
+/* Coach: how much the Progress Check tells you, chosen apart from the scenario level (the level sets the default) */
+const COACH = [['level', 'Match the level'], ['todo', 'To-do list with hints'], ['areas', 'Remaining by area'], ['passed', 'Passed checks only']];
+function coachMode(lvl) { const v = STORE.coach; const m = COACH.some(x => x[0] === v) ? v : 'level'; return m === 'level' ? (lvl === 1 ? 'todo' : lvl === 2 ? 'areas' : 'passed') : m; }
+function coachLabel(mode) { return (COACH.find(x => x[0] === mode) || COACH[0])[1]; }
+function hintStep(id) { return (S && S.hints && S.hints[id]) || 0; }
+function setHintStep(id, n) { S.hints = S.hints || {}; if ((S.hints[id] || 0) < n) { S.hints[id] = n; persist(); } }
+function hintCount() { const h = (S && S.hints) || {}; return Object.keys(h).filter(k => h[k] > 0).length; }
+function hintCommands() { const h = (S && S.hints) || {}; return Object.keys(h).filter(k => h[k] >= 2).length; }
+function coachControl(lvl) {
+  const sel = el('select', { id: 'coach-sel' }); for (const [v, t] of COACH) { const o = el('option', { value: v, text: t }); if ((STORE.coach || 'level') === v) o.selected = true; sel.append(o); }
+  sel.addEventListener('change', () => { STORE.coach = sel.value; saveStore(STORE); renderReport(); const s = $('#coach-sel'); if (s) s.focus(); });
+  return el('div', { class: 'coach' }, el('label', { for: 'coach-sel', text: 'Coach:' }), sel, el('span', { class: 'hintmark', text: 'now: ' + coachLabel(coachMode(lvl)) }));
 }
 const scheduleEvaluate = debounce(evaluate, 150);
 function renderReport() {
   const R = lastResult; if (!R) return;
   const sc = scenario(); const rep = $('#report'); rep.textContent = '';
-  rep.append(el('h2', { text: 'Progress Check' }), el('p', { class: 'scn', text: sc.title + ' (' + sc.name + ')' }));
+  rep.append(el('h2', { text: 'Progress Check' }), el('p', { class: 'scn', text: sc.title + ' (' + sc.name + ')' }), coachControl(sc.level));
+  const mode = coachMode(sc.level);
   rep.append(el('div', { class: 'tot', text: 'Progress: ' + R.total + ' / ' + R.max + ' points' }), el('p', { class: 'sub', text: 'Checks passed: ' + R.earned.length + ' of ' + sc.checks.length }));
   rep.append(el('h3', { text: 'Checks passed' }));
   if (!R.earned.length) rep.append(el('p', { class: 'none', text: 'No checks passed yet. Read the Scenario Brief on the Desktop, then start fixing.' }));
   else rep.append(el('ul', { class: 'earn' }, R.earned.map(c => el('li', null, el('span', { class: 'pts', text: c.pts + ' pts' }), c.title))));
   if (R.broken.length) { rep.append(el('h3', { text: 'Availability checks failed' }), el('ul', { class: 'avail' }, R.broken.map(p => el('li', null, el('span', { class: 'pts', text: p.pts + ' pts' }), p.title)))); }
-  if (sc.level === 1) {
-    rep.append(el('h3', { text: 'To do (training wheels)' }));
+  if (mode === 'todo') {
+    rep.append(el('h3', { text: 'To do (with hints)' }));
     const ul = el('ul', { class: 'todo' });
     for (const c of sc.checks) {
       const done = R.earned.includes(c);
       const li = el('li', { class: done ? 'done' : '' });
       li.append(el('span', { class: 'pts', text: c.pts + ' pts' }), (done ? '✓ ' : '○ ') + c.title);
-      if (!done) { const b = el('button', { class: 'hintbtn', text: hintOpen[c.id] ? 'Hide hint' : 'Show hint', 'aria-expanded': String(!!hintOpen[c.id]) }); b.addEventListener('click', () => { hintOpen[c.id] = !hintOpen[c.id]; renderReport(); }); li.append(b); if (hintOpen[c.id]) li.append(el('span', { class: 'hint', html: esc(c.hint).replace(/`([^`]+)`/g, '<code>$1</code>') })); }
+      if (!done) { const step = hintStep(c.id), open = !!hintOpen[c.id];
+        const b = el('button', { class: 'hintbtn', text: !open ? 'Show hint' : step < 2 ? 'Show the command' : 'Hide hint', 'aria-expanded': String(open) });
+        b.addEventListener('click', () => { if (!open) { hintOpen[c.id] = true; setHintStep(c.id, 1); } else if (step < 2) { setHintStep(c.id, 2); } else { hintOpen[c.id] = false; } renderReport(); });
+        li.append(b);
+        if (open) { li.append(el('span', { class: 'hint', html: '<b>' + esc(c.cat) + ':</b> ' + esc(c.why) })); if (step >= 2) li.append(el('span', { class: 'hint', html: esc(c.hint).replace(/`([^`]+)`/g, '<code>$1</code>') })); } }
       ul.append(li);
     }
     rep.append(ul);
-  } else if (sc.level === 2) {
+  } else if (mode === 'areas') {
     const cats = {}; for (const c of R.todo) cats[c.cat] = (cats[c.cat] || 0) + 1;
     rep.append(el('h3', { text: 'Remaining by hardening area' }));
     const keys = Object.keys(cats).sort(cmpStr);
@@ -5214,7 +5250,8 @@ function renderReport() {
   }
   const foot = el('div', { class: 'foot' });
   const timer = el('span', { class: 'timer', text: 'Elapsed ' + fmtElapsed(S.elapsed || 0) });
-  const best = el('span', { class: 'best', text: 'Best: ' + ((STORE.scenarios[S.id] || {}).best || 0) + ' pts' });
+  const rec0 = STORE.scenarios[S.id] || {};
+  const best = el('span', { class: 'best', text: 'Best: ' + (rec0.best || 0) + ' pts' + (rec0.best ? (rec0.bestHints ? ' with ' + rec0.bestHints + ' hint' + (rec0.bestHints === 1 ? '' : 's') : ', no hints') + (rec0.bestCoach ? ' (' + coachLabel(rec0.bestCoach) + ')' : '') : '') + ' · Hints now: ' + hintCount() });
   const fin = el('button', { class: 'fin', text: 'Finish / Debrief' }); fin.addEventListener('click', openDebrief);
   foot.append(timer, best, fin); rep.append(foot);
 }
@@ -5231,7 +5268,18 @@ function openDebrief() {
   const learnLinks = c => { const units = learnUnits(c); const p = el('span', { class: 'learn', style: 'display:block;margin-top:.3rem' }, 'Learn it in the Defense Ladder: '); units.forEach((u, i) => { if (i) p.append(' and '); p.append(el('a', { href: DL_URL + '#' + DL_UNIT[u][0], target: '_blank', rel: 'noopener', style: 'color:var(--ink)', text: DL_UNIT[u][1] })); }); return p; };
   for (const c of sc.checks) { const ok = R.earned.includes(c); tb.append(el('tr', null, el('td', { class: 'st ' + (ok ? 'ok' : 'bad'), text: ok ? '✓' : '✗' }), el('td', { text: c.title }), el('td', { text: String(c.pts) }), el('td', { class: 'fix', text: c.fix }), el('td', { class: 'why' }, c.why, learnLinks(c)))); }
   for (const p of sc.availability) { const hit = R.broken.includes(p); tb.append(el('tr', null, el('td', { class: 'st ' + (hit ? 'bad' : 'ok'), text: hit ? '✗' : '✓' }), el('td', { text: 'Availability check: ' + p.title }), el('td', { text: String(p.pts) }), el('td', { class: 'fix', text: hit ? 'Undo the change (Reset lab restores the original state).' : 'Still available' }), el('td', { class: 'why', text: p.why }))); }
-  table.append(tb); card.append(table);
+  table.append(tb);
+  card.append(el('p', { class: 'dbr-hints', text: 'Hints this attempt: ' + hintCount() + ' of ' + sc.checks.length + ' checks (' + hintCommands() + ' with the command shown). Coach: ' + coachLabel(coachMode(sc.level)) + '. A pass with no hints on a fresh attempt is the one that counts.' }), table);
+  const rec = STORE.scenarios[S.id] || (STORE.scenarios[S.id] = {});
+  const ta = el('textarea', { id: 'dbr-reflect' }); ta.value = rec.reflect || ''; ta.addEventListener('input', () => { rec.reflect = ta.value; saveStore(STORE); });
+  card.append(el('label', { class: 'dbr-reflect' }, el('span', { text: 'What broke, and what will you do first next time? (saved with this scenario)' }), ta));
+  const cp = el('button', { class: 'ubtn', id: 'dbr-copy', text: 'Copy debrief as text' }); const st = el('span', { role: 'status' }); const out = el('textarea', { hidden: true, 'aria-label': 'Debrief as text' }); out.readOnly = true;
+  const debriefText = () => { const lines = ['Lockdown Range: Linux - ' + sc.title + ' (' + sc.name + ')', 'Progress ' + R.total + ' / ' + R.max + ' - checks passed ' + R.earned.length + ' of ' + sc.checks.length + ' - availability checks failed ' + R.broken.length + ' - time ' + fmtElapsed(S.elapsed || 0) + ' - hints ' + hintCount() + ' (' + hintCommands() + ' with the command) - coach: ' + coachLabel(coachMode(sc.level)), ''];
+    for (const c of sc.checks) { const h = hintStep(c.id); lines.push((R.earned.includes(c) ? '[x] ' : '[ ] ') + c.title + ' (' + c.pts + ' pts)' + (h ? '  [hint: ' + (h >= 2 ? 'command shown' : 'principle') + ']' : '')); }
+    for (const p of sc.availability) lines.push((R.broken.includes(p) ? '[!] ' : '[ok] ') + 'Availability: ' + p.title + ' (' + p.pts + ' pts)');
+    if (rec.reflect) lines.push('', 'What broke, and what I will do first next time:', rec.reflect); return lines.join('\n') + '\n'; };
+  cp.addEventListener('click', () => { const txt = debriefText(); const show = () => { out.hidden = false; out.value = txt; st.textContent = 'Select the text below and copy it.'; }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(() => { st.textContent = 'Copied.'; }, show); else show(); });
+  card.append(el('div', { class: 'dbr-copy' }, cp, st, out));
   card.append(el('p', { class: 'why', style: 'margin-top:.8rem;color:var(--muted)', text: 'Reset lab starts this scenario over (your best score is kept). Switch levels with the pills in the header.' }));
   modal.append(card); close.focus();
 }
@@ -5247,7 +5295,7 @@ function openHelp() {
     '<li><b>Terminal:</b> click inside it to type. Tab completes commands and paths, Up/Down recall history, Ctrl+C aborts, Ctrl+L clears, <code>man command</code> shows a short page, <code>sudo</code> asks for your password.</li>' +
     '<li><b>nano:</b> Ctrl+O then Enter saves, Ctrl+X exits. In a browser Ctrl+W closes the tab, so use <b>F6</b> (or Ctrl+F) to search inside nano. <b>vi:</b> <code>i</code> to type, Esc, <code>:wq</code> to save.</li>' +
     '<li><b>GUI apps:</b> Files, Text Editor, and Software Updater / Update Manager are in the dock or panel. Right-click files for Move to Trash and Properties.</li>' +
-    '<li><b>Progress Check:</b> the panel updates after every command. Recruit shows a to-do list with hints, Operator shows the remaining count per hardening area, Captain shows only the checks you have passed. Failed availability checks appear in red when you break something the Scenario Brief says the business needs.</li>' +
+    '<li><b>Progress Check:</b> the panel updates after every command. By default Recruit shows a to-do list with hints, Operator shows the remaining count per hardening area, and Captain shows only the checks you have passed; the <b>Coach</b> control at the top of the panel picks any of the three for any level. A hint opens in two steps: the hardening area and the principle first, then the command. Failed availability checks appear in red when you break something the Scenario Brief says the business needs.</li>' +
     '<li><b>Levels:</b> Recruit = Ubuntu desktop, Operator = Linux Mint shared PC, Captain = Ubuntu Server (terminal only). Progress is saved per level in this browser.</li>' +
     '<li><b>Versions:</b> the machines follow Ubuntu ' + FLAVORS.ubuntu.release + ' LTS and Linux Mint ' + FLAVORS.mint.release + '. On Ubuntu 26.04 LTS the default sudo is sudo-rs, so its password prompt and messages look slightly different.</li></ul>' +
     '<p>Solution walkthrough for every scenario: <code>linux-range-reference.txt</code> beside this page. Try each scenario on your own first.</p>' +
@@ -5296,6 +5344,18 @@ function renderLevels() {
   }
 }
 function applyTheme(v) { if (v) document.documentElement.dataset.theme = v; else delete document.documentElement.dataset.theme; const b = $('.theme'); if (b) b.textContent = 'Theme: ' + (v || 'auto'); }
+/* a return after 30 minutes or more on a browser that holds progress: another person may have been here */
+function shareBanner() {
+  const has = Object.keys(STORE.scenarios || {}).some(k => STORE.scenarios[k] && (STORE.scenarios[k].S || STORE.scenarios[k].best));
+  const gap = STORE.lastSeen ? Date.now() - STORE.lastSeen : 0;
+  if (!has || gap < 30 * 60 * 1000) return;
+  const mins = Math.round(gap / 60000); const when = mins < 120 ? mins + ' minutes' : Math.round(mins / 60) + ' hours';
+  const keep = el('button', { text: 'Keep my progress' }); const fresh = el('button', { text: 'Start fresh' });
+  const bar = el('div', { class: 'sharebar', role: 'region', 'aria-label': 'Saved progress' }, el('span', { text: 'This browser last showed the range ' + when + ' ago and holds saved progress. On a shared computer it may be someone else\u2019s.' }), keep, fresh);
+  keep.addEventListener('click', () => bar.remove());
+  fresh.addEventListener('click', () => { STORE = { current: 'recruit', scenarios: {}, coach: STORE.coach }; saveStore(STORE); location.reload(); });
+  document.body.insertBefore(bar, document.body.firstChild);
+}
 function init() {
   M.init();
   if (location.protocol === 'file:') { const nav = $('nav.series'); if (nav) nav.hidden = true; }
@@ -5316,6 +5376,7 @@ function init() {
   if (savedFits(rec, id)) { S = rec.S; if (S.power === 'boot') S.power = 'login'; if (!S.journal) S.journal = []; if (!S.hist) S.hist = {}; }
   else { initialState(id); STORE.scenarios[id] = { S, best: (rec && rec.best) || 0 }; fresh = true; }
   renderLevels(); updateToolbar(); evaluate();
+  shareBanner();
   if (fresh || S.power === 'off') M.boot(); else M.render();
   setInterval(() => { if (!S) return; if (S.power !== 'off' && !document.hidden) { S.elapsed = (S.elapsed || 0) + 1; const t = $('.report .timer'); if (t) t.textContent = 'Elapsed ' + fmtElapsed(S.elapsed); if (S.elapsed % 15 === 0) persist(); } }, 1000);
   window.addEventListener('beforeunload', () => { try { persistNow(); } catch (e) { /* ignore */ } });

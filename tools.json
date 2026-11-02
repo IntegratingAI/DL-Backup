@@ -381,8 +381,8 @@
           "download_as": "windows-range-walkthrough.txt"
         }
       ],
-      "sha256": "20834f7c358ee3a7d9f109c46da563bf2e915e9e51dac3c33da1f5dc45ccb978",
-      "updated": "2026-10-28"
+      "sha256": "2677f98b40a63209404431b340c4d552cd0cd5a1b98d113871358f4b7f2a800b",
+      "updated": "2026-11-01"
     },
     {
       "slug": "lockdown-range/linux",
@@ -407,8 +407,8 @@
           "download_as": "linux-range-walkthrough.txt"
         }
       ],
-      "sha256": "54de73da9a8a4ddae3cf321f5cb2af8198bd43e1b67b4ee8590cb799e6d9fc95",
-      "updated": "2026-10-28"
+      "sha256": "b2d3752813110dbba2e4e4b64a7fc49eda2b0ce70ec455fd8aa7d1a5ce6b8513",
+      "updated": "2026-11-01"
     },
     {
       "slug": "lockdown-range/cisco-ios",
@@ -433,8 +433,8 @@
           "download_as": "cisco-range-walkthrough.txt"
         }
       ],
-      "sha256": "339ec29b9459cd785c25a2111a53b56519e883ca17a5065fcb68855f6df5b6a2",
-      "updated": "2026-10-20"
+      "sha256": "d310a508f05ea2555f3cdc9ba15e918e14b2c9a9e798c590bec5b47104e560f3",
+      "updated": "2026-11-01"
     },
     {
       "slug": "study-map",

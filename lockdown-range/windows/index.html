@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-J9xYRQay9b/OqsUogWjAVJDBAlmdHWkAP21Sr0dXlcU='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-0JGNbaEik5AKJCyjh35bhwxur0xFSU6xMogwNd61Fcs='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/lockdown-range/windows/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%96%A5%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -34,7 +34,6 @@
 :root[data-theme="dark"]{ --bg:#111922; --panel:#182330; --ink:#E7EEF6; --muted:#9DACBC; --line:#2B3A4B; --soft:#1F2B3A; --term:#0A121D; --termink:#D6E2F0; --okbg:#143524; --badbg:#3A1B1B; --warnbg:#3A2C12; --accent:#6AA3E8; --accent-ink:#0B1420; }
 
 *,*::before,*::after{box-sizing:inherit}
-html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);min-height:100vh}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -563,6 +562,21 @@ table.lv .dim{color:#888}
 .ic{display:inline-flex;align-items:center;justify-content:center;flex:none}
 .ctx[data-menu="winx"] .ci{min-height:24px;padding-top:2px;padding-bottom:2px}
 @media (max-width:900px){.report-body > h2{display:none}}
+
+/* support (panel review): contrast, forced colours, print, the shared-computer banner, the Coach control */
+@media (prefers-contrast:more){ :root{ --line:currentColor; } .report li, .hint, .report .hint, button, .levels button{ border:1px solid currentColor; } }
+@media (forced-colors:active){ button, .report li, .hint{ border:1px solid ButtonText; } .meter i, .bar .fill{ background:Highlight; } }
+@media print{ header.top .levels, header.top .theme, nav.series, #machine, footer, .report-toggle, .rbtns, .mbtns, .dbr-copy, .sharebar, .coach{ display:none !important; } .report{ position:static !important; max-height:none !important; overflow:visible !important; width:auto !important; } .report .hint, .report li .hint{ display:block !important; } body{ background:#fff; color:#000; } }
+.sharebar{ display:flex; flex-wrap:wrap; gap:.5rem .8rem; align-items:center; padding:.6rem .9rem; background:var(--soft, #eef3f7); color:var(--ink); border-bottom:1px solid var(--line); font-size:.92rem; max-width:100%; }
+.sharebar button{ font:inherit; font-size:.85rem; padding:.25rem .7rem; border-radius:6px; border:1px solid var(--line); background:var(--panel, #fff); color:var(--ink); cursor:pointer; }
+.coach{ display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; font-size:.82rem; margin:.3rem 0 .6rem; max-width:100%; }
+.coach select{ font:inherit; font-size:.82rem; padding:.15rem .3rem; border-radius:6px; border:1px solid var(--line); background:var(--panel, #fff); color:var(--ink); max-width:100%; }
+.hintstep{ display:block; margin-top:.25rem; font-size:.85rem; }
+.dbr-hints{ font-size:.9rem; margin:.3rem 0; }
+.dbr-reflect{ display:block; margin-top:.8rem; } .dbr-reflect textarea{ width:100%; min-height:3.2em; font:inherit; font-size:.92rem; border:1px solid var(--line); border-radius:6px; padding:.4rem .5rem; background:var(--panel, #fff); color:var(--ink); }
+.dbr-copy{ margin-top:.5rem; display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; font-size:.85rem; }
+.dbr-copy textarea{ width:100%; min-height:8em; font:12px/1.4 ui-monospace,Consolas,monospace; }
+.hintmark{ font-size:.78rem; opacity:.8; margin-left:.3rem; }
 </style>
 <style>a.jack{color:inherit;text-decoration:none}a.jack:hover,a.jack:focus-visible{color:var(--ink);text-decoration:underline;text-underline-offset:3px}</style>
 </head>
@@ -4920,7 +4934,7 @@ let EVAL_T = null, TICK = null;
 function scenarioById(id) { return SCENARIOS.find(s => s.id === id) || SCENARIOS[0]; }
 function persistNow() {
   if (!CUR || !S) return;
-  STORE.sel = CUR.id;
+  STORE.sel = CUR.id; STORE.lastSeen = Date.now();
   const rec = STORE.scen[CUR.id] || (STORE.scen[CUR.id] = { best: 0 });
   rec.S = S; rec.best = Math.max(rec.best || 0, LAST.total || 0);
   storage.set(STORE_KEY, STORE);
@@ -4934,8 +4948,22 @@ function evaluate() {
   const total = earned.reduce((a, c) => a + c.pts, 0) + failed.reduce((a, p) => a + p.pts, 0);
   LAST = { earned, failed, total, max: 100 };
   const rec = STORE.scen[CUR.id] || (STORE.scen[CUR.id] = { best: 0 });
-  if (total > (rec.best || 0)) { rec.best = total; storage.set(STORE_KEY, STORE); }
+  if (total > (rec.best || 0)) { rec.best = total; rec.bestHints = hintCount(); rec.bestCoach = coachMode(CUR.level); storage.set(STORE_KEY, STORE); }
   renderScore(); renderReport(); renderLevels();
+}
+/* Coach: how much the Progress Check tells you, chosen apart from the scenario level (the level sets the default) */
+const COACH = [['level', 'Match the level'], ['todo', 'To-do list with hints'], ['areas', 'Remaining by area'], ['passed', 'Passed checks only']];
+function coachMode(lvl) { const v = STORE.coach; const m = COACH.some(x => x[0] === v) ? v : 'level'; return m === 'level' ? (lvl === 1 ? 'todo' : lvl === 2 ? 'areas' : 'passed') : m; }
+function coachLabel(mode) { return (COACH.find(x => x[0] === mode) || COACH[0])[1]; }
+function hintStep(id) { return (S && S.hints && S.hints[id]) || 0; }
+function setHintStep(id, n) { S.hints = S.hints || {}; if ((S.hints[id] || 0) < n) { S.hints[id] = n; persistNow(); } }
+function hintCount() { const hs = (S && S.hints) || {}; return Object.keys(hs).filter(k => hs[k] > 0).length; }
+function hintCommands() { const hs = (S && S.hints) || {}; return Object.keys(hs).filter(k => hs[k] >= 2).length; }
+const HINT_OPEN = new Set();
+function coachControl(lvl) {
+  const sel = h('select', { id: 'coach-sel' }); COACH.forEach(([v, t]) => { const o = h('option', { value: v, text: t }); if ((STORE.coach || 'level') === v) o.selected = true; sel.appendChild(o); });
+  sel.addEventListener('change', () => { STORE.coach = sel.value; storage.set(STORE_KEY, STORE); renderReport(); const s = $('#coach-sel'); if (s) s.focus(); });
+  return h('div', { class: 'coach' }, h('label', { for: 'coach-sel', text: 'Coach:' }), sel, h('span', { class: 'hintmark', text: 'now: ' + coachLabel(coachMode(lvl)) }));
 }
 function renderScore() {
   const el = $('.score'); el.textContent = LAST.total + ' / ' + LAST.max + ' pts'; el.classList.toggle('neg', LAST.total < 0);
@@ -4945,7 +4973,7 @@ function renderLevels() {
   SCENARIOS.forEach(sc => {
     const best = (STORE.scen[sc.id] || {}).best || 0;
     const b = h('button', { type: 'button', role: 'tab', 'aria-selected': CUR && CUR.id === sc.id ? 'true' : 'false', title: sc.title + ' — ' + osv(sc.edition).family, dataset: { id: sc.id } }, h('span', { class: 'n', text: sc.level + ' · ' }), h('span', { text: sc.name }));
-    if (best > 0) b.appendChild(h('span', { class: 'best', text: 'best ' + best }));
+    if (best > 0) { const r0 = STORE.scen[sc.id] || {}; b.appendChild(h('span', { class: 'best', text: 'best ' + best + (r0.bestHints ? ' · ' + r0.bestHints + ' hint' + (r0.bestHints === 1 ? '' : 's') : '') })); }
     b.addEventListener('click', () => loadScenario(sc.id));
     host.appendChild(b);
   });
@@ -4959,6 +4987,8 @@ function renderReport() {
   body.innerHTML = '';
   body.appendChild(h('h2', { text: 'Progress Check' }));
   body.appendChild(h('div', { class: 'scen', text: CUR.title + ' (' + CUR.name + ')' }));
+  body.appendChild(coachControl(CUR.level));
+  const mode = coachMode(CUR.level);
   body.appendChild(h('div', { class: 'total' + (LAST.total < 0 ? ' neg' : ''), text: 'Score: ' + LAST.total + ' / ' + LAST.max + ' points' }));
   body.appendChild(h('div', { class: 'passed', text: 'Checks passed: ' + LAST.earned.length + ' of ' + CUR.checks.length }));
   const bar = h('div', { class: 'bar', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': String(Math.max(0, LAST.total)) }, h('div', { class: 'fill', style: 'width:' + Math.max(0, Math.min(100, LAST.total)) + '%' }));
@@ -4972,18 +5002,20 @@ function renderReport() {
     body.appendChild(h('h3', { text: 'Availability checks failed' }));
     const pl = h('ul'); LAST.failed.forEach(p => pl.appendChild(h('li', { class: 'avail-fail' }, h('span', { text: '✗ Availability check failed: ' + p.title }), h('span', { class: 'pts', text: p.pts + ' pts' })))); body.appendChild(pl);
   }
-  if (CUR.level === 1) {
-    body.appendChild(h('h3', { text: 'Still to do (Recruit training wheels)' }));
+  if (mode === 'todo') {
+    body.appendChild(h('h3', { text: 'Still to do (with hints)' }));
     const tl = h('ul');
     CUR.checks.filter(c => !LAST.earned.includes(c)).forEach(c => {
       const li = h('li', { class: 'todo' }, h('span', { text: '○ ' + c.title }), h('span', { class: 'pts', text: c.pts + ' pts' }));
-      const hb = h('button', { type: 'button', class: 'hint-btn', text: 'Show hint', 'aria-expanded': 'false' });
-      const hint = h('div', { class: 'hint', hidden: true, text: c.hint });
-      hb.addEventListener('click', () => { const open = hint.hidden; hint.hidden = !open; hb.setAttribute('aria-expanded', String(open)); hb.textContent = open ? 'Hide hint' : 'Show hint'; });
+      const step = hintStep(c.id), open = HINT_OPEN.has(c.id);
+      const hb = h('button', { type: 'button', class: 'hint-btn', text: !open ? 'Show hint' : step < 2 ? 'Show the command' : 'Hide hint', 'aria-expanded': String(open) });
+      const hint = h('div', { class: 'hint', hidden: !open }, h('span', { class: 'hintstep', text: c.cat + ': ' + c.why }));
+      if (step >= 2) hint.appendChild(h('span', { class: 'hintstep', text: 'Hint: ' + c.hint }));
+      hb.addEventListener('click', () => { if (!open) { HINT_OPEN.add(c.id); setHintStep(c.id, 1); } else if (step < 2) { setHintStep(c.id, 2); } else { HINT_OPEN.delete(c.id); } renderReport(); const nb = Array.from($$('.hint-btn')).find(b => b.closest('li') && b.closest('li').textContent.includes(c.title)); if (nb) nb.focus(); });
       li.append(hb, hint); tl.appendChild(li);
     });
     body.appendChild(tl);
-  } else if (CUR.level === 2) {
+  } else if (mode === 'areas') {
     body.appendChild(h('h3', { text: 'Remaining by hardening area' }));
     const cl = h('ul', { class: 'cats' });
     catSummary().forEach(x => cl.appendChild(h('li', {}, h('span', { text: x.cat }), h('span', { class: 'pts', text: plural(x.n, 'item') }))));
@@ -4991,11 +5023,11 @@ function renderReport() {
     body.appendChild(cl);
   }
   const rec = STORE.scen[CUR.id] || {};
-  body.appendChild(h('div', { class: 'timer' }, h('span', { id: 'elapsed', text: 'Elapsed ' + fmtElapsed(S.elapsed || 0) }), h('span', { text: 'Best: ' + (rec.best || 0) + ' pts' })));
+  body.appendChild(h('div', { class: 'timer' }, h('span', { id: 'elapsed', text: 'Elapsed ' + fmtElapsed(S.elapsed || 0) }), h('span', { text: 'Best: ' + (rec.best || 0) + ' pts' + (rec.best ? (rec.bestHints ? ' with ' + rec.bestHints + ' hint' + (rec.bestHints === 1 ? '' : 's') : ', no hints') + (rec.bestCoach ? ' (' + coachLabel(rec.bestCoach) + ')' : '') : '') }), h('span', { text: 'Hints now: ' + hintCount() })));
   const btns = h('div', { class: 'rbtns' });
   const fin = h('button', { type: 'button', class: 'rbtn primary', text: 'Finish / Debrief' }); fin.addEventListener('click', openDebrief);
   btns.appendChild(fin); body.appendChild(btns);
-  body.appendChild(h('div', { class: 'note', text: CUR.level === 3 ? 'Captain level: only passed checks are listed, with no hints or areas.' : 'Progress and the machine state are saved in this browser.' }));
+  body.appendChild(h('div', { class: 'note', text: mode === 'passed' ? 'Passed checks only: no hints and no areas. Coach changes that at any level.' : 'Progress and the machine state are saved in this browser.' }));
 }
 function tickTimer() {
   clearInterval(TICK);
@@ -5046,11 +5078,21 @@ function openDebrief() {
   tbl.appendChild(h('thead', {}, h('tr', {}, h('th', { text: '' }), h('th', { text: 'Check' }), h('th', { text: 'Pts' }), h('th', { text: 'Fix' }), h('th', { text: 'Why it matters' }))));
   const tb = h('tbody');
   const learnIt = c => !c.learn ? null : h('div', {}, 'Learn it: ', c.learn.map(LEARN.link).map((l, i) => [i ? '; ' : '', h('a', { href: l.href, target: '_blank', rel: 'noopener', style: 'color:var(--accent)', text: l.text })]));
-  CUR.checks.forEach(c => { const ok = LAST.earned.includes(c); tb.appendChild(h('tr', {}, h('td', { class: ok ? 'ok' : 'ko', text: ok ? '✓' : '✗' }), h('td', { text: c.title }), h('td', { text: String(c.pts) }), h('td', { class: 'fix', text: c.fix }), h('td', { class: 'why' }, c.why, learnIt(c)))); });
+  CUR.checks.forEach(c => { const ok = LAST.earned.includes(c); const st = hintStep(c.id); tb.appendChild(h('tr', {}, h('td', { class: ok ? 'ok' : 'ko', text: ok ? '✓' : '✗' }), h('td', { text: c.title }), h('td', { text: String(c.pts) }), h('td', { class: 'fix', text: c.fix }), h('td', { class: 'why' }, c.why, learnIt(c), st ? h('span', { class: 'hintmark', text: st >= 2 ? ' (hint: command shown)' : ' (hint: principle)' }) : null))); });
   CUR.availability.forEach(p => { const hit = LAST.failed.includes(p); tb.appendChild(h('tr', {}, h('td', { class: hit ? 'ko' : 'ok', text: hit ? '✗' : '✓' }), h('td', { text: 'Availability check: ' + p.title }), h('td', { text: String(p.pts) }), h('td', { class: 'fix', text: hit ? 'Undo the change (Reset lab restores the original state).' : 'Passing (nothing required was broken)' }), h('td', { class: 'why', text: p.why }))); });
   tbl.appendChild(tb);
   const sum = h('p', { class: 'sum', text: 'Score ' + LAST.total + ' / ' + LAST.max + '  ·  ' + LAST.earned.length + ' of ' + CUR.checks.length + ' checks passed  ·  ' + LAST.failed.length + ' availability ' + (LAST.failed.length === 1 ? 'check' : 'checks') + ' failed  ·  Time ' + fmtElapsed(S.elapsed || 0) });
-  pageModal({ title: 'Debrief: ' + CUR.title, body: h('div', { class: 'debrief-wrap' }, sum, tbl, h('p', { class: 'note', text: 'Reset lab starts this scenario over (your best score is kept). Switch levels with the pills in the header.' })), buttons: [{ label: 'Close', value: 'close', primary: true }] });
+  const rec = STORE.scen[CUR.id] || (STORE.scen[CUR.id] = { best: 0 });
+  const hints = h('p', { class: 'dbr-hints', text: 'Hints this attempt: ' + hintCount() + ' of ' + CUR.checks.length + ' checks (' + hintCommands() + ' with the command shown). Coach: ' + coachLabel(coachMode(CUR.level)) + '. A pass with no hints on a fresh attempt is the one that counts.' });
+  const ta = h('textarea', { id: 'dbr-reflect' }); ta.value = rec.reflect || ''; ta.addEventListener('input', () => { rec.reflect = ta.value; storage.set(STORE_KEY, STORE); });
+  const refl = h('label', { class: 'dbr-reflect' }, h('span', { text: 'What broke, and what will you do first next time? (saved with this scenario)' }), ta);
+  const cp = h('button', { type: 'button', class: 'rbtn', id: 'dbr-copy', text: 'Copy debrief as text' }); const st = h('span', { role: 'status' }); const out = h('textarea', { hidden: true, 'aria-label': 'Debrief as text' }); out.readOnly = true;
+  const debriefText = () => { const lines = ['Lockdown Range: Windows - ' + CUR.title + ' (' + CUR.name + ')', 'Progress ' + LAST.total + ' / ' + LAST.max + ' - checks passed ' + LAST.earned.length + ' of ' + CUR.checks.length + ' - availability checks failed ' + LAST.failed.length + ' - time ' + fmtElapsed(S.elapsed || 0) + ' - hints ' + hintCount() + ' (' + hintCommands() + ' with the command) - coach: ' + coachLabel(coachMode(CUR.level)), ''];
+    CUR.checks.forEach(c => { const s2 = hintStep(c.id); lines.push((LAST.earned.includes(c) ? '[x] ' : '[ ] ') + c.title + ' (' + c.pts + ' pts)' + (s2 ? '  [hint: ' + (s2 >= 2 ? 'command shown' : 'principle') + ']' : '')); });
+    CUR.availability.forEach(p => lines.push((LAST.failed.includes(p) ? '[!] ' : '[ok] ') + 'Availability: ' + p.title + ' (' + p.pts + ' pts)'));
+    if (rec.reflect) lines.push('', 'What broke, and what I will do first next time:', rec.reflect); return lines.join('\n') + '\n'; };
+  cp.addEventListener('click', () => { const txt = debriefText(); const show = () => { out.hidden = false; out.value = txt; st.textContent = 'Select the text below and copy it.'; }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(() => { st.textContent = 'Copied.'; }, show); else show(); });
+  pageModal({ title: 'Debrief: ' + CUR.title, body: h('div', { class: 'debrief-wrap' }, sum, hints, tbl, refl, h('div', { class: 'dbr-copy' }, cp, st, out), h('p', { class: 'note', text: 'Reset lab starts this scenario over (your best score is kept). Switch levels with the pills in the header.' })), buttons: [{ label: 'Close', value: 'close', primary: true }] });
 }
 function openHelp() {
   const body = h('div', { class: 'help-body' });
@@ -5059,6 +5101,8 @@ function openHelp() {
   sec('Getting to the tools', ['Start > Run (or Alt+R) and type: lusrmgr.msc, secpol.msc, gpedit.msc, services.msc, taskschd.msc, wf.msc, appwiz.cpl, optionalfeatures, SystemPropertiesRemote (Remote Desktop settings), UserAccountControlSettings (the UAC slider), control, ms-settings:', 'Start > type the name to search. Enter opens it; Ctrl+Shift+Enter runs it as administrator.', 'Right-click a taskbar or Start tile for "Run as administrator". Terminal commands that change the machine need an administrator window (net, sc, schtasks, netsh, auditpol).', 'Windows+R cannot be captured by a web page; Alt+R opens Run here.']);
   sec('Keyboard', ['Windows: title bar focused + arrow keys moves, Shift+arrows resizes, Alt+F4 closes.', 'Terminal: Up/Down history, Tab completes, Ctrl+L clears, Ctrl+C cancels.', 'Desktop icons: arrows to move, Enter opens, Delete sends to the Recycle Bin.', 'Esc closes menus and dialogs.']);
   sec('What the simulation covers', ['A faithful subset of ' + VERSIONS.win11.family + ' (version ' + VERSIONS.win11.version + ') and ' + VERSIONS.server.family + ': the panels and commands an administrator uses to harden a standalone machine. Nothing touches your real computer.', 'Outside the simulation: Registry Editor, Event Viewer, Task Manager, real program windows, the Microsoft Store, and networking beyond this machine.', 'Progress and the machine state save in this browser. Reset lab reverts to the original snapshot.', 'Setting names and commands follow Microsoft Learn (Windows security policy settings reference, Windows Commands reference) and the CIS Critical Security Controls v8.', 'Unofficial practice; not affiliated with or endorsed by Microsoft. Practice only on machines you own or are authorized to manage.']);
+  sec('Coach and hints', ['Coach, at the top of the Progress Check, sets how much the panel tells you: the to-do list with hints, the remaining count per area, or passed checks only, at any level. A hint opens in two steps: the hardening area and the principle first, then the console path or command.', 'Your best score remembers how many hints it took. A pass with no hints on a fresh attempt is the one that counts.']);
+  sec('After you try', ['Solution walkthrough for every scenario: windows-range-reference.txt beside this page (the hub card offers it as a download). Try each scenario on your own first, then read it to see what you missed.']);
   pageModal({ title: 'How to use Windows Range', body, buttons: [{ label: 'Close', value: 'close', primary: true }] });
 }
 /* ---------- theme ---------- */
@@ -5081,6 +5125,18 @@ function fitScreen() {
   frame.style.height = fs ? '100vh' : (DESK.H * scale + pad) + 'px';
   if (fs) { screen.style.marginLeft = Math.max(0, (availW - DESK.W * scale) / 2) + 'px'; screen.style.marginTop = Math.max(0, (availH - DESK.H * scale) / 2) + 'px'; } else { screen.style.marginLeft = ''; screen.style.marginTop = ''; }
 }
+/* a return after 30 minutes or more on a browser that holds progress: another person may have been here */
+function shareBanner() {
+  const has = Object.keys(STORE.scen || {}).some(k => STORE.scen[k] && (STORE.scen[k].S || STORE.scen[k].best));
+  const gap = STORE.lastSeen ? Date.now() - STORE.lastSeen : 0;
+  if (!has || gap < 30 * 60 * 1000) return;
+  const mins = Math.round(gap / 60000); const when = mins < 120 ? mins + ' minutes' : Math.round(mins / 60) + ' hours';
+  const keep = h('button', { type: 'button', text: 'Keep my progress' }); const fresh = h('button', { type: 'button', text: 'Start fresh' });
+  const bar = h('div', { class: 'sharebar', role: 'region', 'aria-label': 'Saved progress' }, h('span', { text: 'This browser last showed the range ' + when + ' ago and holds saved progress. On a shared computer it may be someone else\u2019s.' }), keep, fresh);
+  keep.addEventListener('click', () => bar.remove());
+  fresh.addEventListener('click', () => { STORE = { sel: 'recruit', scen: {}, coach: STORE.coach }; storage.set(STORE_KEY, STORE); location.reload(); });
+  document.body.insertBefore(bar, document.body.firstChild);
+}
 /* ---------- boot the page ---------- */
 function initPage() {
   initTheme();
@@ -5097,6 +5153,7 @@ function initPage() {
   window.addEventListener('resize', fitScreen);
   if (window.ResizeObserver) new ResizeObserver(fitScreen).observe($('#machine'));
   fitScreen();
+  shareBanner();
   loadScenario(STORE.sel || 'recruit');
   setTimeout(fitScreen, 50);
 }

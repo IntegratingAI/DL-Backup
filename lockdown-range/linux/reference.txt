@@ -57,7 +57,8 @@ the page touches your own computer. Progress is saved in the browser; "Reset
 lab" restores the scenario's original state and keeps the best score (like
 reverting a VM snapshot).
 
-Levels: 1 Recruit lists every check as a to-do with hints; 2 Operator shows
+Levels: 1 Recruit lists every check as a to-do with hints (two steps: the
+area and the principle, then the command); 2 Operator shows
 only the remaining count per hardening area; 3 Captain shows nothing but the
 checks you have passed.
 
@@ -224,6 +225,15 @@ Investigation
       (sudo ls -la /home/*)
 
 Checks (100 points)
+  [5]  Audit daemon running with a rule that watches /etc/sudoers (auditd)
+                                                              (Audit logging)
+       fix: sudo apt install -y auditd
+            printf "%s\n" "-w /etc/sudoers -p wa -k sudoers" | \
+                sudo tee /etc/audit/rules.d/50-sudoers.rules
+            sudo augenrules --load
+            sudo systemctl enable --now auditd
+       why: logs are how you prove what changed; a watch on /etc/sudoers
+            records every edit to who can become root.
   [6]  Unauthorized user dax removed                      (Account management)
        fix: sudo userdel -r dax
   [6]  keanu removed from the sudo group (not an authorized administrator)
@@ -252,7 +262,7 @@ Checks (100 points)
        fix: sudo nano /etc/pam.d/common-password  ->
             password requisite pam_pwquality.so retry=3 minlen=12
             (libpam-pwquality is already installed on this machine)
-  [5]  Password history enforced (remember=5 or more)     (Account management)
+  [4]  Password history enforced (remember=5 or more)     (Account management)
        fix: same file: append  remember=5  to the pam_unix.so line
             (a pam_pwhistory.so remember=5 line also counts)
        why: stops toggling between two passwords forever.
@@ -269,14 +279,14 @@ Checks (100 points)
             current Ubuntu and Mint releases do not ship it, so a pam_tally2
             line does not count.)
        why: lockout turns a million guesses into five.
-  [4]  Empty passwords rejected at sign-in (nullok removed from common-auth)
+  [3]  Empty passwords rejected at sign-in (nullok removed from common-auth)
                                                           (Account management)
        fix: sudo sed -i -E 's/[[:space:]]+nullok(_secure)?([[:space:]]|$)/\2/' \
                 /etc/pam.d/common-auth
        why: nullok turns a blank /etc/shadow field into a working login.
   [6]  Firewall (ufw) enabled                           (Secure configuration)
        fix: sudo ufw enable             (nothing needs allowing here)
-  [5]  Automatic security updates enabled                           (Patching)
+  [4]  Automatic security updates enabled                           (Patching)
        fix: Update Manager (shield icon, bottom right) > Edit > Preferences >
             Automation > Apply updates automatically
             (or: sudo mintupdate-automation upgrade enable; this enables
@@ -284,14 +294,14 @@ Checks (100 points)
             flag file the job checks. unattended-upgrades counts only when
             50unattended-upgrades also lists "Ubuntu:noble-security": on
             Mint its ${distro_id} entries expand to Linuxmint:zena-security)
-  [5]  Prohibited media files removed from user home directories
+  [4]  Prohibited media files removed from user home directories
                                                              (Data protection)
        fix: sudo find /home -type f \( -iname "*.mp3" -o -iname "*.mp4" \
                 -o -iname "*.m4a" \) -delete      (there is an .m4a file!)
   [6]  Unauthorized software minerd-x removed (cryptocurrency miner)
                                                             (Malware defenses)
        fix: sudo apt purge -y minerd-x
-  [5]  Telnet server removed (nothing listening on port 23)
+  [4]  Telnet server removed (nothing listening on port 23)
                                                         (Secure configuration)
        fix: sudo apt purge -y telnetd inetutils-telnetd
             (found with: sudo ss -tulpn, then dpkg -l | grep -i telnet.
@@ -373,6 +383,13 @@ Investigation
       (find / -perm -4000 -type f 2>/dev/null)
 
 Checks (100 points)
+  [5]  System journal kept across reboots (journald Storage=persistent)
+                                                              (Audit logging)
+       fix: sudo sed -i 's/^Storage=.*/Storage=persistent/' \
+                /etc/systemd/journald.conf && \
+            sudo systemctl restart systemd-journald
+       why: the intern set Storage=volatile; a journal in RAM vanishes at the
+            first reboot, and the evidence goes with it.
   [5]  Unauthorized user vex removed                      (Account management)
        fix: sudo userdel -r vex
   [6]  Unauthorized sudo rule for bkup removed (/etc/sudoers.d)
@@ -412,7 +429,7 @@ Checks (100 points)
             sudo ufw allow 80/tcp
             sudo ufw enable
        why: both allows first, or the SSH and web availability checks fail.
-  [5]  IPv4 forwarding disabled at boot (sysctl files) (Secure configuration)
+  [4]  IPv4 forwarding disabled at boot (sysctl files) (Secure configuration)
        fix: sudo sed -i 's/^net.ipv4.ip_forward=1/net.ipv4.ip_forward=0/' \
                 /etc/sysctl.conf && sudo sysctl -p
             (or: put net.ipv4.ip_forward=0 in /etc/sysctl.d/99-hardening.conf,
@@ -427,19 +444,19 @@ Checks (100 points)
             sudo rm -f /tmp/.sysupd && sudo pkill sysupd
        why: rc.local runs as root at boot; the 4444 listener returns after
             every reboot until the line is gone.
-  [5]  Planted root cron job removed                        (Malware defenses)
+  [4]  Planted root cron job removed                        (Malware defenses)
        fix: sudo crontab -r      (or: sudo crontab -e and delete the line)
        why: cron restarts the backdoor every 10 minutes.
   [5]  /etc/shadow permissions restored (640 root:shadow)     (Access control)
        fix: sudo chmod 640 /etc/shadow && sudo chown root:shadow /etc/shadow
        why: world-readable hashes can be cracked offline by any user.
-  [4]  Untrusted third-party repository removed                     (Patching)
+  [3]  Untrusted third-party repository removed                     (Patching)
        fix: sudo rm /etc/apt/sources.list.d/torrentbolt.list && sudo apt update
             (ubuntu.sources next to it is the official archive: keep it)
        why: a [trusted=yes] repository can push any package onto the box.
-  [4]  System updates installed (apt upgrade)                       (Patching)
+  [3]  System updates installed (apt upgrade)                       (Patching)
        fix: sudo apt update && sudo apt upgrade -y
-  [4]  Unauthorized software netprobe-ng removed (network scanner)
+  [3]  Unauthorized software netprobe-ng removed (network scanner)
                                                         (Secure configuration)
        fix: sudo apt purge -y netprobe-ng
   [5]  Investigation 1 answered                4444            (Investigation)
