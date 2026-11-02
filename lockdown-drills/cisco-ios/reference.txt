@@ -37,9 +37,9 @@
   RtrA(config)# enable secret Str0ng-Enable-2026!
   WHY: enable secret stores a hash. enable password stores plaintext or Type 7,
        which reverses in seconds, so enable secret is the one to use.
-  NOTE: On older IOS releases enable secret stores an MD5 (Type 5) hash. Where
-        the release supports it, enable algorithm-type scrypt secret stores a
-        Type 9 hash, which the Cisco hardening guide recommends.
+  NOTE: Plain enable secret yields an MD5 (Type 5) hash on older IOS releases.
+        Where supported, enable algorithm-type scrypt secret stores a Type 9
+        hash, which the Cisco hardening guide recommends.
 
 [B-02] Console and VTY lines: require login, time out idle sessions
   AREA: Access control
@@ -54,10 +54,10 @@
   RtrA(config-line)# login
   RtrA(config-line)# exec-timeout 5 0
   RtrA(config-line)# exit
-  WHY: login is what makes a line ask for its password; a line without it lets
-       anyone straight in. exec-timeout 5 0 logs out an unattended console after
-       five idle minutes. logging synchronous keeps log lines from mangling what
-       you type.
+  WHY: login makes each line ask for its password; a line without it lets
+       anyone straight in. exec-timeout 5 0 drops an unattended session after
+       five idle minutes. logging synchronous keeps log output separate from
+       what you type.
   NOTE: Watchman replaces line passwords with local usernames and SSH. Switches
         with 16 VTY lines use line vty 0 15. The passwords here are
         placeholders; give every line and secret its own unique passphrase.
@@ -75,13 +75,13 @@
   AREA: Secure configuration
   RtrA(config)# banner motd #Unauthorized access is prohibited and monitored.#
   RtrA(config)# banner login #Authorized users only. Activity is logged.#
-  WHY: A legal notice that access is restricted and monitored. Have the wording
-       reviewed by legal counsel, and leave out the device name, model,
-       software, and owner. Skip Welcome, which reads as an invitation.
-  NOTE: Pick a delimiter character that stays out of the text itself. On the
-        console the MOTD shows first, then the login banner, then the login
-        prompt. Over SSH version 2 the login banner appears before
-        authentication, so it carries the legal notice too.
+  WHY: The banner tells anyone connecting that access is restricted and
+       monitored, with wording legal counsel has reviewed. Leave out device
+       name, model, software, and owner; Welcome reads as an invitation.
+  NOTE: The delimiter ends the banner at its next appearance, so choose one
+        the text lacks. On the console the MOTD shows first, then the login
+        banner, then the login prompt. Over SSH version 2 the login banner
+        shows before authentication, so it carries the notice too.
 
 [B-05] Save the config
   AREA: Secure configuration
@@ -187,11 +187,12 @@
   SwA(config-if)# end
   SwA# show vlan brief
   SwA# show interfaces trunk
-  WHY: User VLANs use numbers above 1, which keeps people apart from the default
-       VLAN every unconfigured port joins. Double tagging works when an
-       attacker's access VLAN equals the trunk's native VLAN; VLAN 1 is only the
-       default case, so a host-free native VLAN closes it. DTP lets an attacker
-       negotiate a trunk; switchport nonegotiate turns it off.
+  WHY: User VLANs above 1 keep hosts off the default VLAN unconfigured ports
+       join. Double tagging works when an attacker's access VLAN equals the
+       trunk's native VLAN; VLAN 1 is only the default case, so a host-free
+       native VLAN closes it. DTP lets an attacker negotiate a trunk;
+       switchport nonegotiate turns it off, and show interfaces trunk
+       confirms.
   NOTE: The router end uses encapsulation dot1Q 99 native (Hunter A-08), so both
         ends agree on native 99. Between switches a mismatch logs
         %CDP-4-NATIVE_VLAN_MISMATCH; toward the router, a mismatch that lands on
@@ -238,11 +239,10 @@
   SwA(config-if)# end
   SwA# show ip interface brief
   SwA# show vlan brief
-  WHY: A VLAN is a layer-2 broadcast domain: a number and a name in the VLAN
-       database that ports join. An SVI (interface vlan 20) is a layer-3
-       interface inside that VLAN that gives the switch its own management
-       address. ip default-gateway lets the layer-2 switch reply to hosts on
-       other subnets, such as Teachers at Site B.
+  WHY: A VLAN is a layer-2 broadcast domain that ports join. An SVI (interface
+       vlan 20) is the switch's layer-3 interface inside it, holding the
+       switch's own management address; ip default-gateway lets the layer-2
+       switch reply to hosts on other subnets, such as Teachers at Site B.
   NOTE: Vlan20 shows down/down while VLAN 20 is missing from the VLAN database,
         then up/down until at least one port in VLAN 20 (access, or a trunk that
         allows it) is up and forwarding in STP: autostate. Larger networks give
@@ -276,18 +276,16 @@
   SwA(config)# line vty 0 15
   SwA(config-line)# access-class 20 in
   SwA(config-line)# exit
-  WHY: Even with SSH, anyone on any subnet could try to log in. access-class
-       limits who reaches the prompt at all: here, the Teachers subnets at Site
-       A and Site B. A standard ACL matches the source address, which is all a
-       VTY filter needs, and the wildcard mask is the inverse of the subnet
-       mask.
+  WHY: SSH encrypts; access-class decides who reaches the prompt: the Teachers
+       subnets at Site A and Site B. A standard ACL matches the source
+       address, which is all a VTY filter needs, and the wildcard mask is the
+       inverse of the subnet mask. Confirm: SSH from a Students PC ends with %
+       Connection refused by remote host.
   NOTE: Apply it to every VTY range the device lists (show running-config |
-        section line vty). A 2960 lists line vty 0 4 and line vty 5 15;
-        line vty 0 15 configures both at once. A 2911 lists line vty 0 4 by
-        default, both in Packet Tracer and on real IOS 15; line vty 5 15 appears
-        once someone creates it, so the example adds that range with the ACL
-        already applied. SSH from a Students PC then ends with % Connection
-        refused by remote host.
+        section line vty). A 2960 has line vty 0 4 and line vty 5 15; line vty
+        0 15 covers both. A 2911 lists line vty 0 4 by default, in Packet
+        Tracer and on real IOS 15; line vty 5 15 appears once someone creates
+        it, so the example adds that range with the ACL already applied.
 
 [A-02] Extended ACL on an interface: allow only what the scenario needs
   AREA: Secure configuration
@@ -303,9 +301,9 @@
   RtrA(config-if)# ip access-group OUTSIDE-IN in
   RtrA(config-if)# exit
   RtrA# show access-lists
-  WHY: Default deny at the edge. The implicit deny exists anyway, but an
-       explicit deny with log gives visibility. Direction is relative to the
-       router: in on G0/1 means traffic arriving from the ISP.
+  WHY: In on G0/1 means arriving from the ISP; the ACL drops that unless a
+       line permits it, and deny log records what the implicit deny hides.
+       Confirm: show access-lists counters.
   NOTE: 203.0.113.2 is RtrA's ISP-facing address; static NAT port forwarding (ip
         nat inside source static tcp <server> 443 203.0.113.2 443, and the same
         for 80) carries web traffic to the server. An inbound ACL on the outside
@@ -407,12 +405,11 @@
   RtrA# show ip route
   RtrA# ping 10.2.20.1 source 10.1.20.1
   RtrA# show users
-  WHY: The common config faults are nearly always visible in these outputs:
-       plaintext passwords, VTY lines without login local or SSH, services still
-       on, unused ports up, VLAN 1 in use, a trunk on native VLAN 1 or missing a
-       VLAN, and a missing route. The ping to 10.2.20.1, the Site B Teachers
-       gateway, sourced from the Site A Teachers gateway, proves both sites
-       route to each other's Teachers subnet.
+  WHY: These show plaintext passwords, VTY lacking login local or SSH, open
+       services, unused ports up, VLAN 1 anywhere, a trunk on native VLAN 1 or
+       missing a VLAN, and missing routes. Confirm: ping 10.2.20.1, the Site B
+       Teachers gateway, sourced from Site A's Teachers gateway proves both
+       sites route to each other's Teachers subnet.
 
 [A-08] Router-on-a-stick with a native subinterface
   AREA: Secure configuration
@@ -431,15 +428,15 @@
   RtrA(config-if)# no shutdown
   RtrA(config-if)# end
   RtrA# show ip interface brief
-  WHY: One trunk carries Students, Teachers, and Principals to the router. Each
-       subinterface takes one tag and becomes that VLAN's gateway (.1), so the
+  WHY: One trunk carries Students, Teachers, and Principals to RtrA. Each
+       subinterface takes one tag and becomes that VLAN's .1 gateway, so the
        three VLANs route to each other through RtrA. encapsulation dot1Q 99
-       native matches the switch's native VLAN 99, so untagged frames land on a
-       subinterface that carries no IP and no hosts.
-  NOTE: Subinterfaces follow the physical port, so no shutdown goes on G0/0
-        itself, and G0/0 stays without an IP address. The switch end is the
-        trunk from Watchman I-05. On an ISR 4000 running IOS XE the port is
-        GigabitEthernet0/0/0; the subinterface commands are the same.
+       native matches the switch's native VLAN 99, so untagged frames land on
+       a subinterface with no IP and no hosts.
+  NOTE: Subinterfaces follow the physical port: no shutdown goes on G0/0
+        itself, which stays without an IP address. The switch end is the trunk
+        from Watchman I-05. On an ISR 4000 (IOS XE) the port is
+        GigabitEthernet0/0/0; subinterface commands match.
 
 [A-09] Host route to 8.8.8.8, shared through OSPF (concept)
   AREA: Secure configuration
