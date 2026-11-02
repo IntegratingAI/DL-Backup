@@ -7,7 +7,7 @@
  read it, explain it. Item IDs match the Lockdown Drills trainer for this OS.
  Unofficial practice; not affiliated with or endorsed by Linux Mint or Canonical.
 
- HARDENING AREAS (CIS Critical Security Controls v8)
+ HARDENING AREAS (CIS Critical Security Controls v8.1)
    Account management ........ CIS Control 5
    Access control ............ CIS Control 6
    Secure configuration ...... CIS Control 4 (software inventory: Control 2)
@@ -956,7 +956,7 @@
     https://manpages.ubuntu.com/manpages/noble/man8/pam_faillock.8.html
   sshd socket-based activation (Ubuntu)
     https://discourse.ubuntu.com/t/sshd-now-uses-socket-based-activation-ubuntu-22-10-and-later/30189
-  CIS Critical Security Controls v8
+  CIS Critical Security Controls v8.1
     https://www.cisecurity.org/controls/v8
   CIS Benchmarks
     https://www.cisecurity.org/cis-benchmarks

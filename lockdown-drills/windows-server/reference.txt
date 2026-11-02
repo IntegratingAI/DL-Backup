@@ -12,7 +12,7 @@
  brackets, such as <name>, with a real one. GUI: lines walk through a window,
  and indented lines show values to set or read.
 
- HARDENING AREAS (CIS Critical Security Controls v8)
+ HARDENING AREAS (CIS Critical Security Controls v8.1)
    Account management ........ CIS Control 5
    Access control ............ CIS Control 6
    Secure configuration ...... CIS Control 4 (software inventory: Control 2)
@@ -1192,7 +1192,7 @@
     https://learn.microsoft.com/en-us/defender-endpoint/use-powershell-cmdlets-microsoft-defender-antivirus
   Get started with OpenSSH Server for Windows
     https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse
-  CIS Critical Security Controls v8
+  CIS Critical Security Controls v8.1
     https://www.cisecurity.org/controls/v8
   CIS Benchmarks
     https://www.cisecurity.org/cis-benchmarks

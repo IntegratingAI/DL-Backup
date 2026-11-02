@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-IuhPTsmsSzY9BRr+RPsdkVAefuX+hF2Fy9ECOjJs6xY='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-HumnIUM+RrNnUctC/VdzbY+tspeINER4CUA62dXVic8='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Cisco IOS baseline hardening in three levels: beginner, intermediate, and advanced. Comes with a command reference that explains why each step matters.">
 <link rel="canonical" href="https://freeapp4that.store/lockdown-drills/cisco-ios/">
@@ -151,6 +151,7 @@ p{margin:0 0 10px;max-width:68ch}
 @media (max-width:1100px){ .wrap{grid-template-columns:1fr} aside.report{display:none;border-left:0;border-top:1px solid var(--line)} body[data-mode="report"] aside.report{display:block} body[data-mode="report"] main{display:none} .modes .rep{display:inline-block} }
 @media (min-width:1101px){ .modes .rep{display:none} }
 @media (max-width:760px){ header.top{position:static} .learn{grid-template-columns:1fr} .list{flex-direction:row;overflow-x:auto;padding-bottom:6px;gap:6px} .list button{grid-template-columns:auto auto;white-space:nowrap;border:1px solid var(--line)} .list button.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)} .list button .ttl{display:none} .levels{margin-left:0} .score{margin-left:auto} }
+.picked{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:.92rem}.missed{display:grid;gap:6px;margin:10px 0}.miss{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:.9rem;text-align:left}.small{font-size:.85rem;color:var(--muted)}.rr .g.due{color:var(--muted)}.report .ex{margin-top:10px;font-size:.85rem}.report .ex dt{font-family:var(--mono);color:var(--muted);margin-top:6px}.report .ex dd{margin:0}
 </style>
 </head>
 <body data-mode="learn">
@@ -186,7 +187,7 @@ function learnWhy(it){return it.why+(it.learn?' Learn it: '+it.learn.label+'.':'
 const allItems=APP.levels.flatMap((L,li)=>L.items.map(it=>Object.assign({li},it)));
 const byId=Object.fromEntries(allItems.map(i=>[i.id,i]));
 const maxScore=allItems.reduce((a,i)=>a+LEVEL_PTS[i.li],0);
-function defaults(){return {learned:{},explain:{},drilled:{},best:{},run:{done:{},notes:{},elapsed:0,mins:20,lower:true},level:0,mode:'learn',sel:{},theme:'auto'};}
+function defaults(){return {learned:{},explain:{},drilled:{},days:{},best:{},run:{done:{},notes:{},undo:{},verify:{},elapsed:0,mins:20,lower:true},level:0,mode:'learn',sel:{},theme:'auto'};}
 let S=defaults();
 try{const j=localStorage.getItem(KEY);if(j){const o=JSON.parse(j);S=Object.assign(defaults(),o);S.run=Object.assign(defaults().run,o.run||{});}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -195,7 +196,11 @@ function splitCmd(c){const m=c.match(PRE);return m?[m[0].trim(),c.slice(m[0].len
 function stripped(c){return splitCmd(c)[1];}
 function firstCmd(it){return (it.cmds||[]).find(c=>!/^GUI:/.test(c)&&PRE.test(c))||(it.cmds||[])[0]||'';}
 function keyCmd(it){if(it.t){const k=norm(it.t);return (it.cmds||[]).find(c=>norm(stripped(c))===k)||it.t;}return firstCmd(it);}
-function status(it){const l=!!S.learned[it.id],d=(S.drilled[it.id]||0)>0;return l&&d?'mastered':l?'learned':d?'drilled':'none';}
+function today(){const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();}
+function days(it){const a=S.days&&S.days[it.id];if(a&&a.length)return a;return (S.drilled[it.id]||0)>0?[0]:[];}
+function due(it){const a=days(it);return a.length===1&&a[0]!==today();}
+/* mastered: explained, and answered right on two different days */
+function status(it){const l=!!S.learned[it.id],n=days(it).length;return l&&n>=2?'mastered':l?'learned':n?'drilled':'none';}
 function itemScore(it){const st=status(it);return st==='mastered'?LEVEL_PTS[it.li]:st==='none'?0:1;}
 function score(){return allItems.reduce((a,i)=>a+itemScore(i),0);}
 function badge(li){const L=APP.levels[li];const learned=L.items.filter(i=>S.learned[i.id]).length;const best=S.best[li]||0;return {learned,total:L.items.length,best,earned:best>=80&&learned>=Math.ceil(L.items.length*.8)};}
@@ -240,14 +245,17 @@ let Q=null;
 /* distract: n wrong options from other items. it.ex lists items whose key command also fits this item's title (and the reverse), so neither shows up as a wrong option for the other. */
 function distract(it,fn,n){const own=fn(it);return shuffle(allItems.filter(o=>o.id!==it.id&&!(it.ex||[]).includes(o.id)&&!(o.ex||[]).includes(it.id)).map(fn)).filter((v,i,a)=>v&&v!==own&&a.indexOf(v)===i).slice(0,n);}
 function makeQuiz(li){
-  const items=shuffle(APP.levels[li].items.slice());const qs=[];
+  const L=APP.levels[li];const rank=it=>due(it)?0:days(it).length?2:1;
+  const items=shuffle(L.items.slice()).sort((a,b)=>rank(a)-rank(b));
+  const pool=allItems.filter(o=>o.li<=li);const qs=[];
+  const distract=(it,fn,n)=>{const own=fn(it);const seen=new Set([own]);return shuffle(pool.filter(o=>o.id!==it.id&&!(it.ex||[]).includes(o.id)&&!(o.ex||[]).includes(it.id))).filter(o=>{const v=fn(o);if(!v||seen.has(v))return false;seen.add(v);return true;}).slice(0,n).map(o=>({t:fn(o),ok:false,src:o.id}));};
   const cmdOf=it=>stripped(keyCmd(it));
-  items.slice(0,4).forEach(it=>{const c=cmdOf(it);const opts=shuffle([{t:c,ok:true},...distract(it,cmdOf,3).map(t=>({t,ok:false}))]);qs.push({type:'which',item:it,prompt:'Which command does this?  '+it.title,opts,cmd:true});});
-  items.slice(4,6).forEach(it=>{const opts=shuffle([{t:it.title,ok:true},...distract(it,o=>o.title,3).map(t=>({t,ok:false}))]);qs.push({type:'what',item:it,prompt:'What does this command do?',block:[keyCmd(it)],opts});});
+  items.slice(0,4).forEach(it=>{const c=cmdOf(it);const opts=shuffle([{t:c,ok:true,src:it.id},...distract(it,cmdOf,3)]);qs.push({type:'which',item:it,prompt:'Which command does this?  '+it.title,opts,cmd:true});});
+  items.slice(4,6).forEach(it=>{const opts=shuffle([{t:it.title,ok:true,src:it.id},...distract(it,o=>o.title,3)]);qs.push({type:'what',item:it,prompt:'What does this command do?',block:[firstCmd(it)],opts});});
   const typed=items.slice(6).concat(items.slice(0,4),items.slice(4,6)).filter(i=>i.t).slice(0,2);typed.forEach(it=>qs.push({type:'type',item:it,prompt:'Type the command: '+(it.task||it.title)}));
   const sp=shuffle((APP.spot||[]).filter(s=>(s.lvl==null?0:s.lvl)<=li));if(sp.length)qs.push(Object.assign({type:'spot'},sp[0]));
   const jd=shuffle((APP.judge||[]).filter(s=>(s.lvl==null?0:s.lvl)<=li));jd.slice(0,2).forEach(j=>qs.push(Object.assign({type:'judge'},j)));
-  return {li,qs:shuffle(qs).slice(0,10),i:0,correct:0,done:false,fb:null};
+  return {li,qs:shuffle(qs).slice(0,10),i:0,correct:0,done:false,fb:null,res:[]};
 }
 function renderDrill(){
   const L=APP.levels[S.level];
@@ -257,34 +265,46 @@ function renderDrill(){
   else if(q.type==='type'){body='<input class="typein" data-type="1" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type it here" '+(Q.fb?'disabled value="'+esc(Q.fb.given)+'"':'')+'>'+(Q.fb?'':'<div class="nav"><button class="btn primary" data-act="check">Check</button><button class="btn" data-act="skip">Show me</button></div>');}
   else if(q.type==='spot'){body='<p>'+esc(q.ask||'Tap the line that is the finding.')+'</p><div class="opts">'+q.lines.map((l,i)=>'<button data-opt="'+i+'" class="cmd '+(Q.fb?(i===q.finding?'ok':(Q.fb.pick===i?'bad':'')):'')+'" '+(Q.fb?'disabled':'')+'>'+esc(l)+'</button>').join('')+'</div>';}
   else if(q.type==='judge'){body='<div class="brief"><b>Scenario brief says:</b> '+esc(q.brief)+'</div><p><b>You do this:</b> '+esc(q.action)+'</p><div class="opts">'+['fix','breaks','check'].map((k,i)=>'<button data-opt="'+i+'" class="'+(Q.fb?(k===q.answer?'ok':(Q.fb.pick===i?'bad':'')):'')+'" '+(Q.fb?'disabled':'')+'>'+({fix:'Fix: do it',breaks:'Do not: it breaks a requirement',check:'Check the brief or preserve evidence first'})[k]+'</button>').join('')+'</div>';}
-  const fb=Q.fb?'<div class="fb '+(Q.fb.ok?'ok':'bad')+'" aria-live="polite"><b>'+(Q.fb.ok?'Right.':'Not this time.')+'</b> '+esc(Q.fb.text)+'</div><button class="btn primary" data-act="next">'+(Q.i===Q.qs.length-1?'See results':'Next question')+'</button>':'';
+  const fb=Q.fb?'<div class="fb '+(Q.fb.ok?'ok':'bad')+'" aria-live="polite"><b>'+(Q.fb.ok?'Right.':'Not this time.')+'</b> '+esc(Q.fb.text)+(Q.fb.chosen?'<div class="picked">'+esc(Q.fb.chosen)+'</div>':'')+'</div><button class="btn primary" data-act="next">'+(Q.i===Q.qs.length-1?'See results':'Next question')+'</button>':'';
   return '<div class="q"><div class="count">Question '+(Q.i+1)+' of '+Q.qs.length+' · '+Q.correct+' correct</div><h2>'+esc(q.prompt||(q.type==='spot'?'Spot the finding':'Fix or break?'))+'</h2>'+body+fb+'</div>';
 }
+function pickWhy(q,pick){
+  if(q.type==='which'||q.type==='what'){const o=q.opts[pick];const s=o&&o.src&&byId[o.src];if(!s)return '';return q.type==='which'?'What you picked, '+stripped(firstCmd(s))+', is "'+s.title+'": '+s.why:'What you picked, "'+s.title+'", is what '+stripped(firstCmd(s))+' does.';}
+  if(q.type==='spot')return 'Line '+(pick+1)+' is ordinary output here. The finding is line '+(q.finding+1)+'.';
+  if(q.type==='judge')return ({fix:'You called it a fix.',breaks:'You said it breaks a requirement.',check:'You chose to check first.'})[['fix','breaks','check'][pick]]||'';
+  return '';
+}
 function answer(pick,given){
-  const q=Q.qs[Q.i];let ok=false,text='';
-  if(q.type==='which'||q.type==='what'){ok=q.opts[pick].ok;text=learnWhy(q.item);}
+  const q=Q.qs[Q.i];let ok=false,text='';const why=q.item?learnWhy(q.item):'';
+  if(q.type==='which'||q.type==='what'){ok=q.opts[pick].ok;text=why;}
   else if(q.type==='spot'){ok=pick===q.finding;text=q.why;}
   else if(q.type==='judge'){ok=['fix','breaks','check'][pick]===q.answer;text=q.why;}
-  else if(q.type==='type'){const g=norm(given);const acc=[q.item.t].concat(q.item.ta||[]).map(norm);ok=acc.includes(g);text=(ok?'':'Answer: '+q.item.t+'. ')+learnWhy(q.item);}
-  if(ok){Q.correct++;if(q.item){S.drilled[q.item.id]=(S.drilled[q.item.id]||0)+1;save();}}
-  Q.fb={ok,text,pick,given:given||''};
+  else if(q.type==='type'){const g=norm(given);const acc=[q.item.t].concat(q.item.ta||[]).map(norm);ok=acc.includes(g);text=(ok?'':'Answer: '+q.item.t+'. ')+why;}
+  const chosen=ok?'':pickWhy(q,pick);
+  if(ok&&q.item){const id=q.item.id,t=today();const a=S.days[id]=S.days[id]||((S.drilled[id]||0)>0?[0]:[]);if(!a.includes(t))a.push(t);S.drilled[id]=(S.drilled[id]||0)+1;}
+  if(ok)Q.correct++;Q.res.push({q,ok,pick});save();
+  Q.fb={ok,text,chosen,pick,given:given||''};
 }
 function finishQuiz(){const pct=Math.round(100*Q.correct/Q.qs.length);S.best[Q.li]=Math.max(S.best[Q.li]||0,pct);save();Q.finished=true;const b=badge(Q.li);const L=APP.levels[Q.li];
-  return '<div class="result"><div class="big">'+pct+'%</div><p>'+Q.correct+' of '+Q.qs.length+' right. '+(b.earned?'The '+esc(L.name)+' badge is yours: '+L.badge:(pct>=80?'Score is there; learn '+(Math.ceil(L.items.length*.8)-b.learned)+' more items for the badge.':'Reread the misses in Learn and run it again.'))+'</p><div class="nav"><button class="btn primary" data-act="startq">Run it again</button><button class="btn" data-mode-go="learn">Back to Learn</button></div></div>';}
+  const missed=Q.res.filter(r=>!r.ok);const mastered=L.items.filter(i=>status(i)==='mastered').length;const dueN=L.items.filter(due).length;
+  const list=missed.length?'<h3>Worth another look</h3><div class="missed">'+missed.map(r=>{const it=r.q.item;const label=it?it.id+' · '+it.title:(r.q.type==='spot'?'Spot the finding':'Fix or break: '+r.q.action);return '<div class="miss"><span>'+esc(label)+'</span>'+(it?'<button class="btn small" data-learnjump="'+esc(it.id)+'">Open in Learn</button>':'')+'</div>';}).join('')+'</div>':'<p>Every question right.</p>';
+  return '<div class="result"><div class="big">'+pct+'%</div><p>'+Q.correct+' of '+Q.qs.length+' right. '+(b.earned?'The '+esc(L.name)+' badge is yours: '+L.badge:(pct>=80?'The drill is there; learn '+(Math.ceil(L.items.length*.8)-b.learned)+' more items for the badge.':'Open each miss in Learn, then run it again.'))+'</p>'
+   +'<p class="small">'+mastered+' of '+L.items.length+' items mastered: right on two different days.'+(dueN?' '+dueN+' due for a second day.':'')+'</p>'+list
+   +'<div class="nav"><button class="btn primary" data-act="startq">Run it again</button><button class="btn" data-mode-go="learn">Back to Learn</button></div></div>';}
 /* run */
 let tick=null;const OPEN=new Set();
 function fmt(s){const m=Math.floor(s/60),x=s%60;return (m<10?'0':'')+m+':'+(x<10?'0':'')+x;}
 function renderRun(){
   const R=S.run;const items=allItems.filter(i=>i.li===S.level||(R.lower&&i.li<S.level));
   const remain=Math.max(0,R.mins*60-R.elapsed);
-  const rows=items.map(i=>'<div class="chk '+(R.done[i.id]!=null?'done':'')+'"><input type="checkbox" data-done="'+i.id+'" '+(R.done[i.id]!=null?'checked':'')+' aria-label="Done: '+esc(i.title)+'"><div><div class="t"><span class="id">'+esc(i.id)+'</span><span>'+esc(i.title)+'</span>'+(R.done[i.id]!=null?'<span class="stamp">'+fmt(R.done[i.id])+'</span>':'')+'<button class="btn small" data-show="'+i.id+'">Commands</button></div><div id="show-'+i.id+'"'+(OPEN.has(i.id)?'':' hidden')+'>'+termBlock(i.cmds,true)+'</div><input class="note" data-note="'+i.id+'" placeholder="Change log: what you changed and why" value="'+esc(R.notes[i.id]||'')+'"></div></div>').join('');
-  return '<h2>Run the checklist on your VM</h2><p class="lead">Set the clock, work the list top to bottom, tick each item when it is actually done on the machine, and write a one-line change log. The log is what lets you undo a change that broke something in thirty seconds.</p>'
+  const rows=items.map(i=>'<div class="chk '+(R.done[i.id]!=null?'done':'')+'"><input type="checkbox" data-done="'+i.id+'" '+(R.done[i.id]!=null?'checked':'')+' aria-label="Done: '+esc(i.title)+'"><div><div class="t"><span class="id">'+esc(i.id)+'</span><span>'+esc(i.title)+'</span>'+(R.done[i.id]!=null?'<span class="stamp">'+fmt(R.done[i.id])+'</span>':'')+'<button class="btn small" data-show="'+i.id+'">Commands</button></div><div id="show-'+i.id+'"'+(OPEN.has(i.id)?'':' hidden')+'>'+termBlock(i.cmds,true)+'</div><input class="note" data-note="'+i.id+'" placeholder="Change: what you changed and why" value="'+esc(R.notes[i.id]||'')+'" aria-label="Change for '+esc(i.id)+'"><input class="note" data-undo="'+i.id+'" placeholder="Undo: how to put it back" value="'+esc(R.undo[i.id]||'')+'" aria-label="Undo for '+esc(i.id)+'"><input class="note" data-verify="'+i.id+'" placeholder="Verified with: the command or screen that proved it" value="'+esc(R.verify[i.id]||'')+'" aria-label="Verified with, for '+esc(i.id)+'"></div></div>').join('');
+  return '<h2>Run the checklist on your VM</h2><p class="lead">Set the clock, work the list top to bottom, tick each item once you have verified it on the machine, and write the change, how to undo it, and what you verified it with. The log is what lets you undo a change that broke something in thirty seconds.</p>'
    +'<div class="timer"><div class="clock" aria-live="off">'+fmt(remain)+'</div><select data-mins>'+[20,45,60,90,120].map(m=>'<option value="'+m+'" '+(m===R.mins?'selected':'')+'>'+m+' min</option>').join('')+'</select><button class="btn primary" data-act="timer">'+(tick?'Pause':'Start')+'</button><button class="btn" data-act="resetclock">Reset clock</button><label class="toggle"><input type="checkbox" data-lower '+(R.lower?'checked':'')+'> include lower levels</label></div>'
    +'<div class="nav" style="margin:0 0 10px"><button class="btn small" data-act="copylog">Copy change log</button><button class="btn small" data-act="dlog">Download change log</button><button class="btn small" data-act="clearrun">Clear this run</button></div>'
    +rows;
 }
-function changeLog(){const R=S.run;const lines=allItems.filter(i=>R.done[i.id]!=null||R.notes[i.id]).sort((a,b)=>(R.done[a.id]??1e9)-(R.done[b.id]??1e9)).map(i=>'['+(R.done[i.id]!=null?fmt(R.done[i.id]):'--:--')+'] '+i.id+' '+i.title+(R.notes[i.id]?' -- '+R.notes[i.id]:''));
-  return '# Change log - '+APP.os+' - '+new Date().toLocaleString()+'\n'+(lines.join('\n')||'(nothing logged yet)')+'\n';}
+function changeLog(){const R=S.run;const lines=allItems.filter(i=>R.done[i.id]!=null||R.notes[i.id]||R.undo[i.id]||R.verify[i.id]).sort((a,b)=>(R.done[a.id]??1e9)-(R.done[b.id]??1e9)).map(i=>'['+(R.done[i.id]!=null?fmt(R.done[i.id]):'--:--')+'] '+APP.os+' | '+i.id+' '+i.title+' | change: '+(R.notes[i.id]||'-')+' | undo: '+(R.undo[i.id]||'-')+' | verified: '+(R.verify[i.id]||'-'));
+  return '# Change log - '+APP.os+' - '+new Date().toLocaleString()+'\n# [time] machine | item | change | undo | verified\n'+(lines.join('\n')||'(nothing logged yet)')+'\n';}
 function startTimer(){if(tick)return;tick=setInterval(()=>{S.run.elapsed++;if(S.run.elapsed%5===0)save();const c=document.querySelector('.clock');if(c)c.textContent=fmt(Math.max(0,S.run.mins*60-S.run.elapsed));if(S.run.elapsed>=S.run.mins*60){stopTimer();render();}},1000);}
 function stopTimer(){clearInterval(tick);tick=null;save();}
 /* games */
@@ -302,10 +322,11 @@ function renderGames(){
   return tabs+'<div class="q"><div class="streak">streak '+G.streak+'</div><h2>Fix or break?</h2><div class="brief"><b>Scenario brief says:</b> '+esc(j.brief)+'</div><p><b>You do this:</b> '+esc(j.action)+'</p><div class="opts">'+['fix','breaks','check'].map((k,i)=>'<button data-jopt="'+k+'" class="'+(G.jfb?(k===j.answer?'ok':(G.jfb.pick===k?'bad':'')):'')+'" '+(G.jfb?'disabled':'')+'>'+({fix:'Fix: do it',breaks:'Do not: it breaks a requirement',check:'Check the brief or preserve evidence first'})[k]+'</button>').join('')+'</div>'+fb+'</div>';
 }
 /* report */
+function explainBlock(){const ex=allItems.filter(i=>(S.explain[i.id]||'').trim());if(!ex.length)return '';return '<details class="ex"><summary>Your explanations ('+ex.length+')</summary><dl>'+ex.map(i=>'<dt>'+esc(i.id)+' · '+esc(i.title)+'</dt><dd>'+esc(S.explain[i.id])+'</dd>').join('')+'</dl></details>';}
 function renderReport(){
   const lv=APP.levels.map((L,i)=>{const b=badge(i);return '<div class="lv"><div class="row"><span>'+(b.earned?L.badge+' ':'')+esc(L.name)+'</span><span class="mono">'+b.learned+'/'+b.total+' learned · best '+(b.best||0)+'%</span></div><div class="bar2 '+(b.earned?'earned':'')+'"><i style="width:'+Math.round(100*b.learned/b.total)+'%"></i></div></div>';}).join('');
-  const rows=allItems.map(i=>{const st=status(i);const g={mastered:'✓',learned:'◐',drilled:'◔',none:'·'}[st];return '<div class="rr '+st+'" data-rr="'+i.id+'"><span class="g">'+g+'</span><span class="id">'+esc(i.id)+'</span><span>'+esc(i.title)+'</span><span class="pt">'+itemScore(i)+'</span></div>';}).join('');
-  return '<h2>Progress report</h2>'+lv+'<p style="font-size:.8rem;color:var(--muted)">✓ learned and drilled · ◐ learned · ◔ drilled only</p>'+rows+'<div class="total"><span>Total</span><span>'+score()+' / '+maxScore+'</span></div>';
+  const rows=allItems.map(i=>{const st=status(i);const isDue=due(i)&&st!=='mastered';const g=isDue?'⟳':{mastered:'✓',learned:'◐',drilled:'◔',none:'·'}[st];return '<div class="rr '+st+'" data-rr="'+i.id+'"><span class="g'+(isDue?' due':'')+'" title="'+(isDue?'Due: answer it right on a second day':'')+'">'+g+'</span><span class="id">'+esc(i.id)+'</span><span>'+esc(i.title)+'</span><span class="pt">'+itemScore(i)+'</span></div>';}).join('');
+  return '<h2>Progress report</h2>'+lv+'<p style="font-size:.8rem;color:var(--muted)">✓ explained, and right on two different days · ◐ explained · ◔ right once · ⟳ due: right on a second day</p>'+rows+explainBlock()+'<div class="total"><span>Total</span><span>'+score()+' / '+maxScore+'</span></div>';
 }
 function renderFoot(){$('#foot').innerHTML=esc(APP.footer||'Training tool for virtual machines you own or are authorized to change. No scripts here on purpose: type it, read it, explain it, and write your own checklist.')+' <button data-act="reset">Reset my progress</button>';}
 function render(){
@@ -323,6 +344,7 @@ document.addEventListener('click',e=>{
   if(d.level!=null){S.level=+d.level;if(S.mode==='drill'&&Q&&Q.li!==S.level)Q=null;save();render();return;}
   if(d.mode){S.mode=d.mode;save();render();return;}
   if(d.modeGo){S.mode=d.modeGo;save();render();return;}
+  if(d.learnjump){const it=byId[d.learnjump];if(it){S.level=it.li;S.sel[it.li]=it.id;S.mode='learn';Q=null;save();render();}return;}
   if(d.sel){S.sel[S.level]=d.sel;save();render();return;}
   if(d.step){const L=APP.levels[S.level];const cur=S.sel[S.level]||L.items[0].id;const i=L.items.findIndex(x=>x.id===cur)+(+d.step);if(L.items[i]){S.sel[S.level]=L.items[i].id;save();render();}return;}
   if(d.act==='copy'){const term=b.closest('.term');const lines=[...term.querySelectorAll('.ln:not(.c)')].map(n=>n.textContent.replace(PRE,'')).filter(l=>l.trim()).join('\n');copyText(lines,b);return;}
@@ -333,7 +355,7 @@ document.addEventListener('click',e=>{
   if(d.act==='next'){if(Q.i===Q.qs.length-1){$('#view').innerHTML=finishQuiz();renderHeader();$('#report').innerHTML=renderReport();}else{Q.i++;Q.fb=null;render();}return;}
   if(d.act==='timer'){tick?stopTimer():startTimer();render();return;}
   if(d.act==='resetclock'){stopTimer();S.run.elapsed=0;save();render();return;}
-  if(d.act==='clearrun'){if(confirm('Clear all ticks, timestamps and notes for this run?')){stopTimer();S.run.done={};S.run.notes={};S.run.elapsed=0;save();render();}return;}
+  if(d.act==='clearrun'){if(confirm('Clear all ticks, timestamps and notes for this run?')){stopTimer();S.run.done={};S.run.notes={};S.run.undo={};S.run.verify={};S.run.elapsed=0;save();render();}return;}
   if(d.act==='copylog'){copyText(changeLog(),b);return;}
   if(d.act==='dlog'){const blob=new Blob([changeLog()],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='change-log-'+APP.key+'.txt';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);return;}
   if(d.show){const el=document.getElementById('show-'+d.show);if(el){el.hidden=!el.hidden;if(el.hidden)OPEN.delete(d.show);else OPEN.add(d.show);}return;}
@@ -348,13 +370,16 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('change',e=>{const d=e.target.dataset;
   if(d.learn){const was=status(byId[d.learn]);S.learned[d.learn]=e.target.checked;if(!e.target.checked)delete S.learned[d.learn];save();render();const now=status(byId[d.learn]);if(now==='mastered'&&was!=='mastered'){const r=document.querySelector('[data-rr="'+d.learn+'"]');if(r)r.classList.add('flip');}return;}
-  if(d.done){if(e.target.checked)S.run.done[d.done]=S.run.elapsed;else delete S.run.done[d.done];save();render();return;}
+  if(d.done){if(e.target.checked&&!(S.run.verify[d.done]||'').trim()){e.target.checked=false;const row=e.target.closest('.chk');const v=row&&row.querySelector('[data-verify]');if(v){v.placeholder='Verified with: fill this in first, then tick';v.focus();}return;}
+    if(e.target.checked)S.run.done[d.done]=S.run.elapsed;else delete S.run.done[d.done];save();render();return;}
   if(d.mins!=null){S.run.mins=+e.target.value;S.run.elapsed=0;save();render();return;}
   if(d.lower!=null){S.run.lower=e.target.checked;save();render();return;}
 });
 document.addEventListener('input',e=>{const d=e.target.dataset;
   if(d.explain){S.explain[d.explain]=e.target.value;save();return;}
   if(d.note){S.run.notes[d.note]=e.target.value;save();return;}
+  if(d.undo){S.run.undo[d.undo]=e.target.value;save();return;}
+  if(d.verify){S.run.verify[d.verify]=e.target.value;save();return;}
 });
 window.addEventListener('resize',()=>{if(S.mode==='report'&&window.matchMedia('(min-width:1101px)').matches){S.mode='learn';render();}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('typein')&&Q&&!Q.fb){answer(null,e.target.value);render();}});

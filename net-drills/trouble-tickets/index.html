@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-32t+rQhXTYmT0A66zrM3vLeLlJ02f1pkLz9uydYRKtk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vWastmdoUifHUy+i5ptp9FRK9hueqe2d10k/RhSswNY='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Study the complaint and real device output, then pick the root cause. Every ticket ends with the fix and the configuration habits that prevent it.">
 <link rel="canonical" href="https://freeapp4that.store/net-drills/trouble-tickets/">
@@ -100,6 +100,8 @@ fieldset.topics legend{font-size:14px;color:var(--muted);padding:0;margin-bottom
 .end h2{margin:0 0 6px;font:700 28px/1.1 var(--head)}
 .end ul{margin:8px 0 0;padding-left:20px}
 footer{margin-top:40px;font-size:13px;color:var(--muted)}
+.res .picked{margin:.5rem 0;padding:.5rem .7rem;border-left:3px solid currentColor;opacity:.92}
+.end .later{opacity:.85;font-size:.95em}
 </style>
 <style>a.jack{color:inherit;text-decoration:none}a.jack:hover,a.jack:focus-visible{color:var(--ink);text-decoration:underline;text-underline-offset:3px}</style>
 </head>
@@ -128,6 +130,7 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
   <div><dt>Best</dt><dd id="s-best">0</dd></div>
 </dl>
 
+<section class="ticket end review" id="review" hidden></section>
 <article class="ticket" id="ticket" aria-live="polite">
   <div class="thead"><span id="t-no"></span><span class="cat" id="t-cat"></span></div>
   <h2 id="t-title"></h2>
@@ -613,6 +616,171 @@ router ospf 1
   fix: 'On RtrA, and the same on RtrB so each site backs up the other:\nrouter ospf 1\nredistribute static subnets\nThen on RtrB, with its uplink still shut:\nshow ip route 8.8.8.8\n(expect Known via "ospf 1", distance 110, metric 20, type extern 2)' }
 ];
 
+/* One reason per wrong option (opts[1], opts[2], opts[3]) for every ticket. Each reason says what the chosen cause would look like
+   in the evidence, and what the evidence shows instead. */
+const OPTWHY = {
+  apipa: [
+    "A DNS failure leaves the laptop with a real address and a gateway, and only names fail. This laptop holds 169.254.87.14 and no gateway, so it never received an address at all.",
+    "There is no gateway to be wrong: the Default Gateway line is empty. A self-assigned 169.254 address never comes with one.",
+    "255.255.0.0 is the correct mask for the 169.254.0.0/16 link-local range. The mask is a symptom of APIPA, and the cause is the failed DHCP lease."
+  ],
+  gw: [
+    "255.255.255.0 matches the router's /24 on G0/0, and the local ping to .30 succeeds, so the mask is fine.",
+    "show ip interface brief lists G0/0 as up/up with 192.168.10.1, so the router's LAN side is alive.",
+    "A duplicate address would break local traffic too, and the ping to the printer at .30 replies cleanly."
+  ],
+  mask: [
+    "Any address inside the subnet can be the gateway, and .1 is a common choice. The rule here is that the gateway must sit inside PC3's subnet, and with a /26 it does not.",
+    "In 192.168.1.64/26 the broadcast is .127. The address .70 is an ordinary host address in that block.",
+    "R1 is directly connected to 192.168.1.0/24, so it already knows the way to PC3. The mismatch is on PC3's side, in its mask."
+  ],
+  admin: [
+    "A cabling fault shows down/down. The word administratively means the interface was shut down in the configuration.",
+    "192.168.20.1 is a sensible second-floor gateway, and a wrong address would never produce administratively down.",
+    "Both floors connect directly to R1, so it routes between them with no protocol. The interface is simply disabled."
+  ],
+  phys: [
+    "A shutdown command shows administratively down. This line shows plain down/down, so the port is enabled and sees no signal.",
+    "A duplicate address is a Layer 3 problem and leaves the link up/up. This link has no carrier at all.",
+    "VTY settings control remote logins to the router. They have no effect on whether a port detects a link."
+  ],
+  dns: [
+    "The ping to 8.8.8.8 leaves the LAN and comes back, so the gateway and routing work.",
+    "A site that blocks ping would time out after its name resolved. 'Could not find host' happens before any packet is sent.",
+    "An APIPA address could never reach 8.8.8.8. The successful internet ping rules it out."
+  ],
+  svi: [
+    "A Layer 2 switch forwards frames by MAC address and needs no routing protocol. Its own management address is the problem.",
+    "The PCs work, so their VLAN assignment is fine. The symptom is reaching the switch itself.",
+    "Switch ports work at Layer 2 and carry no IP addresses. The switch has one management address, on an SVI."
+  ],
+  dgw: [
+    "Access list 20 permits 10.2.20.0/24, and access-class applies only to VTY logins, so pings pass it by.",
+    "Hosts on other subnets send to their own gateway, never to the switch's MAC address. ARP handles the local subnet on its own.",
+    "transport input ssh is configured, and the Site A PC manages the switch fine. The problem is reaching it across subnets."
+  ],
+  mode: [
+    "IOS accepts mixed-case hostnames such as R1. The caret under hostname shows the command itself is unknown in this mode.",
+    "No ordering rule ties hostname to enable secret. Both are global configuration commands and work in any order.",
+    "A reload would change nothing. The prompt Router# shows privileged EXEC, where configuration commands are unknown."
+  ],
+  netaddr: [
+    "The mask fits a /24 LAN. The problem is the address itself: .0 is the network address in that block.",
+    "Private addresses are used on routers everywhere. 192.168.30.1 would be accepted at once.",
+    "IOS accepts addresses on interfaces in any state. The rejection is about the address being the network number."
+  ],
+  overlap: [
+    "In 192.168.10.64/26 the broadcast is .127. The address .65 is the first usable host address.",
+    "Routers accept any valid mask. The error names an overlap with G0/0, and says nothing about the mask.",
+    "Interface state plays no part here. The router refuses two interfaces in overlapping subnets whatever their state."
+  ],
+  refused: [
+    "A powered-off router gives no answer, and the PC would time out. 'Connection refused' is an answer from a live device.",
+    "A wrong password would reach a prompt and fail there. This session is refused before any prompt, because Telnet is no longer allowed.",
+    "A wrong gateway makes the session time out with no reply. The router replied, so the path is fine."
+  ],
+  nopw: [
+    "A transport input block says 'Connection refused'. This session opened, then the router closed it for lack of a password.",
+    "The enable secret guards privileged mode after login. The session died at the login step, before enable mattered.",
+    "An access-class ACL refuses the connection outright. This connection opened, which an ACL would have prevented."
+  ],
+  keys: [
+    "SSH never needs Telnet. Adding Telnet would only reopen a plaintext door.",
+    "Any username works for SSH. show ip ssh says SSH is disabled because no RSA keys exist.",
+    "Version 1 is obsolete and would still need keys. The message asks for RSA keys, and version 2 needs at least 768 bits."
+  ],
+  psec: [
+    "A failed network card leaves the port down with no MAC address seen. The log records a MAC address and a security violation.",
+    "An empty pool leaves the port up and the laptop with an APIPA address. Here the port itself is err-disabled.",
+    "A spanning-tree block is a different state and is never logged as psecure-violation. The reason recorded is port security."
+  ],
+  cable: [
+    "Speed settings never turn a link red in Packet Tracer. The cable type does.",
+    "A PC can connect directly to a router; it needs the right cable, a crossover.",
+    "The gateway is a Layer 3 setting. Links come up at Layer 1 whether or not a gateway is set."
+  ],
+  native: [
+    "A missing VLAN would show in show vlan brief, and CDP would stay quiet. The message compares the two ends' native VLANs, 99 and 1.",
+    "CDP is the messenger, and the mismatch is the problem. Silencing it hides a real fault that can leak frames between VLANs.",
+    "A faulty cable gives no CDP neighbor at all. The two switches are talking; they disagree on the native VLAN."
+  ],
+  vlan: [
+    "The DHCP server answers per VLAN. It handed out a guest address because the port sits in the GUESTS VLAN.",
+    "A static address would stay the same whatever the port's VLAN. show vlan brief shows Fa0/4 under VLAN 20.",
+    "The other users ports (Fa0/1 to Fa0/3) in VLAN 10 work. The problem is one access port's VLAN."
+  ],
+  hostcase: [
+    "Hyphens are valid in IOS hostnames. S1-Floor2 is a legal name.",
+    "hostname takes effect at once; the prompt changes on the spot.",
+    "hostname is a global configuration command, and it was accepted. The letter case is the issue."
+  ],
+  bannertext: [
+    "The policy says 'before login', and a MOTD banner shows before login. The banner type is fine; the wording differs.",
+    "Any delimiter character works, and IOS displays it as ^C regardless. The review compares the text, and the delimiter is never part of it.",
+    "Banner text takes no quotation marks. The finding is the capitals and the missing exclamation mark."
+  ],
+  wrongif: [
+    "The mask is fine, and a /16 would leave the address on the wrong port.",
+    "Descriptions are optional labels. An interface accepts an address with or without one.",
+    "192.168.20.1 is an ordinary private host address, and the router accepted it, on G0/2."
+  ],
+  parent: [
+    "Subinterfaces follow their parent. They stay down while G0/0 is shut, whatever you type on them.",
+    "Modern IOS supports dot1Q alone, and the design uses it. Encapsulation plays no part in holding the interfaces down.",
+    "The switch has nothing to learn here. The router's own physical interface is administratively down."
+  ],
+  allowed: [
+    "An SVI answers any host whose frames reach it, including across trunks. The trunk is dropping VLAN 20 before they arrive.",
+    "Making 20 the native VLAN would send management frames untagged and break the matching end. The fix is to allow VLAN 20 on the trunk.",
+    "The switch reaches other networks through its default gateway, and needs no routing protocol. VLAN 20 is pruned from the trunk."
+  ],
+  encap: [
+    "IOS allows any subinterface number. Matching numbers is a convention; the encapsulation value does the binding.",
+    "The gateway can be any address in the subnet, and 192.168.10.1 is fine.",
+    "The switch trunk is already dot1Q. The mismatch is the VLAN number in the router's encapsulation line."
+  ],
+  helper: [
+    "The server can stay in VLAN 50. Routers relay DHCP with ip helper-address; a server per VLAN scales badly.",
+    "A router pool would work, and the design puts DHCP on the server. The relay is the missing piece.",
+    "DHCP delivers the gateway. Requiring a static one defeats DHCP; the broadcast simply never reaches the server."
+  ],
+  acldir: [
+    "Extended ACLs work on subinterfaces. The ACL is applied; it sits in the wrong direction on the wrong interface.",
+    "ACLs are read top down, so a permit any first would make the deny unreachable. The order is correct.",
+    "0.0.0.255 is the correct wildcard for a /24. The entry matches the right hosts; it is never consulted."
+  ],
+  defroute: [
+    "R1 already pings the ISP router, so the uplink has a working address.",
+    "Every internal ping works, so LAN addressing is fine.",
+    "A single edge router reaches the internet with one default route. No protocol is needed."
+  ],
+  studentnative: [
+    "The allowed list shows 10,20,30,99. VLAN 10 crosses the trunk; it crosses untagged.",
+    "G0/0.10 holds 10.1.10.1, the Students gateway. The frames never reach it because they arrive untagged.",
+    "Addressing is sound. Even with static addresses, untagged frames land on the native subinterface, which has no IP."
+  ],
+  allowed30: [
+    "show vlan brief lists PRINCIPALS with its ports, so the VLAN exists.",
+    "Hosts belong on access ports. Turning them into trunks would still leave VLAN 30 off the uplink.",
+    "RtrA learns 10.1.30.0/24 as a connected route on G0/0.30. Frames never arrive, because the trunk drops VLAN 30."
+  ],
+  vtyacl: [
+    "A Students PC reached the login prompt, which proves SSH is running.",
+    "transport input ssh means SSH only, and SSH admits whichever subnets the ACL permits. The ACL lists the wrong subnets.",
+    "That would filter all traffic to the SVI, far beyond logins. access-class is the right tool; its ACL lists the wrong subnets."
+  ],
+  bpduerr: [
+    "The log names bpduguard, and a new MAC address would read psecure-violation.",
+    "A bad cable gives no link and no BPDU. The switch received a BPDU, which means the link worked.",
+    "Blocking is a spanning-tree state, and err-disabled is a shutdown. BPDU guard shuts the port outright."
+  ],
+  noredist: [
+    "RtrB learns every Site A subnet as an O route via 10.0.0.1, so OSPF is up.",
+    "Administrative distance applies only while RtrB holds its own static route. Once the uplink fails, the OSPF external route would take over, if it existed.",
+    "A /32 host route is valid and common. The route exists on RtrA; it is simply never redistributed."
+  ]
+};
+
 const CATS = ['Addressing', 'Physical', 'Switching', 'Device config', 'Services', 'Remote access', 'Access lists', 'Config accuracy'];
 /* Grade tag and Defense Ladder links per ticket: [grade, [[unit hash, link text], ...], ticket ids] */
 const DL = 'https://freeapp4that.store/defense-ladder/#';
@@ -628,6 +796,8 @@ const TIERS = [
 const TIER = {};
 TIERS.forEach(([grade, learn, ids]) => ids.forEach(id => { TIER[id] = { grade, learn }; }));
 const on = new Set(CATS);
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const DUE_KEY = 'netdrills.tickets.due';
 let deck = [], pos = 0, order = [], answered = false, missed = [];
 const S = { ok: 0, all: 0, streak: 0, best: Number(store.get('netdrills.tickets.best', 0)) || 0 };
 
@@ -721,6 +891,16 @@ function answer(oi) {
   v.textContent = right ? 'Solved.' : 'Not this time. The answer outlined in green is the root cause.';
   v.className = 'verdict ' + (right ? 'good' : 'nope');
   res.querySelector('.why').textContent = t.why;
+  if (!right) {
+    const w = (OPTWHY[t.id] || [])[oi - 1];
+    if (w) {
+      const p = document.createElement('p'); p.className = 'picked';
+      const b = document.createElement('b'); b.textContent = 'What you picked: ';
+      const i = document.createElement('i'); i.textContent = t.opts[oi];
+      p.append(b, i, document.createTextNode('. ' + w));
+      res.insertBefore(p, res.querySelector('.fixl'));
+    }
+  }
   res.querySelector('.fix').textContent = t.fix;
   if (TIER[t.id]) {
     const l = document.createElement('p');
@@ -755,9 +935,15 @@ function finish() {
   }
   const acts = box.querySelector('.actions');
   if (missed.length) {
+    const due = store.get(DUE_KEY, null) || { saved: today(), ids: [] };
+    missed.forEach(t => { if (!due.ids.includes(t.id)) due.ids.push(t.id); });
+    store.set(DUE_KEY, due);
+    const note = document.createElement('p'); note.className = 'later';
+    note.textContent = 'A review right now is a warm-up: the answers are still fresh. These tickets come back as a review deck the next day you open this page.';
+    box.insertBefore(note, acts);
     const r = document.createElement('button');
     r.type = 'button'; r.className = 'btn primary';
-    r.textContent = `Retry the ${missed.length} missed`;
+    r.textContent = `Review the ${missed.length} missed now`;
     const again = missed.slice();
     r.addEventListener('click', () => startDeck(again));
     acts.append(r);
@@ -775,7 +961,22 @@ document.addEventListener('keydown', e => {
   if (!answered && /^[1-4]$/.test(e.key)) { answer(order[Number(e.key) - 1]); e.preventDefault(); }
   else if (answered && e.key === 'Enter' && document.activeElement !== $('#t-next')) { $('#t-next').click(); e.preventDefault(); }
 });
-renderChips(); updStats();
+function renderReview() {
+  const box = $('#review'); if (!box) return;
+  const due = store.get(DUE_KEY, null);
+  const ids = due && Array.isArray(due.ids) ? due.ids.filter(id => TICKETS.some(t => t.id === id)) : [];
+  if (!ids.length || due.saved === today()) { box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = '<h2></h2><p></p><div class="actions"></div>';
+  box.querySelector('h2').textContent = 'Review deck';
+  box.querySelector('p').textContent = `${ids.length} ticket${ids.length === 1 ? '' : 's'} you missed on ${due.saved} ${ids.length === 1 ? 'is' : 'are'} due for a second look. A right answer today, with the first one out of memory, is the real test.`;
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'btn primary'; b.textContent = 'Review them now';
+  b.addEventListener('click', () => { store.set(DUE_KEY, null); box.hidden = true; startDeck(TICKETS.filter(t => ids.includes(t.id))); $('#ticket').scrollIntoView({ block: 'start' }); });
+  const k = document.createElement('button'); k.type = 'button'; k.className = 'btn'; k.textContent = 'Keep for later';
+  k.addEventListener('click', () => { box.hidden = true; });
+  box.querySelector('.actions').append(b, k);
+}
+renderChips(); updStats(); renderReview();
 startDeck(TICKETS);
 })();
 </script>

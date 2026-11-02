@@ -20,7 +20,7 @@
    saving. ee is the friendlier editor in base (Esc opens its menu), and
    vipw opens vi too, unless the EDITOR variable names another editor.
 
- HARDENING AREAS (CIS Critical Security Controls v8)
+ HARDENING AREAS (CIS Critical Security Controls v8.1)
    Account management ........ CIS Control 5
    Access control ............ CIS Control 6
    Secure configuration ...... CIS Control 4 (software inventory: Control 2)
@@ -622,7 +622,7 @@
     https://man.freebsd.org/cgi/man.cgi?query=pw&sektion=8
   login.conf(5) manual
     https://man.freebsd.org/cgi/man.cgi?query=login.conf&sektion=5
-  CIS Critical Security Controls v8
+  CIS Critical Security Controls v8.1
     https://www.cisecurity.org/controls/v8
   CIS Benchmarks
     https://www.cisecurity.org/cis-benchmarks

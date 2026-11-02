@@ -13,7 +13,7 @@
  Each level names the Defense Ladder unit to learn first:
  https://freeapp4that.store/defense-ladder/
 
- HARDENING AREAS (CIS Critical Security Controls v8)
+ HARDENING AREAS (CIS Critical Security Controls v8.1)
    Account management ........ CIS Control 5
    Access control ............ CIS Control 6
    Secure configuration ...... CIS Control 4 (software inventory: Control 2)
@@ -1120,7 +1120,7 @@
     https://learn.microsoft.com/en-us/windows-server/storage/file-server/smb-signing
   Features removed in Windows client
     https://learn.microsoft.com/en-us/windows/whats-new/removed-features
-  CIS Critical Security Controls v8
+  CIS Critical Security Controls v8.1
     https://www.cisecurity.org/controls/v8
   CIS Benchmarks
     https://www.cisecurity.org/cis-benchmarks
