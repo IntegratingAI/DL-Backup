@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-4vCbYyX7dvUWhvKvAfMHN6DFHqRVUHufayDUPL7XHyg=' 'sha256-TyrNbwugubFAcsNcKXPwz76OH/HD3RocwFCBlZDPe1Q=' 'sha256-mfIboTaHplwUHEAfh1131oVjzlmR2QZy7FxoWjqTFH8=' 'sha256-ovfxipD9T8brMNTXzHZLkzraQ9YzLnCtyQXZmD0Vi+I=' 'sha256-xl8saazOD54xXvvAgEoSlVr+NKuil9BgWeIdr9JfzJY='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-1bdaPq2zGSA8PNPotYf54bUxvCLm1j3rcR7bMIyipLg=' 'sha256-3B2o0xMIljM66Vo8KeVw4J8E4XOxt7OCmenv9PFskrU=' 'sha256-4vCbYyX7dvUWhvKvAfMHN6DFHqRVUHufayDUPL7XHyg=' 'sha256-e2SUMZvbZI6mY0f5M1BjMWWIlU0Q3Q5252EnnLHKhGQ=' 'sha256-fUbHLBogSPbkBKdJvoJl95L6CWBJxy3oGs4iS6baADk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/defense-ladder/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%8E%93%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -891,6 +891,10 @@ h2[tabindex="-1"]:focus:not(:focus-visible){outline:none}
   :root a.tu[aria-current="page"],.lv[aria-current="true"],.pg[aria-current="page"]{outline:2px solid Highlight;outline-offset:-2px}
   :focus-visible{outline:3px solid Highlight;outline-offset:2px}
 }
+.ucan{margin:.4rem 0 .2rem;font-size:1rem}.ucan b{font-weight:600}
+.upractice{margin:.2rem 0 .6rem;font-size:.92rem;opacity:.9}.upractice a{text-decoration:underline}
+.nx-ready a{text-decoration:underline}
+.card label.tl{display:block;margin:.6rem 0 .3rem;font-weight:600}.card input.typein{font-family:ui-monospace,Consolas,'Liberation Mono',monospace;width:100%;max-width:720px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:.95rem}
 </style>
 </head>
 <body>
@@ -946,6 +950,7 @@ const PLANNER=(id)=>({t:'planner',id});
 const TIMER=(id)=>({t:'timer',id});
 const LINKS=(title,keys)=>({t:'links',title,keys});
 const DETAIL=(title,...parts)=>({t:'detail',title,parts});
+const TYPEIN=(id,title,intro,code,accept,why,o)=>({t:'typein',id,title,intro,code,accept,why,o:o||{}});
 
 /* ---- visual block constructors (data only; the renderers draw them) ----
    Use one on its own in a unit's blocks (it becomes a card with the title as its heading),
@@ -1187,7 +1192,7 @@ const PLAN={
     {n:'Phase 1: Foundations',grade:'freshman',when:'Weeks 1 to 4 (Freshman)',ms:false,
      pts:['Units: authorization and the scenario brief, ethics, security principles, virtualization, first looks at Windows and Linux, and networking models.','Set up one Windows and one Linux virtual machine you own, and take a clean snapshot of each.','Alongside: OverTheWire Bandit levels 0 to 5, and Subnet Sprint for binary and masks.']},
     {n:'Milestone: foundations check',when:'End of week 4',ms:true,
-     pts:['Pass every Freshman quiz. Explain authorization, scope, and the CIA triad to someone else in your own words.','Name the console or command that lists the users and the administrators on Windows and on Linux, and explain what each output shows.']},
+     pts:['Every Freshman quiz item at Strong, Core skills first. Explain authorization, scope, and the CIA triad to someone else in your own words.','Name the console or command that lists the users and the administrators on Windows and on Linux, and explain what each output shows.']},
     {n:'Phase 2: Hands-on hardening',grade:'sophomore',when:'Weeks 5 to 10 (Sophomore)',ms:false,
      pts:['Start with the readiness check, then work the units: the scenario brief; Windows 11 and Linux Mint/Ubuntu hardening by hand; services and ports; first Cisco configurations; and investigation questions and the change log.','Practice: Lockdown Drills at beginner level, then the first Lockdown Range scenarios for Windows and Linux.','Keep a change log every session, even when practicing alone.']},
     {n:'Milestone: first full lab',when:'End of week 10',ms:true,
@@ -1277,6 +1282,7 @@ LADDER.addLevel({
  mentor:['Twenty-minute blocks: one idea, one quiz, and one thing typed on a real VM. Stop while it is still fun.','Celebrate the first correct command out loud. Confidence is the actual curriculum at this grade.','Pair this page with a free course (NetAcad, Khan Academy) as the read-along; use this page for the checks and the hands-on.','Keep beginners on snapshot-backed practice VMs or Lockdown Range, with the solution walkthrough next to them, and well away from any computer someone depends on.'],
  units:[
  {id:'f1',title:'How hands-on defense practice works',bloom:'Remember',sum:'Authorization and scope, the scenario brief, baseline then harden then verify, change logs, availability, and where to practice in the open.',
+  can:'read a scenario brief as the definition of correct, run the baseline, harden, verify loop, write a change log line, and say why availability counts as security',
   blocks:[
    C('The job in one paragraph','Remember',
      P('Hands-on defense practice puts you in the seat of a new IT administrator at a small organization. You get a <b>lab</b>: a practice machine, usually a virtual machine, left in a deliberately neglected state, with weak passwords, extra administrators, unneeded services, and maybe hidden malware. Your job is to find and fix as much as you can <b>within your authorization</b> and <b>while keeping everything the organization needs running</b>. Many labs include a progress check that samples the problems and reports the fixes it can see, so a real fix can leave the score unchanged.'),
@@ -1340,6 +1346,7 @@ LADDER.addLevel({
    LINKS('Go further',['nice','nist-csf','cis-controls','t4t-range','pico','bandit','ncl'])
   ]},
  {id:'f2',title:'Safe and ethical online',bloom:'Understand',sum:'PII and privacy, passphrases, safe AI use, what to do after a bad click, authorization, and the habit that keeps you employable: let permission, rather than ability, decide what you do.',
+  can:'write a passphrase you can type, explain where a password manager and MFA help, name what stays out of an AI tool, and tell authorized from able',
   blocks:[
    C('Why ethics is unit two','Understand',
      P('Security training teaches you to find weaknesses. The same knowledge opens doors that belong to other people. Every employer draws the line at <b>authorization</b>: you may test, change, or probe only systems you own or have explicit written permission to touch. Labs and VMs you own are built to be changed. Your school\u2019s network, a friend\u2019s account, a public website: these belong to someone else, so leave them alone, always, even "just to see".'),
@@ -1385,10 +1392,15 @@ LADDER.addLevel({
      ['A practice lab contains a file with a real-looking person\u2019s photo and home address. The investigation question asks only for the file name.',['Report only the file name','Copy the photo for a laugh','Share the address in the group chat','Delete the file to keep it hidden'],0,'Answer exactly what is asked. Keeping PII contained, even in a practice scenario, is the habit you are training. Leave the file in place too, unless the scenario brief says that kind of file must be removed.',{whys:['The question asks only for the file name, so that answer is complete, and the PII stays where it is.','Copying a person’s photo spreads PII, and a practice scenario trains the same habit as real work.','Sharing a home address spreads PII and can put a real person at risk.','Deleting the file changes the lab; the brief decides what gets removed.'],imp:'core',c:'eth-online-safety'}],
      ['Pua wants an AI chat tool to tidy up a club report. What stays out of the chat?',['The report’s headings and word limit','Members’ names and phone numbers, and the club’s sign-in password','The draft text, with a request to fix the grammar','The club’s public meeting time'],1,'What you paste into an AI tool may be stored, reviewed, or leaked. Keep personal, school, and account data out, and check the answer before you use it.',{whys:['Headings and a word limit hold no personal or account data, so they are safe to share.','What you paste into an AI tool may be stored or reviewed by others, so names, phone numbers, and passwords stay with you.','Draft text free of personal data is safe to share for a grammar fix.','A public meeting time is already public, so sharing it exposes nothing new.'],imp:'core',c:'threat-ai-tools'}]
    ]),
+   C('Who gets security','Understand',
+     P('Good security has long been sold as a product: a paid manager, a corporate firewall, a consultant. The people with the least money and the oldest devices face the same attackers with fewer defenses. The habits in this unit cost nothing: a passphrase, MFA, a pause before a click. This course runs offline on any device for the same reason: the defense a student can afford is the one that spreads. When you set up a family member\u2019s phone or a club\u2019s laptop, you are moving security to someone the market skipped.'),
+     TIPS('<b>Free beats paid when free is used.</b> A built-in password manager and the MFA app a school already provides protect more people than a product nobody installs.',
+          '<b>Access is a security control.</b> A privacy notice only some patients can read, or a tool that needs a fast laptop, leaves people unprotected by design. Ask who is left out before you call a control done.')),
    REFLECT('f2r','In your own words','Write two sentences: what does "authorized" mean, and why would a company fire a brilliant technician who ignores it?'),
    LINKS('Go further',['eff','cisa','khan'])
   ]},
  {id:'f3',title:'Security principles',bloom:'Understand',sum:'The CIA triad, threats versus vulnerabilities, the least-privilege family, the types of control, defense in depth, and the names of the bad stuff.',
+  can:'name the CIA property at stake in a case, tell a threat from a vulnerability, apply least privilege to an account, and sort controls into their types',
   blocks:[
    C('Five ideas you will use on every machine','Understand',
      TIPS('<b>CIA triad.</b> Confidentiality (only the right people see it), Integrity (it stays accurate and unaltered), and Availability (it works when needed). Every fix protects at least one.',
@@ -1485,6 +1497,7 @@ LADDER.addLevel({
    LINKS('Go further',['nist-csf','cisa','khan'])
   ]},
  {id:'f8',title:'Threats and the people behind them',bloom:'Understand',sum:'Who attacks and why, the tricks that target people in every channel, malware by type, and the attack story from first contact to damage.',
+  can:'name who attacks and why, recognize phishing, smishing, and vishing by their tells, sort malware by type, and retell an attack from first contact to damage',
   blocks:[
    C('Attacks on people: one pattern','Understand',
      P('<b>Social engineering</b> tricks a person instead of breaking software. Every version, in every channel, has two parts: an <b>unusual request</b> (a password, a code, a payment, or a door held open) plus <b>pressure to skip the normal check</b>. The pressure pulls one of five levers: urgency, authority, fear, curiosity, or helpfulness.'),
@@ -1613,6 +1626,7 @@ LADDER.addLevel({
    LINKS('Go further',['cisa-kev','eff','cisa'])
    ]},
  {id:'f4',title:'Computers, virtualization, and the network',bloom:'Remember',sum:'The parts of a computer that hold evidence, VMs and the two kinds of hypervisor, how strong each kind of isolation is, snapshots versus backups, checksums, and the networking words you will hear everywhere.',
+  can:'name the parts of a computer that hold evidence, tell a snapshot from a backup, check a file with a checksum, and explain how a VM is isolated',
   blocks:[
    ANATOMY('Inside the box: the parts that hold evidence',[
      {name:'One computer',tag:'five parts, one defender fact each',tone:'l2',grid:true,children:[
@@ -1697,6 +1711,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    LINKS('Go further',['t4t-subnet','khan','netacad'])
   ]},
  {id:'f5',title:'First look at Windows',bloom:'Understand',sum:'The editions side by side, account types, UAC, NTFS permissions, each layer of a Windows PC and its guard, where users, policies, the firewall, updates, and Defender live, and your first commands.',
+  can:'tell Windows editions and account types apart, read an NTFS permission, find users, policies, the firewall, updates, and Defender, and run your first commands',
   blocks:[
    COMPARE('Four Windows packages, one core',[
     {name:'Home',tag:'Windows 11',tone:'l1',rows:[
@@ -1860,6 +1875,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    LINKS('Go further',['ms-win-sec','ms-uac','ms-icacls','ms-ps','t4t-ld-win11','t4t-lr-win'])
   ]},
  {id:'f6',title:'First look at Linux',bloom:'Understand',sum:'Distributions, the layers of a Linux machine, the folder tree, ten everyday commands, reading a command line, the three user files, and macOS and FreeBSD as Unix cousins.',
+  can:'name the layers of a Linux machine, find your way through the folder tree, run ten everyday commands, and read the three user files',
   blocks:[
    C('Linux in one minute','Understand',
      TIPS('<b>Linux</b> is the kernel; a <b>distribution</b> (distro) bundles it with tools, a package manager, and a desktop. Almost everything is a file, and permissions decide who may read, write, or execute each one.',
@@ -2054,6 +2070,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    LINKS('Go further',['linuxjourney','bandit','explainshell','mint-docs','ubuntu-server','t4t-ld-mint','t4t-lr-linux','apple-platform-sec'])
   ]},
  {id:'f7',title:'Networking fundamentals and Cisco basics',bloom:'Understand',sum:'The OSI and TCP/IP models, addressing, how switches and routers decide, and where to learn Cisco networking for free.',
+  can:'place a protocol on the OSI and TCP/IP models, read an IPv4 address and mask, explain how a switch and a router each decide, and name the IOS modes',
   blocks:[
    C('Two models of a network','Understand',
      P('Networking is taught with two layered models. The <b>OSI model</b> has seven layers and is the shared vocabulary for troubleshooting ("that is a layer 2 problem"). The <b>TCP/IP model</b> has four layers and matches how the internet\u2019s protocols are actually built.'),
@@ -2291,6 +2308,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    LINKS('Go further',['netacad','pt','t4t-subnet','t4t-ios','khan'])
   ]},
  {id:'f9',title:'Networks around you: home, school, and the internet',bloom:'Understand',sum:'LANs to WANs, wired and wireless links, how private addresses reach the internet, how names become addresses, what a VPN does, and the three big network attacks in plain words: floods, fakes, and listening in.',
+  can:'tell a LAN from a WAN, follow a private address through NAT, explain how a name becomes an address, say what a VPN does, and recognize a flood, a fake, and an eavesdropper',
   blocks:[
    COMPARE('LAN, WLAN, MAN, and WAN',[
      {name:'LAN',tag:'Local area network',tone:'l1',
@@ -2450,6 +2468,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    LINKS('Go further',['eff','khan'])
    ]},
  {id:'f10',title:'Keys, locks, and certificates',bloom:'Understand',sum:'One shared key or a key pair, data in its three states, signatures that prove who sent a file, certificates as signed ID cards, and why passkeys resist phishing.',
+  can:'tell a shared key from a key pair, say which key locks and which signs, read a certificate as a signed ID card, and explain why a passkey resists phishing',
   blocks:[
    C('What keys do','Understand',
      P('<b>Encryption</b> scrambles data so only someone with the right <b>key</b>, a long number, can read it. Keys come in two families. <b>Symmetric</b> encryption uses one shared key that both sides hold. <b>Asymmetric</b> encryption uses a <b>key pair</b>: a <b>public key</b> anyone may hold and a <b>private key</b> only the owner keeps. Encrypt with someone’s public key and only their private key opens it; sign with your private key and anyone with your public key can check it.'),
@@ -2565,6 +2584,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    LINKS('Go further',['fido-passkeys','nist-63b','eff'])
    ]},
  {id:'f11',title:'The web and the cloud in plain words',bloom:'Understand',sum:'How a browser and a server talk, how to read who owns a link, what the padlock promises and what it leaves out, and who secures what in the cloud.',
+  can:'describe a request and a response, find the registered domain in a link, say what the padlock promises and leaves out, and name who secures what in the cloud',
   blocks:[
    C('How a browser and a server talk','Understand',
      P('Every web page starts as a <b>request</b>: the browser asks a server for one thing, with a method (GET to fetch, POST to send a form), a path, and headers. The server sends back a <b>response</b>: a status code, headers, and a body, usually the page itself.'),
@@ -2684,6 +2704,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    LINKS('Go further',['mdn-http','nist-cloud','eff'])
    ]},
  {id:'f12',title:'Code you can read',bloom:'Understand',sum:'What a script is, how loops and conditions read in Bash, PowerShell, and Python, readable scripts versus built programs, and the data formats tools speak.',
+  can:'read a loop and a condition in Bash, PowerShell, and Python, tell a script from a built program, and recognize JSON, YAML, and CSV',
   blocks:[
    C('What a script is','Understand',
      P('A <b>script</b> is a text file of commands that a program called an <b>interpreter</b> reads and runs, line by line. Defenders write scripts to repeat one check across many accounts or machines, and to sift logs too long to read by eye. The first skill is reading: before you run any script, say what each line does and what it changes.'),
@@ -2741,6 +2762,10 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    ],{intro:'Some code reaches a machine as text you can read, and some arrives already built into machine code. That decides how a defender checks it.',
      note:'<b>A script can change after you check it.</b> Anyone who can edit the file changes what runs, so check who can write to a script as well as what it says.',
      caption:'Read a script line by line; check a built program by its hash, its signature, and reports about it.'}),
+   C('Licences, open source, and cracked software','Understand',
+     P('Every program carries a <b>licence</b>: the rules its author set for copying and use. <b>Open source</b> licences (MIT, GPL, Apache) let anyone read, run, and change the code, which is why defenders can audit Linux, OpenSSH, and Python line by line. <b>Proprietary</b> licences keep the source private and sell the right to run the built program. Both are legitimate; the choice shapes who can check the code and who is paid to fix it.'),
+     TIPS('<b>Cracked software is a delivery channel.</b> A copy of a paid program with its licence check removed has been modified by a stranger, and malware often rides along with the crack. The defender\u2019s read: unlicensed software on a lab machine is a finding twice, as a policy breach and as an unknown binary.',
+          '<b>Licences shape security.</b> A licence that lets anyone fix a flaw spreads fixes fast; a licence that ties a product to one vendor makes that vendor\u2019s patch schedule everyone\u2019s risk. Each model carries trade-offs, which is why procurement asks about both.')),
    QUIZ('f12cy','Check yourself',[
      ['A built program ships without its source. What do you check instead?',['Its file name and folder','Its size and save date','Its icon and product name','Its hash and its signature'],3,'Only machine code ships, so check who signed it and whether its hash is known good or known bad.',{whys:['Anyone can rename or move a file, so its name proves nothing.','Size and date are easy to change, so they leave the maker unknown.','An icon and a product name are easy to copy from a real program.','The signature names who made it, and the hash matches a known-good or known-bad list.'],imp:'core',c:'comp-integrity-hashing'}]
    ]),
@@ -2820,6 +2845,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
    LINKS('Go further',['python-tutorial','gnu-bash','ms-ps','explainshell'])
    ]},
  {id:'f13',title:'Watch, detect, and respond',bloom:'Understand',sum:'The tools that watch hosts and networks, the four detection outcomes, who works in a security operations center, and the phases of incident response.',
+  can:'name the tools that watch hosts and networks, classify an alert as one of the four outcomes, describe who works in a SOC, and list the phases of incident response',
   blocks:[
    C('Tools that watch for you','Understand',
      P('An <b>endpoint</b> is any device a person uses or a service runs on: a laptop, a server, a phone, or a tablet. Three kinds of tool do most of the watching, and each answers its own question.'),
@@ -3366,6 +3392,8 @@ function renderLevel(){
   const U=L.units.find(u=>u.id===current.unit)||L.units[0];
   const uh=el('div','uhead');
   uh.innerHTML=`<div class="upos"><p class="unum">${L.grade} · Unit ${L.units.indexOf(U)+1} of ${L.units.length}<span class="sr upsay"></span></p><ol class="upath" aria-hidden="true">${L.units.map(()=>'<li></li>').join('')}</ol></div><h2 tabindex="-1">${U.title}<span class="sr">, thinking level: </span><span class="blm">${U.bloom}</span></h2><p class="sum">${U.sum}</p>`;
+  if(U.can){const cp=el('p','ucan');cp.innerHTML='<b>By the end you can</b> '+U.can+'.';uh.appendChild(cp);}
+  const ps=practiceStrip(U);if(ps)uh.appendChild(ps);
   main.appendChild(uh);
   main.appendChild(unitOutline(L,U));
 
@@ -3386,6 +3414,14 @@ function renderLevel(){
   flowUnit(L,U,uh);
 }
 
+/* Practice this: the Tool4That drills and labs a unit links to, shown under the title as well as at the end */
+function practiceStrip(U){
+  const keys=[];(U.blocks||[]).forEach(b=>{if(b.t==='links')b.keys.forEach(k=>{if(/^t4t-/.test(k)&&RES[k]&&!keys.includes(k))keys.push(k);});});
+  if(!keys.length)return null;
+  const p=el('p','upractice');p.appendChild(el('b',null,'Practice this: '));
+  keys.forEach((k,i)=>{if(i)p.appendChild(document.createTextNode(' \u00b7 '));const a=el('a',null,RES[k][0]);a.href=RES[k][1];a.target='_blank';a.rel='noopener noreferrer';a.title=RES[k][2];p.appendChild(a);});
+  return p;
+}
 function unitStatus(u){
   const ids=u.blocks.filter(b=>b.id).map(b=>b.id);
   if(!ids.length) return '';
@@ -3413,6 +3449,7 @@ function renderBlock(b,L,inCard){
     case 'order': return renderOrder(b);
     case 'lab': return renderLab(b);
     case 'reflect': return renderReflect(b);
+    case 'typein': return renderTypein(b);
     case 'builder': return renderBuilder(b);
     case 'planner': return renderPlanner(b);
     case 'timer': return renderTimer(b);
@@ -4266,6 +4303,23 @@ function renderReflect(b){
   return c;
 }
 
+/* ---- type one line: a worked script with one line to change ---- */
+function renderTypein(b){
+  const c=el('div','card');
+  c.appendChild(el('h3',null,`${b.title}<span class="blm">${b.o.bloom||'Apply'}</span>`));
+  if(b.intro)c.appendChild(el('p','sum',b.intro));
+  const pre=el('pre','term');pre.textContent=b.code;c.appendChild(pre);
+  const lab=el('label','tl',b.o.prompt||'Type the line:');const inp=document.createElement('input');inp.type='text';inp.id=b.id+'-in';lab.htmlFor=inp.id;inp.autocomplete='off';inp.spellcheck=false;inp.className='typein';
+  const row=el('div','row');const check=el('button','btn sm','Check');check.type='button';const show=el('button','btn sec sm','Show me');show.type='button';const pill=el('span','pill');pill.setAttribute('role','status');
+  const why=el('div','sl-why');why.hidden=true;
+  const nz=s=>String(s||'').toLowerCase().replace(/["'`]/g,'').replace(/\s+/g,' ').trim();
+  const rec=store.get(b.id)||{};if(rec.done){inp.value=rec.given||'';pill.textContent='Done';pill.className='pill ok';why.innerHTML=b.why;why.hidden=false;}
+  check.addEventListener('click',()=>{const g=nz(inp.value);const ok=b.accept.map(nz).includes(g);if(ok){pill.textContent='Right';pill.className='pill ok';store.set(b.id,{done:true,given:inp.value});why.innerHTML=b.why;why.hidden=false;refreshChrome();}else{pill.textContent=g?'Compare it with the worked line above, then try again':'Type the line first';pill.className='pill bad';}});
+  show.addEventListener('click',()=>{inp.value=b.accept[0];why.innerHTML=b.why;why.hidden=false;pill.textContent='Shown. Type it yourself next time, so it sticks.';pill.className='pill';});
+  c.append(lab,inp,row);row.append(check,show,pill);c.appendChild(why);
+  return c;
+}
+
 /* ---- checklist builder (export) ---- */
 function renderBuilder(b){
   const c=el('div','card');
@@ -4800,9 +4854,21 @@ function unitState(U,seen){
   return done||opened||ids.some(startedRec)?'part':'none';
 }
 function nextUnit(L){ const seen=visitedSet(); return L.units.find(U=>unitState(U,seen)!=='done')||null; }
+const READY={sophomore:'s0q',junior:'j0q',senior:'se0q'};
+/* the lowest item from this grade's readiness check: Core skills first, Explore before Revisit */
+function readinessLow(L){
+  const qid=READY[L.id];if(!qid)return null;
+  let b=null;L.units.forEach(u=>u.blocks.forEach(x=>{if(x.t==='quiz'&&x.id===qid)b=x;}));if(!b)return null;
+  const rec=store.get(qid);const r=rec&&Array.isArray(rec.r)?rec.r:null;if(!r||!r.length)return null;
+  const cand=[];b.items.forEach((it,i)=>{const res=r[i]&&r[i][2];if(res==null||res===2)return;const m=quizMeta(it);cand.push({it,res,core:m.imp==='core'?0:1,i});});
+  if(!cand.length)return null;cand.sort((a,c)=>a.core-c.core||a.res-c.res||a.i-c.i);
+  const link=teachLink(cand[0].it);return link?{link,res:RESULT[cand[0].res],core:cand[0].core===0}:null;
+}
 function nextUpNote(L,U){
   const p=el('p','nextup');p.id='nx-'+L.id;
   p.textContent=U?`Next up: unit ${L.units.indexOf(U)+1}, ${titleText(U.title)}`:`Every ${L.grade} unit is done. Open any of them to review.`;
+  const low=readinessLow(L);
+  if(low){const a=el('a',null,low.link.text);a.href=low.link.href;const s=el('span','nx-ready');s.append(' From your readiness check: ',a,' ('+low.res+(low.core?' on a Core skill':'')+').');p.appendChild(s);}
   return p;
 }
 /* a grade button reopens that grade's last unit (its first unit on a first visit) */
@@ -5881,10 +5947,11 @@ LADDER.addLevel({
  intro:'You know the words. Now you do the work: read a scenario brief carefully, harden a Windows 11 machine and a Linux Mint or Ubuntu machine by hand, keep a change log, and configure your first Cisco switch and router. Every unit ends in something you can practice on a VM you own or in Lockdown Range.',
  mentor:['Pair learners on a practice lab with the solution walkthrough closed, then open it together and write down every miss. Those misses become their checklist.','Insist on the change log from the first session. It turns a broken service from a panic into a two-minute undo.','Alternate roles each session: one drives, one reads the scenario brief and verifies each change.','Keep Lockdown Drills and Lockdown Range open next to this page: this page explains why, the drills build speed, and the labs put it all together.'],
  units:[
- {id:'s0',title:'Ready for Sophomore?',bloom:'Review',sum:'Sixteen questions on what Freshman taught. Your first check on each one builds your map (Strong, Revisit, or Explore) and a list of where to invest next. Every unit stays open.',
+ {id:'s0',title:'Ready for Sophomore?',bloom:'Review',sum:'Eighteen questions on what Freshman taught. Your first check on each one builds your map (Strong, Revisit, or Explore) and a list of where to invest next. Every unit stays open.',
+  can:'see which Freshman skills are Strong and which need a review before the hands-on grade begins',
   blocks:[
    C('How this check works','Understand',
-     P('Sixteen questions cover what Freshman taught. Answer each question, then check it with “I’m sure” or “I’m guessing”. Every option then opens its reason, and your first check builds your map: Strong, Revisit, or Explore. At the end, “Where to invest next” lists what to study, Core skills first, each linked to its unit and its Study Map concept. Every Sophomore unit stays open, whatever your map shows.')),
+     P('Eighteen questions cover what Freshman taught. Answer each question, then check it with “I’m sure” or “I’m guessing”. Every option then opens its reason, and your first check builds your map: Strong, Revisit, or Explore. At the end, “Where to invest next” lists what to study, Core skills first, each linked to its unit and its Study Map concept. Every Sophomore unit stays open, whatever your map shows.')),
    QUIZ('s0q','Ready for Sophomore?',[
      ['A PC at 10.1.20.30/24 sends a packet to 10.1.10.20. Where does it send the frame first?',['Straight to 10.1.10.20, after an ARP request for that address','To its DNS server','To its default gateway, because 10.1.10.20 sits on another network','Out of every port, as a broadcast'],2,'A host compares the destination with its own network, and anything on another network goes to the default gateway. <a href="#freshman/f7">Review: Networking fundamentals and Cisco basics</a>',{whys:['ARP finds addresses on the local network only, and 10.1.10.20 sits on another network.','DNS turns names into addresses, and this packet already has one.','The PC compares 10.1.10.20 with its own /24, finds another network, and hands the frame to its default gateway to route.','Broadcasts stay on the local network and serve lookups such as ARP.'],imp:'core',c:'net-ipv4-addressing'}],
      ['Which of these addresses needs NAT before its traffic can cross the internet?',['192.168.1.20','203.0.113.9','198.51.100.40','2001:db8::20'],0,'10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16 are private and reused in every home and school, so the edge router’s NAT swaps in its public address. IPv6 usually skips NAT. <a href="#freshman/f9">Review: Networks around you: home, school, and the internet</a>',{whys:['192.168.0.0/16 is private and reused in every home, so the edge router’s NAT swaps in its public address.','203.0.113.9 sits outside the three private ranges, so it crosses as is.','198.51.100.40 sits outside the three private ranges, so it crosses as is.','IPv6 has enough addresses for every device to hold a global one, so it usually crosses without NAT.'],imp:'core',c:'net-nat'}],
@@ -5901,10 +5968,13 @@ LADDER.addLevel({
      ['Kalani gets a text: “Your bank account is on hold. Tap bnk-verify.example/k7 within 1 hour.” What is this, and what is the right first move?',['Vishing: she calls the number in the text to sort it out','A real alert: she taps the link before the hold starts','Smishing: she leaves the link alone, checks the account in the bank’s own app, and reports the text','Spam: she replies STOP so the texts end'],2,'A text with a short link and a deadline is smishing, phishing by text message. Any number or link inside the message belongs to the sender, so verify through a channel you already trust, such as the bank’s own app or a number you look up yourself, and then report it. <a href="#freshman/f8">Review: Threats and the people behind them</a>',{whys:['The number in the text belongs to the sender, so calling it reaches the scammer.','The link belongs to the sender; the bank’s own app is the safe check.','A text with a short link and a deadline is smishing, and the bank’s own app is a channel the sender stays out of.','Replying STOP confirms the number is live.'],imp:'core',c:'sec-social-engineering'}],
      ['A text that claims to come from Mānoa Bakery links to <code>https://orders.manoa-bakery.example.pay-check.example/manoa-bakery.example/receipt</code>. Which registered domain controls that page?',['manoa-bakery.example','pay-check.example','orders.manoa-bakery.example','receipt'],1,'Find where the host ends, at the first single slash, then read leftward: the ending (.example) plus the one name just before it. That is pay-check.example. The bakery’s name shows up only as a subdomain and again in the path, and pay-check.example’s owner writes both. <a href="#freshman/f11">Review: The web and the cloud in plain words</a>',{whys:['The bakery’s name sits in a subdomain and the path, which the real owner, pay-check.example, writes freely.','The host ends at the first single slash, and reading leftward from there, the ending plus the one name before it gives pay-check.example.','That whole host belongs to pay-check.example, with orders.manoa-bakery as a subdomain of it.','receipt sits in the path, after the host, so it controls nothing.'],imp:'core',c:'web-urls'}],
      ['Waimea Feed and Supply’s weekly backup sends 30 GB to its off-site copy, and the SIEM raises a “large upload” alert. The team confirms it was only the backup. Which outcome is that?',['True positive','True negative','False negative','False positive'],3,'The tool alerted (positive) on something harmless, so it was wrong (false). Record it and tune the rule, for example so it expects the backup’s known destination at its scheduled time, which keeps real alerts easy to see. <a href="#freshman/f13">Review: Watch, detect, and respond</a>',{whys:['A true positive means a real threat raised the alert, and this was only the backup.','A true negative is harmless activity that stays quiet, and this one raised an alert.','A false negative is a real threat that slipped past unflagged.','The SIEM alerted (positive) on harmless activity, so the alert was wrong (false).'],imp:'core',c:'det-outcomes'}],
-     ['Kai wants to send a message that only Lokelani can read. Which key locks it?',['Lokelani’s public key','Lokelani’s private key','Kai’s private key','Kai’s public key'],0,'Anyone may lock with the recipient’s public key, and only her private key opens it. Signing runs the other way: the sender’s private key signs, and the public key checks. <a href="#freshman/f10">Review: Keys, locks, and certificates</a>',{whys:['Anyone may lock with Lokelani’s public key, and only her private key opens the result.','Lokelani’s private key stays with her alone, so Kai has no copy.','Kai’s private key signs, which proves who sent the message and keeps it open to all.','Kai’s public key locks messages that only Kai can open.'],imp:'core',c:'crypto-keys'}]
+     ['Kai wants to send a message that only Lokelani can read. Which key locks it?',['Lokelani’s public key','Lokelani’s private key','Kai’s private key','Kai’s public key'],0,'Anyone may lock with the recipient’s public key, and only her private key opens it. Signing runs the other way: the sender’s private key signs, and the public key checks. <a href="#freshman/f10">Review: Keys, locks, and certificates</a>',{whys:['Anyone may lock with Lokelani’s public key, and only her private key opens the result.','Lokelani’s private key stays with her alone, so Kai has no copy.','Kai’s private key signs, which proves who sent the message and keeps it open to all.','Kai’s public key locks messages that only Kai can open.'],imp:'core',c:'crypto-keys'}],
+     ['The front desk at Kaimana Dental Clinic can open every patient folder, including billing records nobody there uses. Which principle does that break, and which part of the CIA triad does it put at risk first?',['Defense in depth; availability','Least privilege; confidentiality','Separation of duties; integrity','Need to know; availability'],1,'Least privilege gives each account the access its job needs and no more, and extra read access risks confidentiality first, because records can be read and copied. <a href="#freshman/f3">Review: Security principles</a>',{whys:['Defense in depth layers controls; the problem here is one account holding more access than its job needs, and reading records risks confidentiality before availability.','Least privilege limits each account to what its job needs, and extra read access puts confidentiality at risk first: the records can be read and copied.','Separation of duties splits one task across people; the risk here is reading, which is confidentiality rather than integrity.','Need to know is the idea behind the limit, and the first risk from extra read access is confidentiality rather than availability.'],imp:'core',c:'sec-least-privilege'}],
+     ['Kalani signs up for a robotics forum. Which habit protects her school email account even if the forum leaks its password list?',['A longer version of her school password, with a symbol added','A different passphrase for the forum, kept in a password manager, and MFA on the school account','The school password, since the forum is small','Her birthday plus the forum name'],1,'A leak at one site reaches other accounts only when a password is reused; a unique passphrase per site and MFA on the account that matters make the leak a near miss. <a href="#freshman/f2">Review: Safe and ethical online</a>',{whys:['A variation of a reused password falls to guessing tools that try common swaps and additions.','A unique passphrase keeps the leak at the forum, the manager remembers it, and MFA turns a stolen password into a near miss.','Reuse makes any leak at any site a leak of the school account too.','Personal details appear in posts and profiles, so guesses built from them land first.'],imp:'core',c:'sec-passwords-mfa'}]
    ])
   ]},
  {id:'s1',title:'Read the scenario brief first',bloom:'Apply',sum:'Read the brief like a contract, learn the six hardening areas, and plan your first twenty minutes.',
+  can:'read a brief like a contract, name the six hardening areas, and plan your first twenty minutes on a machine',
   blocks:[
    C('How to read a scenario brief','Understand',
      TIPS('Find and write down: the <b>authorized users</b>, who is an <b>administrator</b>, which <b>services</b> must stay running, which <b>software</b> is allowed or banned, and any <b>investigation questions</b>.',
@@ -5947,6 +6017,7 @@ LADDER.addLevel({
    LINKS('Go further',['cis-controls','nist-csf','t4t-range'])
   ]},
  {id:'s2',title:'Windows 11 hardening',bloom:'Apply',sum:'Accounts, password policy, lockout, firewall, updates, Defender, auto-start places, permissions, backups, unauthorized files, drive encryption, Secure Boot, downloads, and USB drives: by hand, ending in a baseline snapshot.',
+  can:'harden a Windows 11 machine by hand across accounts, policy, firewall, updates, Defender, startup, permissions, and files, and end with a baseline snapshot',
   blocks:[
    LAB('f5lab','Lab: read a Windows VM before you change it','Freshman’s <a href="#freshman/f5">First look at Windows</a> named these consoles and commands; now you run them. On a Windows VM you own (Pro or an evaluation edition, and only on a computer you manage yourself), do each step and tick it. On Home, which ships without lusrmgr.msc and secpol.msc, run Get-LocalUser for step 1 and net accounts for step 4. Every step reads and leaves the machine as it was, so your notes become the baseline for the hardening below.',[
      ['Open Local Users and Groups and write down every account and whether it is enabled.','lusrmgr.msc'],
@@ -6211,9 +6282,11 @@ LADDER.addLevel({
      ['Create a folder, break inheritance, and give one group Modify.','icacls "C:\\Shared" /inheritance:d'],
      ['Revert to the snapshot and do it again, faster.',null]
    ]),
+   REFLECT('s2r','Your first Windows change log','Pick three changes you made or would make on a Windows 11 lab: an account, a policy, and a service. For each, write the one line you would put in the change log: time, machine, what you did, and how to undo it. Then name the check that proves each change took effect.'),
    LINKS('Go further',['ms-win-sec','ms-baselines','ms-icacls','ms-sysint','nist-63b','t4t-ld-win11','t4t-lr-win'])
   ]},
  {id:'s3',title:'Linux Mint and Ubuntu hardening',bloom:'Apply',sum:'Accounts, sudo rules, shadow fields, ufw, packages, quick checks, safe edits, SSH keys, and unauthorized files: the Linux half of hands-on hardening.',
+  can:'harden a Mint or Ubuntu machine by hand: accounts, sudo, shadow fields, ufw, packages, safe edits, SSH keys, and unauthorized files',
   blocks:[
    LAB('f6lab','Lab: read a Linux VM before you change it','Freshman’s <a href="#freshman/f6">First look at Linux</a> named these commands; now you run them. On a Mint or Ubuntu VM you own, do each step and tick it. Every step reads and leaves the machine as it was, so your notes become the baseline for the hardening below.',[
      ['Open a terminal and print where you are and who you are.','pwd; whoami; id'],
@@ -6390,7 +6463,7 @@ LADDER.addLevel({
           '<b>Extensions:</b> <code>about:addons</code> and <code>chrome://extensions</code> list them; compare each with the brief, as with any software.')),
    C('Four quick checks: clock, network, disk, and backups','Apply',
      CMDS('Read, then fix',[
-       ['timedatectl status','NTP (UDP 123) keeps clocks on one time, so log lines sort across devices. Mint 22 and Ubuntu 24.04 LTS use systemd-timesyncd; newer Ubuntu uses chrony (chronyc tracking). Either one shows System clock synchronized: yes; on no, run sudo timedatectl set-ntp true.'],
+       ['timedatectl status','NTP (UDP 123) keeps clocks on one time, so log lines sort across devices. Mint 22 and Ubuntu Desktop 24.04 use systemd-timesyncd; Ubuntu Server uses chrony (chronyc tracking). Either one shows System clock synchronized: yes; on no, run sudo timedatectl set-ntp true.'],
        ['ip -br a; ip route','Addresses and the default route; explain anything extra. nmcli connection show lists saved connections.'],
        ['lsblk -f','A crypto_LUKS partition means full-disk encryption: data stays safe while the machine is off.'],
        ['sudo rsync -a /home/ /mnt/backup/home/','Copies the home folders Timeshift leaves out. A backup counts after a test restore, with a copy off the machine.']
@@ -6527,9 +6600,11 @@ LADDER.addLevel({
      ['Find all SUID files and media files; note which you would remove and why.','sudo find / -perm -4000 -type f 2>/dev/null'],
      ['Download a small file whose publisher lists a SHA-256 value, hash it, and compare the two.','sha256sum FILE']
    ]),
+   REFLECT('s3r','Where Linux differs from Windows','Take three findings you fixed on Windows: an extra admin, a weak password policy, and an unneeded service. Write how you would find and fix each one on Mint or Ubuntu, and one place where the Linux approach differs enough to trip you up.'),
    LINKS('Go further',['ubuntu-server','ubuntu-sec','mint-docs','cis','t4t-ld-mint','t4t-ld-ubuntu','t4t-lr-linux'])
   ]},
  {id:'s4',title:'Services and ports',bloom:'Understand',sum:'Which services are insecure by design, which are insecure by configuration, and how to tell "remove" from "harden".',
+  can:'tell a service that is insecure by design from one that is insecure by configuration, and decide between remove and harden from the brief',
   blocks:[
    C('Remove, harden, or keep','Apply',
      TIPS('<b>Insecure by design</b> (clear-text credentials): Telnet (23), FTP (21), rsh/rlogin (512-514), and HTTP admin pages. Remove them when the brief leaves them out; if required, restrict and monitor.',
@@ -6646,9 +6721,11 @@ LADDER.addLevel({
      ['Windows shows a listener on 5900 owned by winvnc.exe, absent from the brief.',['Leave it, VNC is standard','Uninstall it and check startup and scheduled tasks for anything that re-launches it','Only block port 5900 in the firewall','Rename the process'],1,'Unlisted remote-access software is an unauthorized-software or malware finding. Remove it and its persistence.',{whys:['VNC is remote-control software, and this copy is missing from the brief, so it is an unauthorized way in.','Software missing from the brief is unauthorized, and it often returns through startup items and scheduled tasks, so the fix removes both.','A firewall block leaves the program installed and ready to return, so removal comes first.','Renaming the process only hides it, and the remote access stays.'],imp:'core',c:'host-prohibited-files-software'}],
      ['Which is the usual default firewall posture for a workstation or server?',['Block everything in and out','Default deny inbound, allow outbound, and open only required inbound ports','Allow everything, the OS handles it','Block outbound only'],1,'Blocking all outbound traffic would break updates, DNS, and everything users need. Tighter outbound filtering is possible, but it has to be planned service by service.',{whys:['Blocking everything outbound breaks updates, DNS, and normal browsing.','Attacks arrive as unsolicited inbound traffic, so inbound starts denied; outbound stays open so updates, DNS, and browsing work, and each required service gets its own inbound rule.','The operating system follows its firewall rules, so allowing everything leaves every listener reachable.','Blocking outbound alone leaves every inbound listener reachable from outside.'],imp:'core',c:'host-firewall'}]
    ]),
+   REFLECT('s4r','Remove or harden?','List every service you remember from a lab brief or a Range scenario. Sort them into three columns: remove, harden, or ask the owner first. For one service in each column, write the single fact that put it there.'),
    LINKS('Go further',['ubuntu-server','ms-win-sec','cis'])
   ]},
  {id:'s5',title:'Cisco: configure a switch and a router',bloom:'Apply',sum:'The baseline IOS commands for a new switch and router, why each one matters, and how to verify them.',
+  can:'configure a new switch and router with a secure baseline, explain why each command matters, and verify it from the console',
   blocks:[
    C('Addresses and subnets','Understand',P('Every prefix splits an address into network bits and host bits. Set every host bit to 0 and you get the <b>network address</b>; set every host bit to 1 and you get the <b>broadcast address</b>; the addresses between them are the usable hosts, 2<sup>h</sup> − 2 for h host bits.'),TIPS('<b>10.1.20.0/24</b> (Teachers): network 10.1.20.0, broadcast 10.1.20.255, and usable 10.1.20.1 to 10.1.20.254, which is 254 hosts. RtrA takes .1 as the gateway, and SwA takes .2.','<b>10.1.20.64/26:</b> the mask’s last octet is 192, and 256 − 192 = 64 is the block size, so the subnets start at .0, .64, .128, and .192. This one runs from 10.1.20.64 to 10.1.20.127, with 62 usable hosts.','<b>VLSM (variable-length subnet masks):</b> give each subnet the smallest mask whose 2<sup>h</sup> − 2 covers its hosts, then carve the largest first so each block starts on its own boundary. From 10.1.20.0/24, 100 hosts take a /25 at .0, 40 take a /26 at .128, and 10 take a /28 at .192.','<b>10.0.0.0/30</b> (the link between the sites): four addresses and two usable ones, 10.0.0.1 and 10.0.0.2, exactly one router at each end.','<b>A gateway sits inside its hosts’ subnet,</b> because a host reaches its gateway directly over the local link.'),P('Practice the arithmetic in <a href="'+RES['t4t-subnet'][1]+'" target="_blank" rel="noopener noreferrer">Subnet Sprint</a>.')),
    QUIZ('s5ck1','Check yourself',[
@@ -6880,6 +6957,7 @@ LADDER.addLevel({
    LINKS('Go further',['t4t-ios','t4t-audit','t4t-ld-ios','t4t-lr-ios','netacad','pt'])
   ]},
  {id:'s7',title:'Network tools and a safer router',bloom:'Apply',sum:'Worked examples with the tools that answer network questions (pings, traces, lookups, address checks, and scans of your own lab), the TCP handshake behind every connection, and a safer home or shop router and Wi-Fi setup.',
+  can:'answer a network question with the right tool, read a TCP handshake, and set up a safer home or shop router and Wi-Fi',
   blocks:[
    C('One question, one tool','Apply',
      P('Each network tool answers one question. Work outward from your own machine: your address, your gateway, the path, the name, and then the port.'),
@@ -7056,6 +7134,7 @@ LADDER.addLevel({
    LINKS('Go further',['nmap-ref','wfa-security','cisa'])
    ]},
  {id:'s8',title:'Web traffic, HTTPS, and certificates',bloom:'Apply',sum:'Read real requests and responses with curl, check a certificate and its warnings, rank TLS versions, set cookie flags that protect a session, and check who a cloud file is shared with.',
+  can:'read a request and response with curl, judge a certificate warning, rank TLS versions, set cookie flags, and check who a cloud file is shared with',
   blocks:[
    C('Ask a server directly with curl','Apply',
      P('A browser hides most of the conversation you met in <a href="#freshman/f11">The web and the cloud in plain words</a>. <b>curl</b> shows it: it sends one request and prints exactly what comes back. It ships with Windows 10 and 11 and nearly every Linux, so an admin checks a server they run in seconds: the redirect to HTTPS, the security headers, the cookie flags, and the certificate. In Windows PowerShell, type <code>curl.exe</code>, since plain curl there runs a different command.'),
@@ -7220,6 +7299,7 @@ LADDER.addLevel({
    LINKS('Go further',['mdn-http','moz-tls','owasp-headers'])
    ]},
  {id:'s9',title:'Check before you trust: messages, links, and files',bloom:'Apply',sum:'Worked checks on a suspicious email, a look-alike link, and an unknown file: read the headers, look up the domain and hash, and report it the right way.',
+  can:'check a suspicious email by its headers, a link by its domain, and a file by its hash, and report each the right way',
   blocks:[
    C('Three questions before you act','Apply',
      P('A message asks you to click, open, pay, or sign in. Three checks answer three questions while everything stays closed. <b>Who really sent it?</b> Read the headers. <b>Where does the link really go?</b> Read its registered domain and look that domain up. <b>What is this file?</b> Hash it and look up the hash. Then report it, so one person’s check protects everyone.'),
@@ -7372,6 +7452,7 @@ LADDER.addLevel({
    LINKS('Go further',['icann-lookup','dmarc-org','ftc-phishing'])
    ]},
  {id:'s10',title:'Read the logs: Windows, Linux, and network devices',bloom:'Apply',sum:'Worked reads of a Windows sign-in event, the event IDs a defender reads first, an auth.log line, and firewall and router log lines, plus the pipeline that counts them and the habits that keep logs trustworthy.',
+  can:'read a Windows sign-in event, an auth.log line, and firewall and router log lines, count them with a pipeline, and keep logs trustworthy',
   blocks:[
    C('Where each system writes its story','Apply',
      P('Every sign-in, block, and change leaves a line somewhere. This unit reads real-looking lines from three places: a Windows PC at Kaimana Dental Clinic in Kailua, the makani-web server in Hilo, and the Site A router. Read the fields, convert the time, then decide whether it matters.'),
@@ -7550,6 +7631,7 @@ LADDER.addLevel({
    LINKS('Go further',['nist-800-92','ms-win-sec','ubuntu-server','explainshell'])
    ]},
  {id:'s11',title:'Scripts for defenders',bloom:'Apply',sum:'Worked scripts in Bash, PowerShell, and Python that audit accounts and count log lines, how to read a script before you run it, and the controls that record and restrict scripts.',
+  can:'read a script before you run it, follow worked audits in Bash, PowerShell, and Python, change one line to move an audit to another system, and name the controls that record and restrict scripts',
   blocks:[
    C('Read a script before you run it','Apply',
      P('In <a href="#freshman/f12">Code you can read</a> you read scripts; now you run and fix them, so the reading habit comes first. A script runs with your rights, and under sudo with root’s, so every line you skip is a line you trust blind.'),
@@ -7671,6 +7753,14 @@ LADDER.addLevel({
      ['<code>fi</code>','Before done: the if opened inside the loop, so it closes inside the loop too.'],
      ['<code>done</code>','Last: done closes the loop from step 5, after every line it repeats.']
    ],'Apply'),
+   TYPEIN('s11t','Change one line: audit wheel on FreeBSD','check_sudo.sh audits the sudo group on Mint, Ubuntu, and Debian. FreeBSD keeps its administrators in the wheel group, and pw groupshow prints a group line in the same colon-separated form that getent prints. One line decides which system the audit runs on.',
+     '#!/bin/bash\nset -euo pipefail\nbrief="$1"\nadmins=$(getent group sudo | cut -d: -f4 | tr \',\' \' \')    # <- this line\nfor user in $admins; do\n  if ! grep -qx "$user" "$brief"; then\n    echo "Extra admin: $user"\n  fi\ndone',
+     ['admins=$(pw groupshow wheel | cut -d: -f4 | tr \',\' \' \')','admins=$(getent group wheel | cut -d: -f4 | tr \',\' \' \')'],
+     '<b>Right.</b> <code>pw groupshow wheel</code> prints <code>wheel:*:0:root,kawika</code>, the same four fields <code>getent</code> prints, so <code>cut -d: -f4</code> still takes the member list and <code>tr</code> turns the commas into spaces. The rest of the script stays as it is: the loop, the grep against the brief, and the message. One line moved the audit to another operating system. (<code>getent group wheel</code> works on FreeBSD too.)',
+     {bloom:'Apply',prompt:'Type the replacement for the marked line:'}),
+   QUIZ('s11q2','Check: predict the output',[
+     ['brief.txt holds root and lani. <code>pw groupshow wheel</code> prints <code>wheel:*:0:root,kawika,lani</code>. What does the changed script print?',['Extra admin: root','Extra admin: kawika','Extra admin: lani','Nothing'],1,'The loop visits root, kawika, and lani in turn; grep -qx finds root and lani in the brief, and kawika alone fails the test, so the if prints for kawika.',{whys:['root is in the brief, so grep -qx finds it and the if stays quiet.','kawika is the one member the brief leaves out, so the test fails for that name alone and the message prints once.','lani is in the brief, so grep -qx finds her and the if stays quiet.','One member is missing from the brief, so one line prints.'],imp:'core',c:'comp-scripting'}]
+   ]),
    SPOT('s11sp','Spot the risky lines before you run a downloaded script','Mele found setup_printer.sh on a forum for the front-desk printer at Lanikai Book Nook. Tap every line to fix or remove before anything runs, then Check.',[
      ['#!/bin/bash',null],
      ['# setup_printer.sh: front-desk printer helper',null],
@@ -7699,6 +7789,7 @@ LADDER.addLevel({
    LINKS('Go further',['gnu-bash','shellcheck','python-tutorial','ms-ps','explainshell'])
    ]},
  {id:'s6',title:'Investigation questions and the change log',bloom:'Apply',sum:'How to answer exactly, the commands that find things, and the one habit that makes every teammate better.',
+  can:'answer an investigation question exactly, pick the command that finds the answer, and keep a change log your teammates can use',
   blocks:[
    C('Answering an investigation question','Understand',
      TIPS('Read the whole question twice, and answer it before you change anything (<a href="#freshman/f1">Evidence first</a>). Note the <b>exact format</b> requested: hash algorithm, full path or just a name, user name or UID, and date format.',
@@ -7794,10 +7885,11 @@ LADDER.addLevel({
  intro:'Servers and networks. Windows Server with Active Directory and Group Policy, Debian, and Cisco networks with VLANs, inter-VLAN routing, and access control lists. You move from following checklists to reasoning about why one fix beats another.',
  mentor:['Shift from "what" to "why". After each fix ask: which hardening area, which principle, and what would break if you did the opposite?','Server topics take the longest. Give Active Directory and Group Policy their own sessions.','Have the learner who owns networking teach VLANs and ACLs back to the group. Teaching is the Analyze level in disguise.','Introduce the Config Audit drill here; evaluating someone else’s config is exactly this grade’s Bloom band.'],
  units:[
- {id:'j0',title:'Ready for Junior?',bloom:'Review',sum:'Sixteen questions on what Freshman and Sophomore taught. Your first check on each one builds your map (Strong, Revisit, or Explore) and a list of where to invest next. Every unit stays open.',
+ {id:'j0',title:'Ready for Junior?',bloom:'Review',sum:'Eighteen questions on what Freshman and Sophomore taught. Your first check on each one builds your map (Strong, Revisit, or Explore) and a list of where to invest next. Every unit stays open.',
+  can:'see which Sophomore skills are Strong and which need a review before the server and network grade begins',
   blocks:[
    C('How this check works','Understand',
-     P('Sixteen questions cover what Freshman and Sophomore taught. Answer each question, then check it with “I’m sure” or “I’m guessing”. Every option then opens its reason, and your first check builds your map: Strong, Revisit, or Explore. At the end, “Where to invest next” lists what to study, Core skills first, each linked to its unit and its Study Map concept. Every Junior unit stays open, whatever your map shows.')),
+     P('Eighteen questions cover what Freshman and Sophomore taught. Answer each question, then check it with “I’m sure” or “I’m guessing”. Every option then opens its reason, and your first check builds your map: Strong, Revisit, or Explore. At the end, “Where to invest next” lists what to study, Core skills first, each linked to its unit and its Study Map concept. Every Junior unit stays open, whatever your map shows.')),
    QUIZ('j0q','Ready for Junior?',[
      ['A scan of manoa-bakery.example lists TLS 1.0, 1.1, 1.2, and 1.3 as on. What do you change?',['Nothing: more versions reach more visitors','Turn off 1.0 and 1.1, keep 1.2 and 1.3, then confirm the devices the business needs still connect','Keep only 1.0, the most compatible','Turn off 1.3, the newest'],1,'Keep TLS 1.2 and 1.3, switch off everything older, and confirm the devices the business needs still connect. <a href="#sophomore/s8">Review: Web traffic, HTTPS, and certificates</a>',{whys:['Old versions carry known weaknesses, and every current browser speaks 1.2 or 1.3.','TLS 1.0 and 1.1 are retired, with weak ciphers; 1.2 and 1.3 serve every current browser, and the device check keeps an older card reader from breaking.','1.0 is the weakest version on the list.','1.3 is the strongest version on the list.'],imp:'core',c:'crypto-tls'}],
      ['Admins on 10.1.20.0/24 reach the switch at 10.1.20.2, and admins on other subnets get no reply. Which line is missing?',['ip domain-name school.lan','service password-encryption','banner motd #Authorized access only#','ip default-gateway 10.1.20.1'],3,'A layer 2 switch answers other subnets only through its ip default-gateway. <a href="#sophomore/s5">Review: Cisco: configure a switch and a router</a>',{whys:['A domain name helps make SSH keys, and reaching other subnets needs a gateway.','Password encryption hides passwords in the config.','A banner shows a warning at login.','A layer 2 switch replies to other subnets only through its default gateway, while local admins reach it directly.'],imp:'core',c:'cisco-basic-config'}],
@@ -7814,10 +7906,13 @@ LADDER.addLevel({
      ['Visitors to https://booking.kapaa-kayak.example get a name-mismatch warning. Which certificate field lists every name the certificate covers?',['Subject Alternative Name (SAN)','Issuer','Valid to (notAfter)','Serial number'],0,'Browsers match the address against the SAN list; the subject CN is a leftover they ignore. The issuer names the certificate authority, and notAfter sets the expiry, which brings a different warning. The fix: reissue the certificate with booking.kapaa-kayak.example in the SAN list. <a href="#sophomore/s8">Review: Web traffic, HTTPS, and certificates</a>',{whys:['Browsers match the address against the SAN list, so a host missing from it brings the name-mismatch warning.','Issuer names the certificate authority.','notAfter sets the expiry.','The serial number identifies the certificate.'],imp:'core',c:'crypto-certificates'}],
      ['An email’s From shows <code>office@kahikina-high.example</code>, and its Return-Path shows <code>bounce@mail-relay.example</code>. What does that tell you?',['It is fake, since the two domains differ','It is real, since the Return-Path is only the bounce address','The Reply-To line settles who sent it','Another system sent it, and dmarc=pass for kahikina-high.example in Authentication-Results would prove the From'],3,'The Return-Path names the sending system’s own domain, which SPF checks, and mailing services often send for a school. Only DMARC ties a pass to the From you see, so read your own server’s Authentication-Results before you trust the message. <a href="#sophomore/s9">Review: Check before you trust: messages, links, and files</a>',{whys:['Mailing services often send for a school, so the domains differ often.','SPF checks the Return-Path, and the From still needs DMARC.','Reply-To says where replies go.','A different Return-Path means another system sent it, and DMARC is the check that ties a pass to the visible From.'],imp:'core',c:'threat-email-checks'}],
      ['Event 4625 shows one failed sign-in for each of 40 different accounts, all from 203.0.113.50 within two minutes, and no 4740 follows. Which pattern is this?',['Brute force against one account','A user who forgot a password','A password spray','An account lockout'],2,'Count the accounts per address. One name with many tries is brute force; many names with about one try each is a spray, which stays under the lockout threshold, so no 4740 appears. MFA, banned common passwords, and an alert when one address touches many names stop it. <a href="#sophomore/s10">Review: Read the logs: Windows, Linux, and network devices</a>',{whys:['Brute force hits one account many times.','One user would fail on one account.','One try each on 40 accounts from one address stays under the lockout threshold, which is the spray pattern and why no 4740 appears.','A lockout would log 4740.'],imp:'core',c:'det-windows-events'}],
-     ['An audit script runs <code>grep "Failed" /var/log/auth.lg | sort</code>, with a typo in the file name. Without a safety line, it prints an empty report and carries on. What does <code>set -euo pipefail</code> change?',['The script stops there: pipefail passes grep’s failure on, and -e halts at a failed command','It corrects the file name','It hides the error so the report stays tidy','Nothing, since a pipeline reports only its last command in every mode'],0,'Without pipefail, a pipeline reports only its last command, and sort succeeds on empty input, so the error slips past. pipefail makes any failed part fail the whole pipeline, -e stops the script at that failure, and -u stops it at an unset variable. A loud stop beats a quiet, wrong report. <a href="#sophomore/s11">Review: Scripts for defenders</a>',{whys:['pipefail makes the whole pipeline fail when grep fails, and -e then stops the script at that failure.','The shell runs the name exactly as typed.','These options make errors loud.','pipefail changes exactly that rule.'],imp:'good',c:'comp-scripting'}]
+     ['An audit script runs <code>grep "Failed" /var/log/auth.lg | sort</code>, with a typo in the file name. Without a safety line, it prints an empty report and carries on. What does <code>set -euo pipefail</code> change?',['The script stops there: pipefail passes grep’s failure on, and -e halts at a failed command','It corrects the file name','It hides the error so the report stays tidy','Nothing, since a pipeline reports only its last command in every mode'],0,'Without pipefail, a pipeline reports only its last command, and sort succeeds on empty input, so the error slips past. pipefail makes any failed part fail the whole pipeline, -e stops the script at that failure, and -u stops it at an unset variable. A loud stop beats a quiet, wrong report. <a href="#sophomore/s11">Review: Scripts for defenders</a>',{whys:['pipefail makes the whole pipeline fail when grep fails, and -e then stops the script at that failure.','The shell runs the name exactly as typed.','These options make errors loud.','pipefail changes exactly that rule.'],imp:'good',c:'comp-scripting'}],
+     ['The padlock shows in the browser on orders.manoa-bakery.example. What does it promise, and what does it leave out?',['That the page is honest; nothing is left out','That the connection to that host is encrypted and the certificate matches the name; it says nothing about who runs the site or what the page does','That the site is safe to type a password into','That the site has no malware'],1,'TLS encrypts the connection and ties the certificate to the host name. Anyone can get a certificate for a name they control, so the padlock says nothing about honesty. <a href="#freshman/f11">Review: The web and the cloud in plain words</a>',{whys:['Certificates prove a name and encrypt the link; they say nothing about honesty.','The padlock promises an encrypted connection to the named host, and anyone can get a certificate for a name they control, so it says nothing about who runs the site or what the page does.','A phishing page can carry a valid padlock; the name in the address bar decides where a password goes.','Malware checks come from other tools; the padlock speaks only about the connection.'],imp:'core',c:'crypto-certificates'}],
+     ['Hilo Lehua Clinic runs MFA on remote access, a host firewall on every PC, nightly backups kept off site, and a logging server. Which principle is that, and why does it help when one control fails?',['Least privilege: each control limits one account','Defense in depth: the controls are layers, so an attacker who passes one still meets the next','Separation of duties: each control belongs to one person','Availability: four controls keep the clinic online'],1,'Layered controls mean one failure, such as a stolen password, still meets the firewall, the logs, and the backups. <a href="#freshman/f3">Review: Security principles</a>',{whys:['Least privilege limits what each account can reach; these four controls guard different stages of an attack.','Defense in depth stacks controls so an attacker who passes one, such as a stolen password, still meets the next, and the logs record the attempt.','Separation of duties is about people and approvals, and these are technical layers.','Backups serve availability; the pattern of four different layers is defense in depth.'],imp:'core',c:'sec-defense-in-depth'}]
    ])
   ]},
  {id:'j1',title:'Windows Server and Active Directory',bloom:'Apply',sum:'Domain controllers, users and groups in AD, device join, LDAPS, Kerberos beside NTLM, service identities, unique local admin passwords, account lifecycle, and the few server roles you will actually touch.',
+  can:'explain a domain controller, manage users and groups in AD, tell Kerberos from NTLM, and give each service and local admin its own credential',
   blocks:[
    C('Server is more than a bigger desktop','Understand',
      TIPS('A <b>domain controller</b> (DC) holds Active Directory, the central database of users, groups, and computers; the comparison below shows where accounts live on each kind of machine.',
@@ -8045,6 +8140,7 @@ LADDER.addLevel({
    LINKS('Go further',['ms-winsrv','ms-win-sec','ms-laps','cis','stig','t4t-ld-winsrv','t4t-lr-win'])
   ]},
  {id:'j2',title:'Group Policy',bloom:'Apply',sum:'How GPOs enforce settings across a domain, the high-value ones, logging what runs, the ways admins reach a machine, update rings, domain time, and how to confirm they applied.',
+  can:'explain how a GPO reaches a thousand machines, pick the high-value settings, log what runs, and read gpresult to see which policy won and which was filtered out',
   blocks:[
    C('One place to set a thousand machines','Understand',
      TIPS('A <b>Group Policy Object</b> (GPO) is a bundle of settings linked to the domain or an organizational unit. Settings flow down to the computers and users underneath.',
@@ -8167,9 +8263,25 @@ LADDER.addLevel({
      ['        Local Group Policy',null],
      ['            Filtering:  Not Applied (Empty)',null,'The local policy on PC-07 is empty, so it has nothing to apply and sets nothing either way.']
    ]),
+   SPOT('j2sp2','Which policy won?','The Workstation Baseline GPO, linked to the OU Workstations, locks the screen after 10 minutes. On PC-12 the screen locks after 60. Here is gpresult /r from PC-12; applied GPOs are listed with the winning one first. Tap the lines that show which policy won and why, then Check.',[
+     ['COMPUTER SETTINGS',null],
+     ['    CN=PC-12,OU=Workstations,DC=example,DC=com',null,'PC-12 sits in the Workstations OU, so the baseline is linked to its container and ought to win over a plain domain link.'],
+     ['    Last time Group Policy was applied: 11/1/2026 at 8:02:14 AM',null,'Policy applied this morning, so the machine holds current settings.'],
+     ['    Applied Group Policy Objects',null],
+     ['        Lab Overrides','Listed first, so it holds the highest precedence, and it sets 60 minutes. A GPO linked at the domain lands above an OU-linked GPO only when its link is Enforced; open the link in the Group Policy Management Console and decide whether Enforced belongs there.'],
+     ['        Workstation Baseline',null,'The baseline applied and sits second, so its 10 minutes lost to the enforced GPO above it. The setting is in place; a higher link overrides it.'],
+     ['        Site Default',null,'Site-linked GPOs rank below domain and OU links; this one applied and carries no screen-lock setting.'],
+     ['        Default Domain Policy',null,'The Default Domain Policy holds account policy and ranks lowest here.'],
+     ['    The following GPOs were not applied because they were filtered out',null],
+     ['        Kiosk Lockdown',null,'This line only names a skipped GPO; the Filtering line under it gives the reason.'],
+     ['            Filtering:  Denied (WMI Filter)',null,'The WMI filter excludes PC-12, so Kiosk Lockdown never touched the screen lock. Working as designed.'],
+     ['        Legacy Printers',null],
+     ['            Filtering:  Disabled (GPO)',null,'The link is disabled, so this GPO sets nothing either way.']
+   ]),
    LINKS('Go further',['ms-winsrv','ms-baselines','ms-ps-logging','stig','t4t-ld-winsrv'])
   ]},
  {id:'j3',title:'Debian and deeper Linux',bloom:'Analyze',sum:'What differs from Mint and Ubuntu, then unit files, process trees, AppArmor and SELinux, file integrity, the firewall layers, sudo risk, and finding persistence.',
+  can:'read a unit file and a process tree, explain AppArmor and SELinux, check file integrity, layer the firewall, judge sudo risk, and find persistence',
   blocks:[
    C('Debian differences and deeper hardening','Analyze',
      TIPS('Debian (12 "bookworm", 13 "trixie") is close to Ubuntu but leaner. New installs ship without rsyslog; logs live in the systemd journal, so use <code>journalctl</code> rather than /var/log/auth.log, and give fail2ban <code>backend = systemd</code> so it reads the journal too. Some setups use a custom admin group; confirm with <code>sudo -l</code> and <code>/etc/sudoers</code>.',
@@ -8447,9 +8559,11 @@ LADDER.addLevel({
       ['On makani-web, <code>journalctl -u ssh | grep "Failed password" | grep -oE "from [0-9.]+" | sort | uniq -c | sort -rn</code> starts <code>212 from 203.0.113.50</code>, then <code>9 from 198.51.100.7</code>. Later: <code>Accepted password for kai from 203.0.113.50</code>. What follows?',['Nothing: every server sees failures','198.51.100.7 is the bigger threat','kai’s password was guessed: reset it, review the session, and require keys','fail2ban stopped 203.0.113.50'],2,'Failures, then a success from one address, mean a guessed password. On Debian, fail2ban reads the journal only with backend = systemd. <a href="#sophomore/s10">Review: Read the logs: Windows, Linux, and network devices</a>',{whys:['Failures followed by a success from the same address mean a guessed password.','198.51.100.7 failed 9 times and stayed out; 203.0.113.50 got in.','Guessing, then a success from that address, means kai’s password fell: reset it and require keys.','The later success shows 203.0.113.50 got in, so nothing stopped it.'],imp:'core',c:'det-unix-logs'}],
       ['makani-web’s brief keeps MySQL for the shop’s web app on the same server. <code>sudo ss -tlnp</code> shows <code>0.0.0.0:3306</code>, and mysql.user holds an account with an empty name. Best next step?',['Purge mysql-server','Run sudo mysql_secure_installation, set bind-address = 127.0.0.1, restart mysql, and check ss again','Block 3306 in ufw and leave the accounts as they are','Stop mysql and leave it off'],1,'Harden what the brief keeps: the wizard removes the anonymous account, and the bind address keeps 3306 to this machine. <a href="#junior/j3">Review: Debian and deeper Linux</a>',{whys:['The brief keeps MySQL, so purging it breaks the shop’s web app.','The wizard removes the anonymous account, the bind address keeps port 3306 to this machine, and ss proves it.','ufw makes a good second layer, and the anonymous account still lets any program on the server in.','A stopped database takes the web app down, which the brief rules out.'],imp:'core',c:'host-services'}]
    ]),
+   REFLECT('j3r','Persistence you would check first','You have fifteen minutes on a Debian server that may hold an intruder\u2019s foothold. Write the five places you check for persistence, in order, with the command for each, and say why the first one comes first.'),
    LINKS('Go further',['debian-handbook','debian-security','debian-wiki','gtfobins','nftables-wiki','cis','stig','explainshell','t4t-lr-linux'])
   ]},
  {id:'j4',title:'Cisco: VLANs, routing, and ACLs',bloom:'Apply',sum:'Segment a network with VLANs, route between them, and filter traffic with access lists.',
+  can:'segment a network with VLANs, route between them, filter with an access list, and verify each from show output',
   blocks:[
    C('VLANs and trunks','Apply',
      CMDS('Segment SwA and SwB',[
@@ -8809,9 +8923,11 @@ LADDER.addLevel({
      ['An unknown laptop appears on a Teachers port','Port security','It limits which MAC addresses may use the port.'],
      ['Hosts on an IPv4-only VLAN pick up an IPv6 default gateway that belongs to a classroom PC','RA guard on access ports','A rogue router advertisement made the PC their IPv6 gateway.']
    ],'Analyze'),
+   REFLECT('j4r','Defend the Site A design','Explain to a new technician why Site A uses three VLANs, a native VLAN that carries no hosts, and an access list on the VTY lines. For each choice, write what breaks if it is left out, and one test that proves it is in place.'),
    LINKS('Go further',['t4t-ios','t4t-tickets','t4t-audit','t4t-ld-ios','t4t-lr-ios','pt','netacad'])
   ]},
  {id:'j7',title:'Read the wire: captures, flows, and network attacks',bloom:'Analyze',sum:'Read capture excerpts, flow records, and IDS alerts the way an analyst does, and recognize scans, spoofing, on-path tricks, and floods from the traffic they leave. Capture only on networks you own or have written permission to watch; school networks forbid it, and these excerpts give you the same practice.',
+  can:'read a capture excerpt, a flow record, and an IDS alert, and recognize a scan, spoofing, an on-path trick, and a flood from the traffic they leave',
   blocks:[
    C('Where a capture can see','Analyze',
      P('A capture copies every packet that crosses one network card: time, addresses, ports, flags, and payload. On a switched network that card hears its own traffic and broadcasts, so analysts collect from a <b>SPAN port</b> (the switch sends a copy) or a <b>network tap</b> (a device on the cable). A sniffer that suddenly hears other hosts points to MAC flooding or ARP spoofing (<a href="#junior/j4">Cisco: VLANs, routing, and ACLs</a>).'),
@@ -8983,6 +9099,7 @@ LADDER.addLevel({
    LINKS('Go further',['tcpdump-man','wireshark-guide','cisa'])
    ]},
  {id:'j6',title:'Network security design: firewalls, zones, VPNs, and Wi-Fi',bloom:'Analyze',sum:'Compare firewall types, set the rules between zones with a DMZ, place sensors, admit devices with 802.1X, choose a VPN, and recognize wireless attacks from what they leave behind.',
+  can:'compare firewall types, write the rules between zones with a DMZ, place a sensor, admit a device with 802.1X, choose a VPN, and recognize a wireless attack',
   blocks:[
    SCALE('What each firewall can see',{from:'Reads less',to:'Reads more',bands:[
      ['Stateless ACL','Each packet alone: addresses, ports, and flags. Replies need their own rule, such as <code>permit tcp any any established</code>.','l1'],
@@ -9112,6 +9229,7 @@ LADDER.addLevel({
    LINKS('Go further',['nist-800-41','nist-800-77','wfa-security'])
    ]},
  {id:'j8',title:'Windows: logons, tokens, and the event trail',bloom:'Analyze',sum:'Read logon types, tokens, process logs, script logs, and domain controller sign-in events to tell normal Windows activity from misuse, and see why forwarded logs survive an intruder.',
+  can:'read logon types, tokens, process and script logs, and domain controller events to tell normal Windows activity from misuse',
   blocks:[
    C('Read the trail rather than one event','Analyze',
      P('Honua Logistics runs one domain: KONA-DC01 checks every password, HONUA-SRV1 holds the shared files, and dispatchers work at PCs such as KAILUA-WS07. <a href="#sophomore/s10">Read the logs</a> taught the IDs one at a time; this unit reads them as a story. For every event ask four questions: <b>who</b> (the account), <b>how</b> (logon type and authentication package), <b>from where</b> (source address and parent process), and <b>when</b> (in UTC, against working hours).'),
@@ -9279,6 +9397,7 @@ LADDER.addLevel({
    LINKS('Go further',['ms-ad-events','ms-wef','ms-ps-logging','ms-sysint','ms-win-sec'])
    ]},
  {id:'j9',title:'Web attacks in the logs',bloom:'Analyze',sum:'Recognize injection, cross-site scripting, request forgery, path traversal, and broken access control from access logs and code, trace each to its fix, and see prompt injection as the same family.',
+  can:'recognize injection, cross-site scripting, request forgery, path traversal, and broken access control in logs and code, and name the fix for each',
   blocks:[
    C('Read the web server’s diary','Analyze',
      P('Every attack in this unit ends up as a line in an access log. Apache writes <code>/var/log/apache2/access.log</code>, nginx writes <code>/var/log/nginx/access.log</code>, and IIS writes W3C files under <code>C:\\inetpub\\logs\\LogFiles</code>. In <a href="#sophomore/s8">Web traffic, HTTPS, and certificates</a> you read one request and its answer; here you read thousands and find the few that matter.'),
@@ -9439,6 +9558,7 @@ LADDER.addLevel({
    LINKS('Go further',['owasp10','owasp-sqli','owasp-csrf','owasp-llm','juice'])
    ]},
  {id:'j10',title:'Cloud security: identity, storage, and logs',bloom:'Analyze',sum:'Read cloud policies, storage settings, network rules, container recipes, and audit logs from realistic excerpts, see who decides access, and find the misconfiguration before an attacker does.',
+  can:'read a cloud policy, a storage setting, a network rule, a container recipe, and an audit log, and find the misconfiguration before an attacker does',
   blocks:[
    C('Every click is an API call','Analyze',
      P('A cloud console is a web page in front of an API. Every action, from a click or a script, is a signed API call the provider can log: who called, what, from where, and whether it worked. Valid credentials reach the console from anywhere, so <b>identity is the new perimeter</b>.'),
@@ -9613,6 +9733,7 @@ LADDER.addLevel({
    LINKS('Go further',['aws-iam-bp','docker-bp','cis'])
    ]},
  {id:'j11',title:'Map the attack: kill chain, ATT&CK, and threat intelligence',bloom:'Analyze',sum:'Place real-looking evidence on the kill chain and ATT&amp;CK, tell passive from active reconnaissance, rank indicators by how hard they are to change, share intelligence by its label, and recognize attack tools by their traces.',
+  can:'place evidence on the kill chain and ATT&amp;CK, tell passive from active reconnaissance, rank indicators by how hard they are to change, and label intelligence for sharing',
   blocks:[
    C('Three lenses on one intrusion','Analyze',
      P('In Freshman you met the kill chain as a story (<a href="#freshman/f8">Threats and the people behind them</a>). Now start from evidence, a log line or an alert, and place it. The <b>kill chain</b> orders the steps in time, <b>MITRE ATT&amp;CK</b> names each behavior with an ID, and the <b>diamond model</b> links who, with what, from where, and against whom. One case runs through this unit: a ransomware crew that targets Hōkū Hardware in Kaimukī.')),
@@ -9793,6 +9914,7 @@ LADDER.addLevel({
    LINKS('Go further',['mitre-attack','first-tlp','cisa'])
    ]},
  {id:'j13',title:'Evidence that holds up: forensics, timelines, and sandboxes',bloom:'Analyze',sum:'Collect evidence in the right order, prove a copy is exact, read a process list from a memory image, merge many logs into one timeline, and read a sandbox report without running malware yourself.',
+  can:'collect evidence in order, prove a copy is exact, read a process list from memory, build a timeline from many logs, and read a sandbox report',
   blocks:[
    C('Evidence that holds up','Analyze',
      P('Forensics answers what happened, when, and by whose account, in a form that survives a skeptical review. On Wednesday, October 14, an alert fired on HILO-WS03, the reception PC at Hilo Lehua Clinic. Keola collects the evidence and Kai analyzes it; this unit follows their work. Four rules carry it:'),
@@ -9926,6 +10048,7 @@ LADDER.addLevel({
    LINKS('Go further',['rfc-3227','nist-800-86'])
    ]},
  {id:'j12',title:'Respond to an incident: triage, contain, and recover',bloom:'Analyze',sum:'Read an alert field by field, weigh severity and confidence, choose a containment that keeps the evidence, remove every foothold, and restore from a backup you can trust.',
+  can:'read an alert field by field, weigh severity against confidence, choose a containment that keeps evidence, remove every foothold, and restore from a trusted backup',
   blocks:[
    C('From alert to recovery','Analyze',
      P('Back to Wednesday, October 14, at Hilo Lehua Clinic. At 19:04 UTC (09:04 in Hilo) the SIEM raised an alert on HILO-WS03, the reception PC, built from the EDR’s behavior rule. This unit works the case from the first look to the restored file server: read the alert, rank it, confirm it, scope it, contain it, remove every foothold, and recover. <a href="#junior/j13">Evidence that holds up</a> showed what Keola collected along the way.')),
@@ -10054,6 +10177,7 @@ LADDER.addLevel({
    LINKS('Go further',['nist-61r3','cisa-ransomware'])
    ]},
  {id:'j5',title:'Evaluate a configuration',bloom:'Evaluate',sum:'Read a config or a system like an auditor: rank findings by impact, exposure, and known exploitation, and explain the order from those criteria.',
+  can:'rank the findings on a system by impact, exposure, and known exploitation, and defend the order from those criteria',
   blocks:[
    C('Thinking like an auditor','Analyze',
      P('At this grade you move from asking "is this a finding?" to asking "which finding do I fix first?" Rank by <b>impact</b> (how much an attacker gains) and <b>effort</b> (how fast you fix it). A domain admin backdoor outranks a missing login banner even though both are findings.'),
@@ -10152,10 +10276,11 @@ LADDER.addLevel({
  intro:'FreeBSD, Windows credential and domain attacks, and web application security join the mix, and the differentiator shifts from knowledge to a team that works like a system: a checklist written from standards, clear roles, a time plan, and the discipline to understand every change before making it. This grade is where you create those artifacts, and own the ethics that come with the skill.',
  mentor:['Hand the pen to the learners. Your job here is to review what they create (checklist, role plan, and runbook) and leave the authorship to them.','Run full timed practice sessions on Lockdown Range or your own VMs, then debrief. The debrief, more than the run, is where the learning lands.','Train every fix by hand before anyone automates it. A script is a liability until someone on the team can explain it.','Make the ethics conversation explicit and recurring. These learners can now do real damage; the whole point is that they choose restraint.'],
  units:[
- {id:'se0',title:'Ready for Senior?',bloom:'Review',sum:'Sixteen questions on what Freshman, Sophomore, and Junior taught. Your first check on each one builds your map (Strong, Revisit, or Explore) and a list of where to invest next. Every unit stays open.',
+ {id:'se0',title:'Ready for Senior?',bloom:'Review',sum:'Eighteen questions on what Freshman, Sophomore, and Junior taught. Your first check on each one builds your map (Strong, Revisit, or Explore) and a list of where to invest next. Every unit stays open.',
+  can:'see which Junior skills are Strong and which need a review before the design-and-create grade begins',
   blocks:[
    C('How this check works','Understand',
-     P('Sixteen questions cover what Freshman, Sophomore, and Junior taught. Answer each question, then check it with “I’m sure” or “I’m guessing”. Every option then opens its reason, and your first check builds your map: Strong, Revisit, or Explore. At the end, “Where to invest next” lists what to study, Core skills first, each linked to its unit and its Study Map concept. Every Senior unit stays open, whatever your map shows.')),
+     P('Eighteen questions cover what Freshman, Sophomore, and Junior taught. Answer each question, then check it with “I’m sure” or “I’m guessing”. Every option then opens its reason, and your first check builds your map: Strong, Revisit, or Explore. At the end, “Where to invest next” lists what to study, Core skills first, each linked to its unit and its Study Map concept. Every Senior unit stays open, whatever your map shows.')),
    QUIZ('se0q','Ready for Senior?',[
      ['Which wildcard mask matches the subnet 10.1.20.64/26 in an ACL?',['0.0.0.64','0.0.0.255','0.0.0.63','255.255.255.192'],2,'Subtract each mask octet from 255: 255.255.255.192 becomes 0.0.0.63. <a href="#junior/j4">Review: Cisco: VLANs, routing, and ACLs</a>',{whys:['0.0.0.64 copies the network’s last octet.','0.0.0.255 matches a whole /24.','An ACL wildcard is the subnet mask flipped: 255 minus each octet of 255.255.255.192 gives 0.0.0.63.','That is the subnet mask, which an ACL flips.'],imp:'core',c:'cisco-acls'}],
      ['A capture shows 203.0.113.70 sending SYN packets to 200 different ports on makani-web within 3 seconds. What is it?',['A SYN flood against one service','A port scan looking for open services','Normal web browsing','A rogue DHCP server'],1,'One source that touches many ports fast is a scan: SYN-ACK replies mark the open ports, and RSTs mark the closed ones. A SYN flood hammers one port from many sources. <a href="#junior/j7">Review: Read the wire: captures, flows, and network attacks</a>',{whys:['A SYN flood hammers one port, often from many sources.','One source touching 200 ports in 3 seconds is looking for open services, which is a port scan.','Browsing uses a few ports, such as 443.','DHCP hands out addresses.'],imp:'core',c:'net-scan-results'}],
@@ -10172,10 +10297,13 @@ LADDER.addLevel({
      ['Hōkū Hardware’s access log shows <code>"GET /download?file=../../../../etc/passwd HTTP/1.1" 200 2381</code>. What does the line tell you?',['The check held, since a 200 marks a refused request','Path traversal that likely worked: the server sent back about a text file’s worth of bytes, so escalate','A scan for missing pages, answered with nothing','Nothing, since access logs leave out GET requests'],1,'Each ../ climbs one folder out of the served folder, and four climbs reach /. A 400 or 403 means the check held, and a 404 means nothing was served; a 200 with a text file’s size means the file went out. The fix maps names to an allow-list or refuses any resolved path outside the files folder. <a href="#junior/j9">Review: Web attacks in the logs</a>',{whys:['A 200 means the server sent the file.','A 200 with about 2,400 bytes means the server sent back a file the size of /etc/passwd, so the traversal likely worked.','A missing page returns 404.','Access logs record GET requests.'],imp:'core',c:'web-access-logs'}],
      ['An app nobody in IT approved, “Calendar Pro”, holds consent to the Mail.Read scope for 20 staff mailboxes at Hilo Lehua Clinic. What is this, and what is the fix?',['A normal SAML sign-in, so leave it','MFA fatigue, so require a passkey','An expired token, so staff sign in again','Consent phishing through OAuth: revoke the consent and let only admin-approved apps connect'],3,'OAuth hands an app permission to act for you, written as scopes such as Mail.Read, while SAML and OIDC prove who you are. An unapproved app that reads mail is consent phishing, so audit consents like passwords: revoke this one and limit which apps users may approve. <a href="#junior/j10">Review: Cloud security: identity, storage, and logs</a>',{whys:['SAML proves identity, and this app holds mail access.','MFA fatigue floods approval prompts.','An expired token ends a session, and this consent stays.','An unapproved app holding Mail.Read is consent phishing, so revoking the consent cuts its access, and admin approval stops the next one.'],imp:'core',c:'crypto-sso'}],
      ['Event 4698 on KAILUA-WS07 shows a new scheduled task, “PrinterHelper”, that runs a file from the Public folder at every sign-in. Where does it sit on the kill chain, and which ATT&amp;CK tactic does it show?',['Installation; Persistence','Delivery; Initial Access','Reconnaissance; Discovery','Actions on objectives; Impact'],0,'A task that relaunches code at every sign-in keeps the intruder’s foothold through restarts: Installation on the kill chain and Persistence in ATT&amp;CK. Hunt new tasks, services, and Run keys, then trace what created this one. <a href="#junior/j11">Review: Map the attack: kill chain, ATT&amp;CK, and threat intelligence</a>',{whys:['A task that relaunches code at every sign-in keeps the foothold through restarts: Installation on the kill chain, Persistence in ATT&amp;CK.','Delivery and Initial Access come earlier.','Reconnaissance and Discovery gather information.','Impact disrupts or destroys.'],imp:'core',c:'threat-kill-chain'}],
-     ['Kekoa reaches a running file server that may hold injected code. Which pair follows RFC 3227 order, collected first to last?',['The disk image, then memory','Remote logs on the SIEM, then the page file','Memory, then the page file and Temp folder','Last month’s backup, then the disk image'],2,'Collect from most volatile to least. Memory, with its running processes and connections, vanishes at power-off; temp files and swap last hours; the disk lasts weeks; and remote logs and backups last longest. <a href="#junior/j13">Review: Evidence that holds up: forensics, timelines, and sandboxes</a>',{whys:['The disk lasts longer than memory.','Remote logs on the SIEM outlast the page file, so the page file comes first.','RFC 3227 collects the most volatile first, and memory vanishes at power-off, while the page file and Temp last a little longer.','Backups last longest of all.'],imp:'core',c:'det-forensics'}]
+     ['Kekoa reaches a running file server that may hold injected code. Which pair follows RFC 3227 order, collected first to last?',['The disk image, then memory','Remote logs on the SIEM, then the page file','Memory, then the page file and Temp folder','Last month’s backup, then the disk image'],2,'Collect from most volatile to least. Memory, with its running processes and connections, vanishes at power-off; temp files and swap last hours; the disk lasts weeks; and remote logs and backups last longest. <a href="#junior/j13">Review: Evidence that holds up: forensics, timelines, and sandboxes</a>',{whys:['The disk lasts longer than memory.','Remote logs on the SIEM outlast the page file, so the page file comes first.','RFC 3227 collects the most volatile first, and memory vanishes at power-off, while the page file and Temp last a little longer.','Backups last longest of all.'],imp:'core',c:'det-forensics'}],
+     ['A Mint lab runs an FTP server that the brief never mentions and an SSH server the brief requires. Which pair of actions fits?',['Remove both: fewer services is safer','Harden both: the brief trusts the machine','Remove FTP, since nothing requires it; keep SSH and harden it with keys, no root login, and a limited group','Keep FTP, since removing software needs permission; turn SSH off until the owner confirms'],2,'A service the brief leaves out and nobody needs is removed; a required service stays and gets hardened. <a href="#sophomore/s4">Review: Services and ports</a>',{whys:['Removing a required service fails an availability check; the brief requires SSH.','FTP sends passwords in the clear and nothing requires it, so hardening it keeps a risk the brief never asked for.','The brief decides: unrequired and insecure by design means remove; required means keep and harden.','The brief already answered: FTP is unrequired and SSH is required, so turning SSH off breaks a requirement.'],imp:'core',c:'host-services'}],
+     ['An email to the front desk at Kona Hillside Roasters reads From: payroll@konahillside.example, and its Received headers show it arrived from mail.bulk-sender.example with Authentication-Results: spf=fail dkim=none. What do you conclude, and what comes first?',['The payroll system sent it; open the attachment','The From address is forged, because the sending server failed the checks; report it through the agreed channel and leave the attachment alone','The mail server is broken; forward the email to IT to test','Nothing can be concluded without the attachment'],1,'The From line is text anyone can type; the Received path and the authentication results show where it really came from. <a href="#sophomore/s9">Review: Check before you trust: messages, links, and files</a>',{whys:['A From line proves nothing; the headers show a different sending server that failed SPF and carried no DKIM signature.','The authentication results show the sending server is not allowed to send for that domain, so the From line is forged; reporting without opening anything is the first move.','A failed SPF check describes the sender, and forwarding spreads the attachment.','The headers already answer the question; the attachment is what the sender wants opened.'],imp:'core',c:'threat-email-checks'}]
    ])
   ]},
  {id:'se1',title:'FreeBSD',bloom:'Evaluate',sum:'A different Unix: where the files live, how services and the firewall work, how to map your Linux habits across, and how to judge the guards on its boot.',
+  can:'find your way around FreeBSD, run its services and firewall, map your Linux habits across, and judge the guards on its boot',
   blocks:[
    C('Translate your Linux instincts','Analyze',
      TIPS('FreeBSD is a Unix in its own right, distinct from Linux. The base system and third-party <b>ports/packages</b> are separate. Package tool: <code>pkg</code>.',
@@ -10339,6 +10467,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['fbsd','cis','stig','t4t-ld-fbsd'])
   ]},
  {id:'se7',title:'Windows: credentials and the domain attack surface',bloom:'Evaluate',sum:'How credentials get stolen and reused, which guards to weigh around them, how Kerberos gets attacked and a fallen domain recovered, and where attackers dig in after the baseline.',
+  can:'explain how credentials get stolen and reused, weigh the guards around them, describe a Kerberos attack and a domain recovery, and find where attackers dig in',
   blocks:[
    PATH('From the LAN to a password in hand',[
     {name:'Attacker on the LAN',tag:'starts empty-handed',tone:'bad',note:'Listens for name lookups that DNS failed to answer',via:'answers LLMNR or NBT-NS'},
@@ -10428,6 +10557,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['ms-credguard','ms-lsa-protect','ms-protected-users','ms-win-sec','ms-sysint','ms-baselines','t4t-ld-win11','t4t-ld-winsrv','t4t-lr-win'])
   ]},
  {id:'se8',title:'Windows: allow only what you trust',bloom:'Evaluate',sum:'Judge application control, attack surface reduction rules, admin tiers, and endpoint telemetry, then design a Windows baseline that a small business can run.',
+  can:'judge application control, attack surface reduction, admin tiers, and endpoint telemetry, and design a Windows baseline a small business can run',
   blocks:[
    C('Allow what you trust','Evaluate',
      P('Kaimana Dental Clinic in Kailua has two dentists, a front desk (KAIMANA-FD1), and six Windows 11 Pro PCs, all Microsoft Entra joined and managed by Intune. Antivirus asks whether a file is known bad; <b>application control</b> asks whether it is on the list, so a brand-new tool with no signature still fails to run. <a href="#junior/j8">Windows: logons, tokens, and the event trail</a> named the rule types; here you weigh them.'),
@@ -10573,6 +10703,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['ms-appcontrol','ms-asr','ms-privaccess','ms-sysint','ms-win-sec','t4t-lr-win'])
    ]},
  {id:'se9',title:'Linux: confine services and prove it',bloom:'Evaluate',sum:'Weigh the walls you can put around a Linux service, from accounts to containers, guard the boot and the mounts, and choose the audit rules that prove the walls hold.',
+  can:'weigh the walls around a Linux service from accounts to containers, guard the boot and the mounts, and choose audit rules that prove the walls hold',
   blocks:[
    C('Walls around one service','Evaluate',
      P('Every service on makani-web will meet a flaw someday. <a href="#sophomore/s3">Linux Mint and Ubuntu hardening</a> shrank what runs; this unit limits how far a broken service reaches, then proves each wall held. Judge every wall by three questions: what does it stop, what does it cost, and which check proves it?')),
@@ -10731,6 +10862,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['systemd-exec','debian-security','nftables-wiki','cis','t4t-lr-linux'])
    ]},
  {id:'se2',title:'Web application security',bloom:'Evaluate',sum:'The OWASP Top 10, memory safety, and secure coding: harden a small web stack, rank web findings, and choose the fix that closes each one.',
+  can:'rank web findings against the OWASP Top 10, harden a small web stack, and choose the fix that closes each one',
   blocks:[
    C('What to know','Understand',
      P('Most organizations run at least one small web application: an intranet, a shop, or a ticket system. Securing it rewards understanding the common web risks and the configuration of the server behind them, far more than writing exploits.'),
@@ -10852,6 +10984,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['owasp10','juice','cisa-memory','cis','stig'])
   ]},
  {id:'se10',title:'Design for the cloud: code, functions, and APIs',bloom:'Create',sum:'Review infrastructure as code before it ships, choose between VMs, containers, and functions, protect API tokens, and design a small cloud app that fails safely.',
+  can:'review infrastructure as code before it ships, choose between VMs, containers, and functions, protect API tokens, and design a small cloud app that fails safely',
   blocks:[
    C('Text files that build the cloud','Create',
      P('<b>Infrastructure as code</b> (IaC) describes servers, networks, storage, and permissions in text files, such as CloudFormation YAML, Terraform, or Bicep, and a tool builds exactly what the files say. The gains: every change is reviewed before it runs, a build repeats exactly, and <b>drift</b>, a change made by hand in the console, shows up on the next run. The risks: one bad line deploys everywhere at once, and a secret typed into a file reaches everyone who can read the repository.'),
@@ -10961,6 +11094,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['owasp-api','owasp-ssrf','aws-imds','aws-iam-bp'])
    ]},
  {id:'se6',title:'Cisco: audit and extend the two-site network',bloom:'Evaluate',sum:'Audit both sites against the address plan and the baseline, add a host route to 8.8.8.8, share it through OSPF, and defend every design choice.',
+  can:'audit both sites against the plan and the baseline, add and share a host route through OSPF, and defend every design choice',
   blocks:[
    COMPARE('The finished network, both sites',[
      {name:'Site A',tag:'SwA and RtrA',tone:'l2',
@@ -11109,6 +11243,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['t4t-lr-ios','t4t-audit','t4t-tickets','t4t-ios','t4t-ld-ios','pt','netacad'])
   ]},
  {id:'se11',title:'Design the defended network: zero trust, deception, and visibility',bloom:'Create',sum:'Replace trust by location with checks on every request, add decoys and sinkholes, choose where to capture and what to log, and defend a zero trust redesign of the two-site network.',
+  can:'replace trust by location with a check on every request, add decoys and sinkholes, choose where to capture and what to log, and defend a zero trust redesign',
   blocks:[
    COMPARE('Trust by location, or verify every request',[
      {name:'Trust by location',tag:'castle and moat',tone:'amber',
@@ -11216,6 +11351,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['nist-800-207','cisa-ztmm','nist-800-41'])
    ]},
  {id:'se12',title:'Governance, risk, and compliance',bloom:'Evaluate',sum:'Choose a treatment and an owner for each risk, model threats before you build, label data and stop it leaving, match rules to the data they cover, see who checks whom, and pick a framework that fits a small organization.',
+  can:'choose a treatment and an owner for each risk, model threats before you build, label data and stop it leaving, match rules to data, and pick a framework that fits',
   blocks:[
    C('Decide, own, and prove it','Evaluate',
      P('In Junior you plotted findings on likelihood by impact (<a href="#junior/j5">Evaluate a configuration</a>). Governance is what happens next: someone decides what to do about each risk, owns that choice, and keeps the evidence that it happened. Two settings run through this unit: <b>Waimea Feed and Supply</b>, a six-person store in Waimea that takes orders online, and <b>Kahikina High</b>, which holds student records.'),
@@ -11352,12 +11488,14 @@ COMPARE('Hunting on any Unix',[
      ['Kahikina High wants teachers to see grades only for students in their own classes, during the term, from school devices. Which model fits?',['DAC: each teacher shares what they like','RBAC alone: a Teacher role sees every grade','ABAC: rules on the class roster, the date, and the device','No model; trust the teachers'],2,'Roster, time, and device are attributes; RBAC alone would give every teacher every grade. <a href="#junior/j10">Review: Cloud security: identity, storage, and logs</a>',{whys:['DAC lets owners share freely, so grades spread.','One Teacher role would see every grade, beyond each teacher’s own classes.','ABAC writes rules on attributes, and the class roster, the date, and the device are attributes of the user, the time, and the device.','Trust alone leaves the grades open.'],imp:'core',c:'gov-access-models'}],
      ['Hilo Lehua Clinic passed its HIPAA audit in March. In June an intruder signed in to remote access, which took a password alone, with a stolen password. What explains it?',['The audit checked a minimum at one moment; password-only remote access was a gap MFA closes','Passing the audit moved the breach risk to the auditor','The intruder must have used a zero-day, since audited controls held','The clinic fell out of compliance after March, so the audit is void'],0,'Compliant and secure overlap and still differ. Aim for controls that work and leave evidence.',{whys:['An audit checks a minimum set of controls at one moment, and password-only remote access slipped through as a gap that MFA closes.','The risk stays with the clinic.','A stolen password against password-only access explains it.','The audit stays valid, and compliance is a minimum.'],imp:'core',c:'gov-compliance'}],
      ['After the lockout threshold drops to 3 tries, Monday’s help-desk queue triples with locked-out staff. Which judgment fits?',['Keep 3: confidentiality outranks everything','Remove lockout and rely on long passwords','Set about 10 tries with a short lockout, plus MFA','Keep 3, and lock accounts for a full day'],2,'Lockout at 3 traded availability for confidentiality; a second control offsets the strain. <a href="#freshman/f3">Review: Security principles</a>',{whys:['Confidentiality is one of three goals.','Removing lockout leaves guessing open.','About 10 tries still stops guessing, a short lockout keeps staff working, and MFA covers the guesses that remain.','A full-day lockout keeps staff out even longer.'],imp:'core',c:'host-lockout-policy'}],
-     ['A STRIDE review lists elevation of privilege for the store’s file server. Which evidence would show it happening?',['Event 4732 adds the clerk to local Administrators; the clerk’s next sign-in logs 4672','Event 4672 logs the owner’s usual admin sign-in at 09:00','Event 4624 logs the clerk’s usual sign-in at 08:00','Event 4625 logs the clerk mistyping a password once'],0,'An account that should hold no admin rights joined an admin group and then received special privileges: a climb to admin. <a href="#junior/j8">Review: Windows: logons, tokens, and the event trail</a>',{whys:['4732 shows the clerk joining local Administrators, and 4672 shows the next sign-in receiving admin privileges: a climb to admin.','The owner’s usual admin sign-in is expected.','A usual sign-in is normal.','One mistyped password is normal.'],imp:'good',c:'gov-threat-modeling'}]
+     ['A STRIDE review lists elevation of privilege for the store’s file server. Which evidence would show it happening?',['Event 4732 adds the clerk to local Administrators; the clerk’s next sign-in logs 4672','Event 4672 logs the owner’s usual admin sign-in at 09:00','Event 4624 logs the clerk’s usual sign-in at 08:00','Event 4625 logs the clerk mistyping a password once'],0,'An account that should hold no admin rights joined an admin group and then received special privileges: a climb to admin. <a href="#junior/j8">Review: Windows: logons, tokens, and the event trail</a>',{whys:['4732 shows the clerk joining local Administrators, and 4672 shows the next sign-in receiving admin privileges: a climb to admin.','The owner’s usual admin sign-in is expected.','A usual sign-in is normal.','One mistyped password is normal.'],imp:'good',c:'gov-threat-modeling'}],
+     ['Hawaiʻi\u2019s breach-notice law requires organizations to tell affected people when their personal data is exposed. The feed store\u2019s developer says the rule slows the new order app; the owner says it protects customers. Which judgment weighs both?',['The law is a cost; build first and add notification later if a breach happens','The law is a design input: logging and data labels built in now make notification possible and cut what a breach exposes','The law applies to large companies alone, so the store skips it','The law makes the app illegal'],1,'Rules written after harm add work when they are bolted on and little when they are designed in; the law names what to protect and gives the store a reason to collect less. <a href="#senior/se12">Review: Governance, risk, and compliance</a>',{whys:['Notification after a breach needs logs and an inventory of what was exposed, and those have to be built in beforehand.','Treating the rule as a design input means the app logs access, labels personal data, and collects less of it, so a breach exposes less and a notice can be accurate.','Breach-notice laws cover organizations of every size that hold personal data.','The law regulates how data is handled; the app stays legal when it handles data as the law describes.'],imp:'good',c:'gov-compliance'}]
    ]),
    REFLECT('se12r','A framework and a threat model for the feed store','Waimea Feed and Supply has six staff, an online order form, and card payments through a processor. Pick one framework, name the first three things you would do with it, and defend why it beats the other three for this store. Then list three STRIDE threats for the order form, each with the property it breaks and one control.'),
    LINKS('Go further',['nist-csf','cis-controls','nist-rmf','iso-27001','pci-ssc','owasp-threat-model','ed-ferpa','ftc-coppa','hhs-hipaa'])
    ]},
  {id:'se3',title:'Create: your own checklist',bloom:'Create',sum:'Build a per-OS hardening checklist from standards and vendor documentation: the single biggest speed multiplier.',
+  can:'build a per-OS hardening checklist from standards and vendor documentation, and refine it after every practice session',
   blocks:[
    C('Why you build it yourself','Create',
      P('A checklist your team writes from <b>general documentation</b> (CIS Benchmarks, vendor docs, and DISA STIGs) is how the knowledge becomes yours. A copied list gives you steps without reasons, and when something breaks you are left guessing which step did it. This is the Create level of Bloom’s taxonomy: you are producing an original artifact from everything below.'),
@@ -11390,6 +11528,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['cis','cis-controls','stig','ms-baselines','ubuntu-sec','fbsd'])
   ]},
  {id:'se13',title:'Run the response: detections, playbooks, and the after-action review',bloom:'Create',sum:'Write and tune detection rules, judge detection coverage, automate a playbook, brief the right people, set recovery targets, and write the report that improves the next response.',
+  can:'write and tune a detection rule, judge coverage, automate a playbook, brief the right people, set recovery targets, and write the report that improves the next response',
   blocks:[
    C('Build the response before you need it','Create',
      P('Preparation, the first phase in <a href="#freshman/f13">Watch, detect, and respond</a>, is everything ready before the alert. In Junior you worked one case at Hilo Lehua Clinic (<a href="#junior/j12">Respond to an incident</a>). Now you build what makes the next case faster: a rule that fires on the right things, a playbook that runs the routine steps, a call list, recovery targets, and a report that turns each lesson into a fix.')),
@@ -11518,6 +11657,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['nist-61r3','mitre-attack','sigma-rules','cisa-ttx'])
    ]},
  {id:'se4',title:'Create: roles, timing, and the runbook',bloom:'Create',sum:'Turn a small team and a fixed time window into a system: who does what, when, and how you hand off.',
+  can:'turn a small team and a fixed window into a system: who does what, when, and how you hand off',
   blocks:[
    C('A team is a design, built on purpose','Create',
      TIPS('<b>Assign machines to people.</b> Typically one or two people per machine and one who owns the network devices. Depth matters: everyone should be able to cover a second machine.',
@@ -11532,6 +11672,7 @@ COMPARE('Hunting on any Unix',[
    LINKS('Go further',['nist-csf','cis-controls','t4t-range'])
   ]},
  {id:'se14',title:'Your path: roles, certifications, and practice',bloom:'Create',sum:'Map security work roles, see which certifications fit which stage, pick safe places to practice, and write a two-year plan of your own.',
+  can:'map security work roles, choose certifications in order, pick safe places to practice, and write a two-year plan of your own',
   blocks:[
    C('Build your own path','Create',
      P('You have climbed four grades of defense. This unit turns that into a plan: pick a kind of work, the certifications that prove you can do it, and safe places to keep practicing. Start from the work, since certifications and platforms only make sense once you know where you are heading.'),
@@ -11542,7 +11683,7 @@ COMPARE('Hunting on any Unix',[
      {name:'Implementation and Operation',note:'Systems Administration; Network Operations · <a href="#sophomore/s2">Windows 11 hardening</a>, <a href="#sophomore/s3">Linux Mint and Ubuntu hardening</a>, <a href="#senior/se6">Cisco: audit and extend</a>',tone:'l2'},
      {name:'Protection and Defense',note:'Defensive Cybersecurity; Incident Response; Threat Analysis · <a href="#sophomore/s10">Read the logs</a>, <a href="#junior/j11">Map the attack</a>, <a href="#junior/j12">Respond to an incident</a>, <a href="#senior/se13">Run the response</a>',tone:'l2'},
      {name:'Investigation',note:'Digital Evidence Analysis; Cybercrime Investigation · <a href="#junior/j13">Evidence that holds up</a>',tone:'l1'}]},
-    {bloom:'Create',intro:'The five NICE work role categories, each with its roles and the units here that prepare you. In 2025 NICE handed its intelligence and offensive categories to the DoD Cyber Workforce Framework. Pick the branch that pulls you, then read its roles’ tasks on the NICE site.',
+    {bloom:'Create',intro:'The five NICE work role categories, each with its roles and the units here that prepare you. The 2024 NICE Framework Components list seven categories; this course prepares you for the five defensive ones, and the intelligence and effects categories belong to other training paths. Pick the branch that pulls you, then read its roles’ tasks on the NICE site.',
      note:'Role names follow the current NICE Framework and change between versions; check the live list before you write them on a résumé.',
      caption:'Choose one of the five categories first; its roles tell you which skills and certifications to stack.'}),
    STACK('The certification ladder',[
@@ -11572,10 +11713,12 @@ COMPARE('Hunting on any Unix',[
    ],{bloom:'Evaluate',intro:'Compare what each platform has you practice, its cost, its age terms, and the grade it fits. Practice only on targets the platform provides.',
      note:'Platform rules are your authorization. A target outside the platform is someone else’s system, whatever a forum says.',
      caption:'Start on this site and picoCTF, add a guided defensive path, and save offense-centered labs for later.'}),
+   REFLECT('se14r2','Predict one change','Pick one defense you learned here and write how it will have changed by the time you graduate: the attack it faces, the tool that replaces it, or the job that owns it. Name the trend you base the prediction on, and one sign that would tell you the prediction was wrong.'),
    REFLECT('se14r','Your two-year plan','Write a plan for the next two years. Name the NICE category you are aiming at and one role in it. List two certifications in the order you will take them and why that order. Pick one practice platform per term and the defensive path you will follow on it. Describe one purple exercise for a detection you wrote: what should trigger it, who runs the test, and how you will know it worked. Name the adult who will check your plan with you.'),
    LINKS('Go further',['nice','t4t-range','t4t-drills','pico','comptia-certs','isc2-cc','netacad'])
    ]},
  {id:'se5',title:'Power and responsibility',bloom:'Evaluate',sum:'You can now break and defend real systems. The whole point of the training is choosing how to use it.',
+  can:'draw the line you hold, explain why permission rather than ability decides, and choose how to use what you can now do',
   blocks:[
    C('The line you hold','Evaluate',
      P('Everything in this ladder gives you real capability. The same skills that harden a practice lab can disable a real system; the same investigation that answers a lab question can expose a real person. Labs are systems built to be changed. Outside them, <b>authorization is the entire difference between a security professional and a criminal</b>, and the law judges actions as well as intent.'),
