@@ -30,17 +30,19 @@ Windows Range is a single HTML page that behaves like a small Windows machine
 you have been asked to secure: OEM boot screen, lock screen, sign-in, and a
 Windows 11 (version 26H2) or Windows Server 2025 desktop with taskbar, Start,
 Search, and a Run box. The administration tools are faithful subsets of the real
-ones, with the real names, menu paths, and control types: Local Users and Groups
-(lusrmgr.msc), Local Security Policy (secpol.msc), Local Group Policy Editor
-(gpedit.msc), Services, Task Scheduler, Windows Defender Firewall with Advanced
-Security (wf.msc), Programs and Features (appwiz.cpl), Windows Features
-(optionalfeatures), Settings (Accounts, Windows Update, Remote Desktop,
-Installed apps), Windows Security, the UAC slider, System Properties, File
-Explorer, Notepad, and Server Manager. Windows Terminal has Command Prompt and
-PowerShell tabs with the commands in section 6, including pipes, findstr,
-redirection (> and >>), secedit /export and /configure, and reg query/add for
-the security registry values that hardening guides such as the CIS Benchmarks
-use.
+ones, with the real names, menu paths, and control types:
+  - Local Users and Groups (lusrmgr.msc), Local Security Policy (secpol.msc),
+    and Local Group Policy Editor (gpedit.msc)
+  - Services and Task Scheduler
+  - Windows Defender Firewall with Advanced Security (wf.msc)
+  - Programs and Features (appwiz.cpl) and Windows Features (optionalfeatures)
+  - Settings (Accounts, Windows Update, Remote Desktop, Installed apps), Windows
+    Security, the UAC slider, and System Properties
+  - File Explorer, Notepad, and Server Manager
+Windows Terminal has Command Prompt and PowerShell tabs with the commands in
+section 6. Those include pipes, findstr, redirection (> and >>), secedit /export
+and /configure, and reg query/add for the security registry values that
+hardening guides such as the CIS Benchmarks use.
 
 Every panel and every command changes ONE machine state, and the Progress Check
 re-runs the checks after each change. Security includes availability: breaking
@@ -910,12 +912,13 @@ Files
     and record each change in a change log.
   - Never run these commands on a computer you depend on. Practice VMs and this
     lab are the places to experiment.
-  - Version notes (Windows 11 version 26H2, Windows Server 2025): WMIC is
-    removed from Windows 11, so use PowerShell instead (Get-CimInstance,
-    Get-HotFix, Get-LocalUser, Get-Service); Windows PowerShell 2.0, Microsoft
-    Defender Application Guard, and NTLMv1 are removed; new installs of Windows
-    11 22H2 and later lock an account after 10 failed sign-ins for 10 minutes by
-    default.
+  - Version notes (Windows 11 version 26H2, Windows Server 2025):
+    - WMIC is removed from Windows 11, so use PowerShell instead
+      (Get-CimInstance, Get-HotFix, Get-LocalUser, Get-Service).
+    - Windows PowerShell 2.0, Microsoft Defender Application Guard, and NTLMv1
+      are removed.
+    - New installs of Windows 11 22H2 and later lock an account after 10 failed
+      sign-ins for 10 minutes by default.
 
 --------------------------------------------------------------------------------
 8. SOURCES

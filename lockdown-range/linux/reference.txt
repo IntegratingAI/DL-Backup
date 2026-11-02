@@ -27,27 +27,30 @@ questions per scenario are listed as Investigation. The CIS Controls
 behind the first five areas: Defense Ladder s1
 (https://freeapp4that.store/defense-ladder/#sophomore/s1). Data
 protection, which covers the prohibited media files, maps to CIS Control 3.
-The Debrief links each check to its Defense Ladder lesson: accounts,
-sudo, SSH, setuid files, firewall, updates, software, and media to s3;
-password length, history, lockout, and empty-password sign-in to s3 (One
-PAM line); services and ports to s4; persistence, sysctl, /etc/shadow
-permissions, and repositories to j3; investigation questions to s6; the
-Captain's setuid question also to s3; and the Captain's package question
-to s4 and se1 (FreeBSD, Hunting on any Unix).
+The Debrief links each check to its Defense Ladder lesson:
+  - s3: accounts, sudo, SSH, setuid files, firewall, updates, software, and
+    media.
+  - s3 (One PAM line): password length, history, lockout, and empty-password
+    sign-in.
+  - s4: services and ports.
+  - j3: persistence, sysctl, /etc/shadow permissions, and repositories.
+  - s6: investigation questions.
+  - Captain exceptions: the setuid question also links to s3, and the package
+    question links to s4 and se1 (FreeBSD, Hunting on any Unix).
 
 --------------------------------------------------------------------------------
 1. WHAT THE LAB IS (AND IS NOT)
 --------------------------------------------------------------------------------
 Linux Range is a single HTML page that behaves like a small Linux machine you
 have been asked to secure: a boot splash, a login screen, a minimal desktop
-(Ubuntu, Mint, or a text console on the server) and a bash-like terminal over
-an in-memory filesystem with real paths and realistic contents (/etc/passwd,
-/etc/shadow, /etc/group, /etc/sudoers, /etc/login.defs, /etc/pam.d/*,
-/etc/ssh/sshd_config, /etc/ufw, /etc/apt, cron, lightdm/gdm, user homes).
-The terminal understands the commands Linux administrators use every day
-(section 6): sudo, apt, systemctl, ufw, useradd/usermod/userdel, passwd,
-chage, visudo, nano, vi, sed -i, find, grep, pipes, and redirection. Every
-change re-runs the scenario's checks and the Progress Check updates live.
+(Ubuntu, Mint, or a text console on the server), and a bash-like terminal.
+The terminal runs over an in-memory filesystem with real paths and realistic
+contents: /etc/passwd, /etc/shadow, /etc/group, /etc/sudoers, /etc/login.defs,
+/etc/pam.d/*, /etc/ssh/sshd_config, /etc/ufw, /etc/apt, cron, lightdm/gdm, and
+user homes. The terminal understands the commands Linux administrators use
+every day (section 6): sudo, apt, systemctl, ufw, useradd/usermod/userdel,
+passwd, chage, visudo, nano, vi, sed -i, find, grep, pipes, and redirection.
+Every change re-runs the scenario's checks and the Progress Check updates live.
 Availability checks fail (in red, with negative points) when something the
 Scenario Brief says the business needs gets broken.
 
@@ -593,6 +596,10 @@ Editors
   - Only the Captain server simulates ssh socket activation. On a real
     Ubuntu 24.04 desktop, installing openssh-server is socket-activated
     too; the Recruit desktop keeps the simpler ssh.service model.
+  - On Mint, the ${distro_id} entries in
+    /etc/apt/apt.conf.d/50unattended-upgrades expand to
+    Linuxmint:zena-security, an origin that misses every Ubuntu security
+    update. Only an entry that names "Ubuntu:noble-security" counts.
   - The lab's kernel is the noble 6.8 GA kernel on all three machines; a
     fresh Linux Mint 22.3 or Ubuntu 24.04.5 desktop install ships a newer
     HWE kernel (Mint 22.3: 6.14).

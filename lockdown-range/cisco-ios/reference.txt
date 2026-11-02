@@ -45,11 +45,11 @@ Simulated faithfully:
   model, with IOS and Windows style output (!!!!! / ..... / U.U.U, Request
   timed out., Destination host unreachable., TTL that drops per router hop).
 - Routing tables built like IOS 15: connected (C) and local (L) routes,
-  static routes (S, with an optional distance for floating backups) that
-  install while their next hop sits on an up, connected subnet, and OSPF.
-  show ip route groups entries under their classful network ("is subnetted"
-  or "is variably subnetted"), in numeric order; the lowest administrative
-  distance wins (connected 0, static 1, OSPF 110).
+  static routes (S), and OSPF. A static route takes an optional distance for
+  floating backups, and it installs while its next hop sits on an up,
+  connected subnet. show ip route groups entries under their classful network
+  ("is subnetted" or "is variably subnetted"), in numeric order. The lowest
+  administrative distance wins (connected 0, static 1, OSPF 110).
 - OSPF in one area on Ethernet links: router ospf N, network A W area N,
   passive-interface, router-id, and redistribute static [subnets].
   Neighbours reach FULL (DR/BDR; the first router up on a segment stays DR)
@@ -1200,19 +1200,21 @@ PC command prompt
   RAM only as well, so save and export logs before a reload in real life.
 - Browser notes: Ctrl+W/Ctrl+T belong to the browser; use Ctrl+U to clear a
   line. On phones, type ? at the end of the line to get help.
-- OSPF: neighbours reach FULL at once here; a real router takes a few
+- OSPF timing: neighbours reach FULL at once here. A real router takes a few
   seconds (hello 10 s, dead 40 s) and passes through INIT, 2WAY, EXSTART,
-  EXCHANGE, and LOADING first. Ethernet links elect a DR and a BDR, so
-  show ip ospf neighbor reads FULL/DR or FULL/BDR; point-to-point links
-  read FULL/ -. DR election is non-preemptive: the first router up on the
-  segment stays DR; the higher router ID wins only when both start
-  together (a real router waits 40 seconds before it elects; the lab
-  elects at once). A reload drops the router's links, so the BDR takes over
-  as DR and keeps the role when the router returns; the lab logs the
-  neighbours' link and ADJCHG messages at the moment of the reload, while a
-  real network spreads them over the boot. The lab recalculates the router
-  ID from the configuration, while a real router keeps the ID it chose at
-  start-up until a reload or clear ip ospf process.
+  EXCHANGE, and LOADING first.
+- OSPF DR election: Ethernet links elect a DR and a BDR, so show ip ospf
+  neighbor reads FULL/DR or FULL/BDR; point-to-point links read FULL/ -.
+  DR election is non-preemptive: the first router up on the segment stays DR.
+  The higher router ID wins only when both start together. A real router
+  waits 40 seconds before it elects; the lab elects at once.
+- OSPF reload: a reload drops the router's links, so the BDR takes over as DR
+  and keeps the role when the router returns. The lab logs the neighbours'
+  link and ADJCHG messages at the moment of the reload, while a real network
+  spreads them over the boot.
+- OSPF router ID: the lab recalculates the router ID from the configuration.
+  A real router keeps the ID it chose at start-up until a reload or clear ip
+  ospf process.
 - OSPF redistribution: classic IOS 15 (this lab and Packet Tracer) needs
   redistribute static subnets to carry a /32; without subnets it warns
   "% Only classful networks will be redistributed". IOS XE redistributes

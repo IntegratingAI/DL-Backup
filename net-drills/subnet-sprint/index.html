@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-fdrbz9PDCKiE4XvnDBxiBpUjEuCA+0zwunDjBgyD0TQ=' 'sha256-pxVvL68lQyUZNF6Jl5CVDpRRRpyzsrFagTnT+5J36+o='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-6cG3Nedgu6zOqXk//gBqCdfD6ygVAgYRoAoown9fLZY=' 'sha256-fdrbz9PDCKiE4XvnDBxiBpUjEuCA+0zwunDjBgyD0TQ='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Slide the mask in the sandbox and watch every value react, then work out network, broadcast, and host ranges against the clock. Includes VLSM planning and IPv6 drills.">
 <link rel="canonical" href="https://freeapp4that.store/net-drills/subnet-sprint/">
@@ -341,7 +341,7 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
 </section>
 
 <section id="p-quick" role="tabpanel" aria-labelledby="t-quick" hidden>
-  <p class="tier"><b>Sophomore</b> · Learn it: <a href="https://freeapp4that.store/defense-ladder/#sophomore/s5" target="_blank" rel="noopener">Defense Ladder s5, Addresses and subnets</a>; for binary and decimal, <a href="https://freeapp4that.store/defense-ladder/#freshman/f7" target="_blank" rel="noopener">Freshman f7, Core ideas</a>; for IPv6, <a href="https://freeapp4that.store/defense-ladder/#freshman/f7" target="_blank" rel="noopener">Freshman f7, Networking fundamentals and Cisco basics</a> (the IPv6 addresses in text detail panel). Wildcard masks are <b>Junior</b> · Learn it: <a href="https://freeapp4that.store/defense-ladder/#junior/j4" target="_blank" rel="noopener">j4, Cisco: VLANs, routing, and ACLs</a></p>
+  <p class="tier"><b>Sophomore</b> · Learn it: <a href="https://freeapp4that.store/defense-ladder/#sophomore/s5" target="_blank" rel="noopener">Defense Ladder s5, Addresses and subnets</a>; for binary, decimal, and IPv6, <a href="https://freeapp4that.store/defense-ladder/#freshman/f7" target="_blank" rel="noopener">Freshman f7, Networking fundamentals and Cisco basics</a> (binary and decimal in Core ideas; IPv6 in the IPv6 addresses in text detail panel). Wildcard masks are <b>Junior</b> · Learn it: <a href="https://freeapp4that.store/defense-ladder/#junior/j4" target="_blank" rel="noopener">j4, Cisco: VLANs, routing, and ACLs</a></p>
   <fieldset class="topics">
     <legend>Topics in the mix</legend>
     <div class="chips" id="chips">
@@ -509,7 +509,7 @@ const GEN = {
   },
   v6() {
     const g = v6Random(), full = g.join(':'), comp = v6Compress(g), k = rnd(0, 2);
-    if (k === 0) return { q: `Compress this IPv6 address: ${full}`, a: g, kind: 'v6', why: `Drop leading zeros in each group, then replace the longest run of all-zero groups (two or more; the first run if two tie) with :: once, and write hex digits in lowercase (RFC 5952). Result: ${comp}` };
+    if (k === 0) return { q: `Compress this IPv6 address: ${full}`, a: g, kind: 'v6', why: `Drop leading zeros in each group. Replace the longest run of two or more all-zero groups with :: once; on a tie, pick the first run. Write hex digits in lowercase (RFC 5952). Result: ${comp}` };
     if (k === 1) return { q: `Write ${comp} out in full, all 8 groups.`, a: g, kind: 'v6e', why: `:: stands for as many 0000 groups as it takes to reach 8, and every group is padded to 4 hex digits: ${full}` };
     const net = [...g.slice(0, 4), '0000', '0000', '0000', '0000'];
     return { q: `What is the network prefix of ${comp}/64?`, a: net, kind: 'v6pfx', why: `A /64 keeps the first 4 groups (64 bits) and zeroes the rest: ${v6Compress(net)}/64` };
@@ -545,7 +545,8 @@ function makePlan(level) {
   return null;
 }
 function planSteps(pr) {
-  const out = [`Largest first: ${pr.order.map(r => `${r.name} ${r.hosts} + 2 = ${r.hosts + 2} → ${r.size} addresses (/${r.p})`).join('; ')}.`];
+  const out = ['Sort the networks largest first, so each one takes the next block in size order.'];
+  pr.order.forEach(r => out.push(`${r.name}: ${r.hosts} hosts + 2 = ${r.hosts + 2} → ${r.size} addresses (/${r.p}).`));
   pr.order.forEach(r => out.push(`${r.name}: ${toStr(r.net)}/${r.p}, hosts ${toStr(r.net + 1)} to ${toStr(r.bc - 1)}, broadcast ${toStr(r.bc)}. Next subnet starts at ${toStr(r.bc + 1)}.`));
   return out;
 }

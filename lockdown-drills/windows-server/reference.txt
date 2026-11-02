@@ -24,10 +24,10 @@
 ================================================================================
 
 ------------------------------ DOORMAN -----------------------------------------
- Lock the doors. First find out what the box is (standalone, member server, or
- domain controller), then users, admins, passwords, and policy in the place that
- actually takes effect: local, or the domain. Learn it first: Defense Ladder s2,
- "Desktop, member server, or domain controller."
+ Lock the doors. Find the role first (standalone, member server, or domain
+ controller), then users, admins, passwords, and policy where it takes effect:
+ local or domain. Learn it first: Defense Ladder s2, "Desktop, member server, or
+ domain controller."
  https://freeapp4that.store/defense-ladder/#sophomore/s2
 --------------------------------------------------------------------------------
 [B-00] Scenario brief and evidence first
@@ -242,12 +242,12 @@
   WHY: Media in user profiles and web roots is the usual acceptable-use
        violation; a stray .aspx or .ps1 under inetpub is a webshell.
   NOTE: Confirm against the brief before deleting, and search C:\ too, beyond
-        C:\Users. -Force shows hidden files, and the filters skip app caches
-        under AppData and the All Users and Default User links. Answer every
+        C:\Users. -Force shows hidden files; the filters skip app caches under
+        AppData and the All Users and Default User links. Answer every
         investigation question that names a file first and record its hash
-        (B-14); then delete it and note the path in your change log. tar -tf
-        lists what a .zip holds before you delete it. Python and other runtimes
-        stay when the brief needs them.
+        (B-14); then delete it and log the path. tar -tf lists what a .zip holds
+        before you delete it. Python and other runtimes stay when the brief
+        needs them.
 
 [B-13] Stop obviously unsafe services
   AREA: Secure configuration (CIS Control 4)
@@ -320,18 +320,18 @@
        leftover Windows Setup answer file hands an account to anyone who reads
        it. Searching by content finds them under any file name.
   NOTE: Answer any investigation question that names the file first and record
-        its hash (B-14); then remove the file or move it where the brief says,
-        and note the path in your change log. Review each hit, since license and
-        app files match too. An answer file's hidden password is only encoded,
-        so treat it as plain text. cmdkey /list shows the passwords Windows
-        saved for the signed-in user, such as TERMSRV/<host> for a Remote
-        Desktop sign-in; cmdkey /delete:<target> removes one the brief leaves
-        out, and each user reads only their own list.
+        its hash (B-14); then remove or move the file where the brief says and
+        log the path. Review each hit: license and app files match too. An
+        answer file's hidden password is only encoded; treat it as plain text.
+        cmdkey /list shows passwords Windows saved for the signed-in user, such
+        as TERMSRV/<host> for a Remote Desktop sign-in; cmdkey /delete:<target>
+        removes one the brief leaves out, and each user sees only their own
+        list.
 
 ------------------------------ WATCHMAN ----------------------------------------
  Check the windows. Roles and features, audit and policy through Group Policy,
  services, shares, tasks, ports, logs, and the required roles (IIS, FTP, DNS,
- and DHCP) hardened instead of removed. Learn it first: Defense Ladder j1,
+ and DHCP) hardened rather than removed. Learn it first: Defense Ladder j1,
  "Windows Server and Active Directory," and Defense Ladder j2, "Group Policy."
  https://freeapp4that.store/defense-ladder/#junior/j1
  https://freeapp4that.store/defense-ladder/#junior/j2
@@ -346,15 +346,15 @@
   WHY: Without auditing, Event Viewer has nothing to tell you or an
        investigator. Logon, account management, and policy change are the key
        ones.
-  NOTE: On a DC the Default Domain Controllers Policy overrides local auditpol;
-        set it there or it will revert at the next gpupdate. Use one route:
-        auditpol here, or Advanced Audit Policy Configuration in Group Policy,
-        and leave secpol's basic Audit Policy node unset, because Microsoft
-        warns that mixing the two gives unexpected results; trust auditpol /get.
-        The wevtutil line raises the Security log to 192 MB first, so the extra
-        events keep older evidence, and auditpol /restore
+  NOTE: On a DC the Default Domain Controllers Policy overrides local auditpol:
+        set it there or it reverts at the next gpupdate. Pick one route,
+        auditpol here or Advanced Audit Policy Configuration in Group Policy,
+        and leave secpol's basic Audit Policy node unset; Microsoft warns that
+        mixing the two gives unexpected results, so trust auditpol /get.
+        wevtutil raises the Security log to 192 MB first so the extra events
+        keep older evidence; auditpol /restore
         /file:C:\Windows\Temp\audit-before.csv undoes the change. Fine-grained
-        subcategories, and trimming the noisiest ones, are a Hunter item (A-08).
+        subcategories, and trimming the noisiest ones, are A-08.
 
 [I-02] Security Options in secpol.msc
   AREA: Secure configuration (CIS Control 4)
@@ -703,17 +703,17 @@
   PS> Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0' -Name NTLMMinServerSec -Value 537395200 -Type DWord
   PS> Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name LocalAccountTokenFilterPolicy -ErrorAction SilentlyContinue
   PS> Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name LocalAccountTokenFilterPolicy
-  WHY: Null-session enumeration (RestrictAnonymous), LM hash storage that cracks
-       in seconds (NoLMHash), and NTLMv1 downgrade (LmCompatibilityLevel 5).
-       Check the level on older releases and mixed domains; Windows 11 24H2 and
-       Windows Server 2025 remove NTLMv1. ForceGuest 0 (Classic) keeps local
-       users signing in over the network as themselves, and RestrictRemoteSAM
-       limits remote SAM queries to Administrators. NULL session fallback 0 and
-       NTLM minimum session security 537395200 (NTLMv2 session security plus
-       128-bit encryption) close the last NTLM downgrades.
-       LocalAccountTokenFilterPolicy 1 gives every local administrator a full
-       token over C$ and ADMIN$ from the network, the pass-the-hash road;
-       removing it keeps remote local admins filtered.
+  WHY: RestrictAnonymous stops null-session enumeration; NoLMHash stops storing
+       LM hashes, which crack in seconds; LmCompatibilityLevel 5 refuses NTLMv1
+       (Windows 11 24H2 and Windows Server 2025 remove it; check the level on
+       older releases and mixed domains). ForceGuest 0 (Classic) keeps local
+       users signing in over the network as themselves; RestrictRemoteSAM limits
+       remote SAM queries to Administrators. NULL session fallback 0 and NTLM
+       minimum session security 537395200 (NTLMv2 session security plus 128-bit
+       encryption) close the last NTLM downgrades. LocalAccountTokenFilterPolicy
+       1 hands every local administrator a full token over C$ and ADMIN$ from
+       the network, the pass-the-hash road: remove it so remote local admins
+       stay filtered.
   NOTE: This is the registry form of the Watchman Security Options. A missing
         LocalAccountTokenFilterPolicy is the good result. MSV1_0 and the System
         key exist on every install, so Set-ItemProperty writes into them
@@ -770,12 +770,12 @@
   NOTE: The export lists holders as SIDs: *S-1-5-32-544 is Administrators,
         *S-1-5-32-545 Users, and *S-1-5-11 Authenticated Users; a SID that
         resolves to an unknown account belongs to a deleted or planted one. To
-        set a right from the command line, put the line in a [Privilege Rights]
-        template, such as SeDebugPrivilege = *S-1-5-32-544 (an empty value
-        empties the right), and apply it as in A-01 with /areas USER_RIGHTS; it
-        takes effect at the holder's next sign-in. LOCAL SERVICE, NETWORK
-        SERVICE, and SERVICE keep the rights they hold by default: remove only
-        user and group accounts. Rights changes write events 4704 and 4705.
+        set a right from the command line, put a line such as SeDebugPrivilege =
+        *S-1-5-32-544 (an empty value empties the right) in a [Privilege Rights]
+        template and apply it as in A-01 with /areas USER_RIGHTS; it applies at
+        the holder's next sign-in. LOCAL SERVICE, NETWORK SERVICE, and SERVICE
+        keep their default rights: remove only user and group accounts. Rights
+        changes write events 4704 and 4705.
 
 [A-06] Deep persistence and backdoor hunt
   AREA: Malware defenses (CIS Control 10)

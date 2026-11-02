@@ -193,14 +193,14 @@
        default case, so a host-free native VLAN closes it. DTP lets an attacker
        negotiate a trunk; switchport nonegotiate turns it off.
   NOTE: The router end uses encapsulation dot1Q 99 native (Hunter A-08), so both
-        ends agree on native 99. Between two switches a mismatch logs
+        ends agree on native 99. Between switches a mismatch logs
         %CDP-4-NATIVE_VLAN_MISMATCH; toward the router, a mismatch that lands on
-        a host VLAN shows up as that VLAN's hosts losing their gateway, so
-        compare show interfaces trunk on SwA with the g0/0.99 subinterface in
-        RtrA's running config. VLAN 99 carries no hosts and no IP, and VLAN 999
-        PARKING stays separate for shut ports. A multilayer switch such as a
-        3560 needs switchport trunk encapsulation dot1q before switchport mode
-        trunk; a 2960 speaks 802.1Q only and goes without that line.
+        a host VLAN shows as that VLAN's hosts losing their gateway, so compare
+        show interfaces trunk on SwA with the g0/0.99 subinterface in RtrA's
+        running config. VLAN 99 runs without hosts or an IP; VLAN 999 PARKING
+        holds shut ports. A multilayer switch such as a 3560 needs switchport
+        trunk encapsulation dot1q before switchport mode trunk; a 2960 speaks
+        802.1Q only and goes without that line.
 
 [I-06] Login attack protection and minimum password length
   AREA: Account management
@@ -244,12 +244,11 @@
        address. ip default-gateway lets the layer-2 switch reply to hosts on
        other subnets, such as Teachers at Site B.
   NOTE: Vlan20 shows down/down while VLAN 20 is missing from the VLAN database,
-        then up/down until at least one port in VLAN 20 (an access port, or a
-        trunk that allows it) is up and forwarding in STP; that rule is called
-        autostate. Larger networks give management its own dedicated VLAN; this
-        network keeps it on Teachers so the Teachers-only ACL and the management
-        subnet are one and the same. Shutting interface vlan 1 leaves the
-        default VLAN devoid of an address.
+        then up/down until at least one port in VLAN 20 (access, or a trunk that
+        allows it) is up and forwarding in STP: autostate. Larger networks give
+        management its own VLAN; here it stays on Teachers so the Teachers-only
+        ACL and the management subnet are one. Shutting interface vlan 1 leaves
+        the default VLAN devoid of an address.
   LEARN IT: Defense Ladder, Freshman f7, A VLAN and an SVI.
             https://freeapp4that.store/defense-ladder/#freshman/f7
 
@@ -311,11 +310,11 @@
         nat inside source static tcp <server> 443 203.0.113.2 443, and the same
         for 80) carries web traffic to the server. An inbound ACL on the outside
         interface sees that public address, because IOS checks the ACL before it
-        translates. An interface ACL is stateless, so return traffic for
-        sessions started inside needs its own permits: established matches TCP
-        replies (ACK or RST set), and the domain line admits DNS replies from
-        8.8.8.8. A stateful firewall, such as the IOS zone-based policy
-        firewall, tracks sessions and does this job more precisely.
+        translates. An interface ACL is stateless, so replies to sessions
+        started inside need their own permits: established matches TCP replies
+        (ACK or RST set), and the domain line admits DNS replies from 8.8.8.8. A
+        stateful firewall, such as the IOS zone-based policy firewall, tracks
+        sessions and does this more precisely.
 
 [A-03] Interface-level hardening
   AREA: Secure configuration
@@ -348,13 +347,13 @@
   SwA(config-if-range)# storm-control broadcast level 20
   SwA(config-if-range)# exit
   SwA(config)# spanning-tree portfast bpduguard default
-  WHY: Rogue DHCP servers (snooping), ARP poisoning (dynamic ARP inspection,
-       which checks ARP against the snooping table), rogue switches taking over
-       the STP root (BPDU guard), and broadcast storms (storm control). G0/1
-       trusts DHCP and ARP because DHCP replies and the router-on-a-stick
-       gateway ARP arrive there. PortFast skips about 30 s of listening and
-       learning, so it belongs on edge ports only; on a trunk or switch link a
-       temporary loop forwards before STP blocks it.
+  WHY: Snooping stops rogue DHCP servers; dynamic ARP inspection checks ARP
+       against the snooping table and stops poisoning; BPDU guard stops a rogue
+       switch taking the STP root; storm control caps broadcast storms. G0/1 is
+       trusted because DHCP replies and the router-on-a-stick gateway ARP arrive
+       there. PortFast skips about 30 s of listening and learning, so it belongs
+       on edge ports only; on a trunk or switch link a temporary loop forwards
+       before STP blocks it.
   NOTE: Packet Tracer support for DAI and storm control varies by version. A
         host with a static address in VLAN 10 needs a static binding or an ARP
         ACL, because DAI drops ARP it cannot match. When the router serves or
@@ -454,15 +453,14 @@
   RtrA(config-router)# end
   RtrA# show ip route 8.8.8.8
   RtrA# show ip route ospf
-  WHY: The /32 host route sends only 8.8.8.8 to this site's ISP. redistribute
+  WHY: The /32 host route sends only 8.8.8.8 to this site's ISP; redistribute
        static subnets shares it with RtrB as an OSPF external route (O E2,
        metric 20). Each router prefers its own static route (administrative
-       distance 1) over its neighbor's O E2 copy (110), so the neighbor's route
+       distance 1) over the neighbor's O E2 copy (110), so the neighbor's route
        takes over when the local uplink fails. On classic IOS the subnets
-       keyword is what lets a /32 through; without it, IOS redistributes
-       classful networks only. passive-interface keeps OSPF hellos off the user
-       VLANs and still advertises their subnets; only the inter-site link G0/2
-       forms a neighbor.
+       keyword lets a /32 through; without it, IOS redistributes classful
+       networks only. passive-interface keeps hellos off the user VLANs and
+       still advertises their subnets; only G0/2 forms a neighbor.
   NOTE: OSPF stays at concept level here. show ip route 8.8.8.8 on RtrA reports
         Known via "static", distance 1, metric 0; with RtrA's uplink down it
         reports Known via "ospf 1", distance 110, metric 20, type extern 2, with

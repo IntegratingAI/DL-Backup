@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jkVtay+8lBRjLfHI3Zpmem7vjx3L+KbQo/69OIS2kKU=' 'sha256-qztxMnJoUe6DrFfKPnwPEtQGKx4jG6O7ImEXtEmeW28=' 'sha256-s1jXqFmaav8ZBmmswMFeLL0nAlH69xeBC8FztkxuoyI='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qztxMnJoUe6DrFfKPnwPEtQGKx4jG6O7ImEXtEmeW28=' 'sha256-uUdVUzDKcUUAR0uIljhRbOxSu39INcl0l8bgF1RQ1dc=' 'sha256-yb+LNwqWdRYfPhJ91XXKESl9XJ2OAvBmlKBJ9qewJiE='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Configure a simulated router and switch from their consoles, then prove it from two PCs. Timed missions, from the basics to VLAN trunks, router-on-a-stick, and SSH access for the Teachers VLAN only.">
 <link rel="canonical" href="https://freeapp4that.store/net-drills/ios-cli-lab/">
@@ -243,7 +243,8 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
   </div>
 </div>
 
-<p class="tips">Type <code>?</code> for help and Tab to finish a word. Abbreviations work: <code>conf t</code>, <code>int g0/0.10</code>, <code>int range f0/1 - 4</code>, <code>sh run</code>, <code>copy run start</code>. PCs use <code>ipconfig /renew</code> for DHCP. The simulator covers the commands these missions use: device basics, passwords and SSH, VLANs and trunks, port security, router-on-a-stick, DHCP, static routes, standard ACLs on the VTY lines, login banners, and OSPF at the configuration level. Anything else gets an IOS-style error. Output follows classic IOS 15 on a 2960 switch and a 2911 router, as in Packet Tracer; the tips say where IOS XE differs.</p>
+<p class="tips">Type <code>?</code> for help and Tab to finish a word. Abbreviations work: <code>conf t</code>, <code>int g0/0.10</code>, <code>int range f0/1 - 4</code>, <code>sh run</code>, <code>copy run start</code>. PCs use <code>ipconfig /renew</code> for DHCP. The simulator covers the commands these missions use; anything else gets an IOS-style error. Output follows classic IOS 15 on a 2960 switch and a 2911 router, as in Packet Tracer; the tips say where IOS XE differs.</p>
+<details><summary>What the simulator covers</summary><p>Device basics, passwords and SSH, VLANs and trunks, port security, router-on-a-stick, DHCP, static routes, standard ACLs on the VTY lines, login banners, and OSPF at the configuration level.</p></details>
 <footer>Unofficial practice; not affiliated with or endorsed by Cisco. The router, switch, and PCs are simulated; output is modeled on Cisco IOS. Completed missions are remembered in this browser only.</footer>
 </div>
 
@@ -745,7 +746,7 @@ const X = {
   /* global (both) */
   hostname(s, a) { if (!/^[A-Za-z]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?$/.test(a[0])) { s.w('% Hostname contains one or more illegal characters.\n'); return; } s.d.hostname = a[0]; },
   noHostname(s) { s.d.hostname = s.d.kind === 'router' ? 'Router' : 'Switch'; },
-  enSecret(s, a) { const p = parseSecret(a[0]); if (p.plain !== null && tooShort(s, p.plain)) return; s.d.enableSecret = mkSecret(p.plain, p.hash); if (p.plain !== null) s.hint("Stored as type 5 (MD5), the strongest this simulated 15.1 image offers. On IOS 15.3(3)M3 and later, 'enable algorithm-type scrypt secret <password>' stores type 9 (scrypt), and 'sha256' gives type 8 (PBKDF2-SHA-256); Cisco recommends them over type 5."); },
+  enSecret(s, a) { const p = parseSecret(a[0]); if (p.plain !== null && tooShort(s, p.plain)) return; s.d.enableSecret = mkSecret(p.plain, p.hash); if (p.plain !== null) s.hint("Stored as type 5 (MD5), the strongest this simulated 15.1 image offers. On IOS 15.3(3)M3 and later, 'enable algorithm-type scrypt secret <password>' stores type 9 (scrypt) and 'sha256' stores type 8 (PBKDF2-SHA-256); Cisco recommends both over type 5."); },
   enPass(s, a) {
     const p = parsePw(a[0]);
     if (!p) { s.w('Invalid encrypted password\n'); return; }
@@ -1463,7 +1464,7 @@ class PCShell {
     else if (r === 'transport') { if (proto === 'telnet') { this.lab.ev['telnetRefused:' + this.lastNode] = true; this.hint("Telnet is blocked by 'transport input' on the VTY lines. Once SSH works, that's what you want."); } else this.hint("The VTY lines don't accept SSH. Check 'transport input' under line vty."); }
     else if (r === 'nossh') this.hint('SSH is off on that device. SSH needs a hostname, a domain name, and RSA keys; version 2 needs keys of 768 bits or more.');
     else if (r === 'sshver') this.hint(`That device and this client run different SSH versions. 'ip ssh version' on the device and -v on the client have to match.`);
-    else if (r === 'acl') { this.hint(`The VTY lines on ${this.lastNode.toUpperCase()} filter sources with access-class ${this.aclNo}, and ${this.pc.ip} lands on a deny: either a deny entry or the implicit deny that ends every ACL.`); }
+    else if (r === 'acl') { this.hint(`access-class ${this.aclNo} on ${this.lastNode.toUpperCase()}'s VTY lines refuses ${this.pc.ip}: it matches a deny entry or the implicit deny that ends every ACL.`); }
     else if (r === 'quiet') this.hint('That device is in login quiet mode after too many failures (login block-for). Wait it out; the console still works.');
     else if (r === 'busy') this.hint('Every VTY line is in use.');
     else if (r === 'notserver') this.hint('That address answers ping, but nothing there listens for Telnet or SSH.');
@@ -2084,7 +2085,7 @@ const NAT_NOTE = "The simulated ISP routes the school's 10.x ranges back; a real
 const DL = 'https://freeapp4that.store/defense-ladder/#';
 
 const M5_INSTR = `
-<p>Site A of the school network needs its router and switch (R1 and S1 here; the other Site A tools call them RtrA and SwA) built from scratch, on the 10.1.x addressing plan that the Site A missions share. Complete every requirement, then press <strong>Check results</strong> to see what percentage of the spec you have met. Values are case-sensitive: on a real device a hostname, VLAN name, or password typed differently is a different value, and anything that checks your work (a peer review, a compliance script, a lab checker) compares it exactly.</p>
+<p>Build Site A's router and switch (R1 and S1 here; RtrA and SwA in the other Site A tools) from factory defaults on the 10.1.x addressing plan that the Site A missions share. Complete every requirement, then press <strong>Check results</strong> to see what percentage of the spec you have met. Values are case-sensitive: on a real device a hostname, VLAN name, or password typed differently is a different value, and anything that checks your work (a peer review, a compliance script, a lab checker) compares it exactly.</p>
 <h3>Addressing table</h3>
 <table><thead><tr><th>Interface</th><th>Address</th><th>Notes</th></tr></thead><tbody>
 <tr><td class="m">R1 G0/0.10</td><td class="m">10.1.10.1/24</td><td>VLAN 10, STUDENTS</td></tr>
@@ -2109,7 +2110,7 @@ const M5_INSTR = `
 <ul><li>PC1 gets an address by DHCP (ipconfig /renew).</li><li>PC1 can ping 8.8.8.8. ${NAT_NOTE}</li><li>PC2 (Teachers) reaches S1 by SSH at 10.1.20.2.</li><li>Save both configurations.</li></ul>`;
 
 const M7_INSTR = `
-<p>Build all of Site A in one pass, from factory defaults: the router and switch (R1 and S1 here; the other Site A tools call them RtrA and SwA) get everything in Branch build plus the Site A additions. Press <strong>Check results</strong> whenever you want a score. Values are case-sensitive, exactly as in Branch build.</p>
+<p>Build all of Site A in one pass from factory defaults. R1 and S1 (RtrA and SwA in the other Site A tools) get everything in Branch build plus the Site A additions. Press <strong>Check results</strong> whenever you want a score. Values are case-sensitive, as in Branch build.</p>
 <h3>Addressing table</h3>
 <table><thead><tr><th>Interface</th><th>Address</th><th>Notes</th></tr></thead><tbody>
 <tr><td class="m">R1 G0/0.10</td><td class="m">10.1.10.1/24</td><td>VLAN 10, STUDENTS</td></tr>
@@ -2211,7 +2212,7 @@ const M6_TASKS = [
 
 const MISSIONS = [
   { id: 'm1', name: 'Lock the doors', sub: 'Basics, router', grade: 'Sophomore', learn: [['sophomore/s5', 'Defense Ladder s5, Cisco: configure a switch and a router']], kind: 'list', hintLabel: 'Show command', next: 'Next up: SSH only.',
-    brief: 'A factory-fresh router behind a factory-fresh switch. Give R1 a name, lock the console and remote lines, add a legal banner, bring up G0/0, save, then prove it from PC1. Use these exact values: names and passwords are case-sensitive, and the checks compare them character for character.',
+    brief: 'A factory-fresh router behind a factory-fresh switch. Name R1, lock the console and remote lines, add a legal banner, bring up G0/0, save, then prove it from PC1. Use these exact values: names and passwords are case-sensitive, and the checks compare them character for character.',
     init: () => ({ r1: E.routerFactory(), s1: E.switchFactory(), pcs: PC_STATIC }),
     tasks: [
       { t: 'Name the router R1', cmd: 'hostname R1', ok: L => L.r1.dev.hostname === 'R1' },
@@ -2260,7 +2261,7 @@ const MISSIONS = [
       { t: 'None of the fixes would survive a reload', cmd: 'end\ncopy running-config startup-config', ok: savedR1 }
     ] },
   { id: 'm4', name: 'Switch basics', sub: 'Basics, VLAN 20, and SSH, switch', grade: 'Sophomore', learn: [['sophomore/s5', 'Defense Ladder s5, Cisco: configure a switch and a router']], kind: 'list', hintLabel: 'Show command', next: 'Next up: Branch build, a full build from a written spec.',
-    brief: `R1 is already done (192.168.1.1 on G0/0, the Lock the doors basics). Now the switch: give S1 an identity and secure it the same way, create VLAN 20 for Teachers and put both PC ports and the G0/1 uplink to R1 in it, move management off VLAN 1 onto a VLAN 20 interface, shut down the VLAN 1 interface (it starts enabled here), close every unused port, and lock the two PC ports. ${MGMT_NOTE}`,
+    brief: `R1 is done (192.168.1.1 on G0/0, the Lock the doors basics). Give S1 its own name and the same locks. Then create VLAN 20 for Teachers and put both PC ports and the G0/1 uplink to R1 in it. Move management off VLAN 1 onto a VLAN 20 interface and shut the VLAN 1 interface (it starts enabled here). Close every unused port and lock the two PC ports. ${MGMT_NOTE}`,
     init: () => { const d = m1Final(); return { r1: d, r1Startup: d, s1: freshSwitch(), pcs: PC_STATIC }; },
     tasks: [
       { t: 'Name the switch S1', cmd: 'hostname S1', ok: L => L.s1.dev.hostname === 'S1' },
@@ -2286,7 +2287,7 @@ const MISSIONS = [
     instr: M5_INSTR,
     tasks: M5_TASKS },
   { id: 'm6', name: 'Site A', sub: 'Principals, Teachers-only access, and the route out', grade: 'Senior', learn: [['senior/se6', 'Defense Ladder se6, Cisco: audit and extend the two-site network']], kind: 'list', hintLabel: 'Show a hint', next: 'Next up: Site A from scratch, the whole build from a written spec.',
-    brief: `Branch build is finished, and R1 and S1 now run Site A of the two-site school network (the other Site A tools call them RtrA and SwA). PC1 sits in Students at 10.1.10.11 and PC2 in Teachers at 10.1.20.12. Add VLAN 30 for Principals, repair a rushed PortFast pass (G0/1 carries PortFast, and the PC ports lack BPDU guard), limit remote management to Teachers, give 8.8.8.8 its own route, and write the OSPF process that shares it with Site B. Each check names an outcome; open a hint when you want the commands. ${MGMT_NOTE}`,
+    brief: `Branch build is done: R1 and S1 run Site A of the two-site school network (the other Site A tools call them RtrA and SwA). PC1 is in Students at 10.1.10.11, PC2 in Teachers at 10.1.20.12. Add VLAN 30 for Principals and repair a rushed PortFast pass (G0/1 carries PortFast, and the PC ports lack BPDU guard). Then limit remote management to Teachers, give 8.8.8.8 its own route, and write the OSPF process that shares it with Site B. Each check names an outcome; open a hint for the commands. ${MGMT_NOTE}`,
     init: m6Start,
     tasks: M6_TASKS },
   { id: 'm7', name: 'Site A from scratch', sub: 'Written spec, the whole Site A build', grade: 'Senior', learn: [['senior/se6', 'Defense Ladder se6, Cisco: audit and extend the two-site network']], kind: 'pt', hintLabel: 'Show a fix', next: 'Reset and beat your time, or try Free play.',

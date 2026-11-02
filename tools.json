@@ -16,7 +16,7 @@
       "title": "Cybersecurity",
       "tagline": "Learn cyber defense, then drill it.",
       "icon": "terminal",
-      "description": "Two ways in: Learning builds the concepts from your first command to confident defender, and Practice is hands-on reps \u2014 Net Drills for subnetting and Cisco IOS, Lockdown Drills for hardening Windows, Linux, FreeBSD, and Cisco IOS, and Lockdown Range for full hardening labs that run in your browser.",
+      "description": "Two ways in. Learning builds the concepts, from your first command to confident defender. Practice is hands-on reps: Net Drills for subnetting and Cisco IOS, Lockdown Drills for hardening Windows, Linux, FreeBSD, and Cisco IOS, and Lockdown Range for full hardening labs in your browser.",
       "note": "Unofficial practice; not affiliated with or endorsed by Microsoft, Canonical, Linux Mint, the FreeBSD Project, or Cisco. Defensive skills only: practice on machines you own or are authorized to use. Progress stays in your browser."
     }
   ],
@@ -25,7 +25,7 @@
       "slug": "learning",
       "title": "Learning",
       "category": "cyber",
-      "intro": "Build the concepts and vocabulary, from your first terminal command to confident defender. New to cybersecurity? Start with Defense Ladder, the course. The Study Map finds any concept as you type and shows where to learn and practice it."
+      "intro": "Build the concepts and vocabulary, from your first terminal command to confident defender. New to cybersecurity? Start with Defense Ladder, the course. Know what you need? The Study Map finds any concept as you type and shows where to learn and practice it."
     },
     {
       "slug": "practice",
@@ -48,7 +48,7 @@
       "title": "Lockdown Drills",
       "category": "cyber",
       "section": "practice",
-      "description": "Baseline-hardening trainers for Windows 11, Windows Server, Linux Mint, Ubuntu, FreeBSD, and Cisco IOS, each in beginner, intermediate, and advanced levels, with a plain-text command reference that explains why each step matters.",
+      "description": "Baseline-hardening trainers for Windows 11, Windows Server, Linux Mint, Ubuntu, FreeBSD, and Cisco IOS, each at beginner, intermediate, and advanced levels. A plain-text command reference explains why each step matters.",
       "note": "Unofficial practice; not affiliated with or endorsed by Microsoft, Canonical, Linux Mint, the FreeBSD Project, or Cisco. Try commands on a practice virtual machine, not a computer you depend on."
     },
     {
@@ -111,7 +111,7 @@
       "slug": "defense-ladder",
       "name": "Defense Ladder",
       "tagline": "Start here: the course, one grade at a time.",
-      "description": "A free, four-grade cybersecurity course, Freshman to Senior, built on Bloom's taxonomy: 54 units across Windows, Linux, networking, security foundations, defense operations, and web and cloud, with diagrams, drills on realistic logs, captures, and configs, a readiness check for each grade, and a glossary. Works offline, and everything stays in your browser.",
+      "description": "A free, four-grade cybersecurity course, Freshman to Senior, built on Bloom's taxonomy: 54 units across Windows, Linux, networking, security foundations, defense operations, and web and cloud. Diagrams, drills on realistic logs, captures, and configs, a readiness check for each grade, and a glossary round it out. Works offline, and everything stays in your browser.",
       "badges": [
         "Cybersecurity",
         "Study",
@@ -123,8 +123,8 @@
       "icon": "path",
       "category": "cyber",
       "section": "learning",
-      "sha256": "4de3205d1a20e659695c1292bfbaa425eb8a129f11dbe3e0104ca7087971de2c",
-      "updated": "2026-11-01"
+      "sha256": "23174906a23258e63a9a183820351a32c9d14c74215f0d0c7f04f712c83235a4",
+      "updated": "2026-11-02"
     },
     {
       "slug": "net-drills/subnet-sprint",
@@ -141,8 +141,8 @@
       "download_as": "subnet-sprint.html",
       "icon": "subnet",
       "category": "cyber",
-      "sha256": "ac94527097c2b8811760ddcde6588cdb2483d473aac5fffc4c550ffe5ccad748",
-      "updated": "2026-11-01",
+      "sha256": "e625978d6be0d1b00be71edcd5120a322072d25b7c41b57d371a4aa0c7f5d073",
+      "updated": "2026-11-02",
       "series": "net-drills"
     },
     {
@@ -160,8 +160,8 @@
       "download_as": "ios-cli-lab.html",
       "icon": "terminal",
       "category": "cyber",
-      "sha256": "12865d5a3a6f7a3ca0735213c76a993b434f891d6f4f8ae674830e802760a2fc",
-      "updated": "2026-11-01",
+      "sha256": "b33a7ae35d1ca288189fd022f02a51453ac7d44ad90bc3fda93ebb3cd9e2d0db",
+      "updated": "2026-11-02",
       "series": "net-drills"
     },
     {
@@ -179,8 +179,8 @@
       "download_as": "config-audit.html",
       "icon": "search",
       "category": "cyber",
-      "sha256": "d70ac9f98d49bdfa377cef365e278122a42a26979999736fe53007434d473087",
-      "updated": "2026-11-01",
+      "sha256": "e4157e33cddac2b1c09b8dccdbc2832c9857dc3649b7b36fa70aa6322774f325",
+      "updated": "2026-11-02",
       "series": "net-drills"
     },
     {
@@ -198,15 +198,15 @@
       "download_as": "trouble-tickets.html",
       "icon": "wrench",
       "category": "cyber",
-      "sha256": "b9273f65b00e680aadb2edecbc8c8547777c6757c650adcd02a88690cd89c85d",
-      "updated": "2026-11-01",
+      "sha256": "2e788bc41041bf216157bf7bd823de501f680b52b5c4b4fcc7df578c302d25a0",
+      "updated": "2026-11-02",
       "series": "net-drills"
     },
     {
       "slug": "lockdown-drills/windows-11",
       "name": "Windows 11 Lockdown",
       "tagline": "Lock down the workstation.",
-      "description": "Windows 11 baseline hardening in three levels: beginner, intermediate, and advanced. Comes with a command reference that explains why each step matters.",
+      "description": "Windows 11 baseline hardening in three levels: beginner, intermediate, and advanced. A command reference explains why each step matters.",
       "badges": [
         "Windows",
         "Hardening",
@@ -225,14 +225,14 @@
           "download_as": "windows-11-lockdown-reference.txt"
         }
       ],
-      "sha256": "6f8933e8ed95bf9937017c32d33241dc932de437c739480d2ed6733ce4bcf119",
-      "updated": "2026-11-01"
+      "sha256": "332b19af92f1feb7b0f341e733b56a2a245ffb95cbb27c34317aa0d7feaa4f98",
+      "updated": "2026-11-02"
     },
     {
       "slug": "lockdown-drills/windows-server",
       "name": "Windows Server Lockdown",
       "tagline": "Lock down the server.",
-      "description": "Windows Server baseline hardening in three levels: beginner, intermediate, and advanced. Comes with a command reference that explains why each step matters.",
+      "description": "Windows Server baseline hardening in three levels: beginner, intermediate, and advanced. A command reference explains why each step matters.",
       "badges": [
         "Windows Server",
         "Hardening",
@@ -251,14 +251,14 @@
           "download_as": "windows-server-lockdown-reference.txt"
         }
       ],
-      "sha256": "1b63ba80d8764ced2f3287ea6accaca7b28f07d0147dda17eac4a3bbc73e7043",
-      "updated": "2026-11-01"
+      "sha256": "733bb47115d5b11fc626ea7310c561d89d56c45f5d6dd92d661327c972aaffe1",
+      "updated": "2026-11-02"
     },
     {
       "slug": "lockdown-drills/linux-mint",
       "name": "Linux Mint Lockdown",
       "tagline": "Lock down the desktop.",
-      "description": "Linux Mint baseline hardening in three levels: beginner, intermediate, and advanced. Comes with a command reference that explains why each step matters.",
+      "description": "Linux Mint baseline hardening in three levels: beginner, intermediate, and advanced. A command reference explains why each step matters.",
       "badges": [
         "Linux",
         "Hardening",
@@ -277,14 +277,14 @@
           "download_as": "linux-mint-lockdown-reference.txt"
         }
       ],
-      "sha256": "8d4402aff42229a9fb83843d541a2db66d47ac7aae30ad3390481f4eece4d316",
-      "updated": "2026-11-01"
+      "sha256": "251442d1031d4e95ecef02997e2c7f821ba49ae12591285302f439f6503b2358",
+      "updated": "2026-11-02"
     },
     {
       "slug": "lockdown-drills/ubuntu",
       "name": "Ubuntu Lockdown",
       "tagline": "Lock down Ubuntu.",
-      "description": "Ubuntu baseline hardening in three levels: beginner, intermediate, and advanced. Comes with a command reference that explains why each step matters.",
+      "description": "Ubuntu baseline hardening in three levels: beginner, intermediate, and advanced. A command reference explains why each step matters.",
       "badges": [
         "Linux",
         "Hardening",
@@ -303,14 +303,14 @@
           "download_as": "ubuntu-lockdown-reference.txt"
         }
       ],
-      "sha256": "c31ac86b1d2bbe9ab45d1eaa822932cb77ecf684a9ee94fb593842df9877dbd2",
-      "updated": "2026-11-01"
+      "sha256": "95903f925aa7e8e11c0a56f3689720fb738e53b7257f45ad786243fd9cd37cb3",
+      "updated": "2026-11-02"
     },
     {
       "slug": "lockdown-drills/freebsd",
       "name": "FreeBSD Lockdown",
       "tagline": "Lock down FreeBSD.",
-      "description": "FreeBSD baseline hardening in three levels: beginner, intermediate, and advanced. Comes with a command reference that explains why each step matters.",
+      "description": "FreeBSD baseline hardening in three levels: beginner, intermediate, and advanced. A command reference explains why each step matters.",
       "badges": [
         "FreeBSD",
         "Hardening",
@@ -329,14 +329,14 @@
           "download_as": "freebsd-lockdown-reference.txt"
         }
       ],
-      "sha256": "23d0fe81044add603f7ae68302978f259f77e7ca53d48055ef5ed2e96bac46fd",
-      "updated": "2026-11-01"
+      "sha256": "e11d99f78ac6545e44e38f6338f41939094bd66bc08d6c05135b95e7dd76b879",
+      "updated": "2026-11-02"
     },
     {
       "slug": "lockdown-drills/cisco-ios",
       "name": "Cisco IOS Lockdown",
       "tagline": "Lock down the router.",
-      "description": "Cisco IOS baseline hardening in three levels: beginner, intermediate, and advanced. Comes with a command reference that explains why each step matters.",
+      "description": "Cisco IOS baseline hardening in three levels: beginner, intermediate, and advanced. A command reference explains why each step matters.",
       "badges": [
         "Cisco IOS",
         "Hardening",
@@ -348,8 +348,8 @@
       "icon": "lock",
       "category": "cyber",
       "series": "lockdown-drills",
-      "sha256": "e2fbfe27835df53bef939692fda47c806523f96749fab518d708dba03ef89775",
-      "updated": "2026-11-01",
+      "sha256": "e3ea1e2d931429b3cd10c8d47bbe69f13916781cb7172b84643ecc6ea3d3fe6f",
+      "updated": "2026-11-02",
       "extras": [
         {
           "label": "Reference .txt",
@@ -362,7 +362,7 @@
       "slug": "lockdown-range/windows",
       "name": "Windows Range",
       "tagline": "Harden the workstation. Then the server.",
-      "description": "A Windows 11 and Windows Server 2025 hardening lab in your browser: sign in, read the scenario brief, answer the investigation questions, then fix it with the real panels or the command line while a live Progress Check keeps count.",
+      "description": "Windows 11 and Windows Server 2025 hardening scenarios in your browser. Sign in, read the scenario brief, answer the investigation questions, then fix each one with the real panels or the command line while a live Progress Check keeps count.",
       "badges": [
         "Windows",
         "Hardening",
@@ -381,14 +381,14 @@
           "download_as": "windows-range-walkthrough.txt"
         }
       ],
-      "sha256": "2677f98b40a63209404431b340c4d552cd0cd5a1b98d113871358f4b7f2a800b",
-      "updated": "2026-11-01"
+      "sha256": "9b48567312b9910a017dfb4d17a0c26f4a261656b9a165421d100f2da60632ee",
+      "updated": "2026-11-02"
     },
     {
       "slug": "lockdown-range/linux",
       "name": "Linux Range",
       "tagline": "Harden the box from the shell.",
-      "description": "Ubuntu, Linux Mint, and Ubuntu Server hardening labs in your browser: a real-feeling bash terminal with sudo, apt, systemctl, ufw, PAM, cron, and nano, three scenarios, and a live Progress Check with availability checks.",
+      "description": "Ubuntu, Linux Mint, and Ubuntu Server, three scenarios in your browser. A real-feeling bash terminal with sudo, apt, systemctl, ufw, PAM, cron, and nano. A live Progress Check also runs availability checks that flag any authorized user, administrator, or critical service you break.",
       "badges": [
         "Linux",
         "Hardening",
@@ -407,14 +407,14 @@
           "download_as": "linux-range-walkthrough.txt"
         }
       ],
-      "sha256": "b2d3752813110dbba2e4e4b64a7fc49eda2b0ce70ec455fd8aa7d1a5ce6b8513",
-      "updated": "2026-11-01"
+      "sha256": "2417fbb475900ede873bcf5ffbf6b1eac994f8df4c376bc69dff0cbb1e119047",
+      "updated": "2026-11-02"
     },
     {
       "slug": "lockdown-range/cisco-ios",
       "name": "Cisco Range",
       "tagline": "Secure the topology. Prove it with ping.",
-      "description": "A Packet Tracer-style topology in your browser: IOS consoles with ? help, abbreviations, and the exact error messages, PC command prompts, four scenarios from one router to a two-site network with VLAN trunks, router-on-a-stick, and OSPF, and a live Progress Check.",
+      "description": "A Packet Tracer-style topology in your browser: IOS consoles with ? help, abbreviations, and the exact error messages, plus PC command prompts. Four scenarios, from one router to a two-site network with VLAN trunks, router-on-a-stick, and OSPF, with a live Progress Check.",
       "badges": [
         "Cisco IOS",
         "Hardening",
@@ -433,14 +433,14 @@
           "download_as": "cisco-range-walkthrough.txt"
         }
       ],
-      "sha256": "d310a508f05ea2555f3cdc9ba15e918e14b2c9a9e798c590bec5b47104e560f3",
-      "updated": "2026-11-01"
+      "sha256": "8cff8dad10d475c1180a90664f32fa0f0941b5d42b0fc6533bcba76e655fe1e0",
+      "updated": "2026-11-02"
     },
     {
       "slug": "study-map",
       "name": "Study Map",
       "tagline": "Every concept: find it, learn it, practice it.",
-      "description": "Every concept in the cybersecurity course in one place. Search as you type or browse by topic, track, grade, network layer, or app, and see the Defense Ladder unit that teaches it, the drills and labs that practice it, and the commands on Windows, Linux, FreeBSD, and Cisco. Rate what you know to get your own study path.",
+      "description": "Every concept in the cybersecurity course in one place. Type a concept and see the Defense Ladder unit that teaches it, the drills and labs that practice it, and its commands on Windows, Linux, FreeBSD, and Cisco. Browse by topic, track, grade, network layer, or app. Rate what you know to get your own study path.",
       "badges": [
         "Cybersecurity",
         "Study",
@@ -452,8 +452,8 @@
       "icon": "map",
       "category": "cyber",
       "section": "learning",
-      "sha256": "76337cd52b498f8d3fcafed1c3a4b2fca1b067eee92bedc874c3ba86f9457517",
-      "updated": "2026-11-01"
+      "sha256": "1254d3219b99bfe311e9b74d263456abc3ecd0b5a7d81d0b50fdad0a9108a307",
+      "updated": "2026-11-02"
     }
   ]
 }

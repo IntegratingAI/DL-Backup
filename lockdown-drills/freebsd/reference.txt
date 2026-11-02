@@ -58,12 +58,11 @@
   # awk -F: '$3==0 {print $1}' /etc/passwd
   # awk -F: '$1=="toor" {print $1": "$2}' /etc/master.passwd
   # pw groupshow wheel
-  WHY: wheel is the group that may su to root. sudo, a package, follows
-       /usr/local/etc/sudoers, where the line %wheel ALL=(ALL:ALL) ALL works
-       once you uncomment it (leave the NOPASSWD line commented). A UID-0
-       account other than root is a second root, with one exception: toor is
-       FreeBSD's default disabled alternate root and is normal while its hash is
-       a star.
+  WHY: wheel is the group that may su to root. sudo (a package) follows
+       /usr/local/etc/sudoers: uncomment %wheel ALL=(ALL:ALL) ALL and leave the
+       NOPASSWD line commented. A UID-0 account other than root is a second
+       root, with one exception: toor, FreeBSD's default disabled alternate
+       root, is normal while its hash is a star.
   NOTE: toor with a real hash instead of * means someone set it a password. That
         is a finding.
 
@@ -116,12 +115,12 @@
        reserved and not implemented in the base system.
   NOTE: The scenario brief sets the numbers; these lines show one sample brief.
         The CIS Benchmarks used in the other drills ask for 14 or more
-        characters and a maximum age of 365 days or fewer. This step opens vi:
-        press i to insert, Esc to stop inserting, then :wq and Enter to save and
-        quit, or :q! to leave without saving. ee is the friendlier editor in
-        base (Esc opens its menu), and vipw opens vi too, unless the EDITOR
-        variable names another editor. Users must belong to the class you edited
-        (default unless pw usermod -L set another).
+        characters and a maximum age of 365 days or fewer. This step opens vi: i
+        inserts, Esc stops inserting, :wq then Enter saves and quits, and :q!
+        leaves without saving. ee is the friendlier base editor (Esc opens its
+        menu); vipw opens vi too unless EDITOR names another editor. Users must
+        belong to the class you edited (default, unless pw usermod -L set
+        another).
 
 [B-06] Lockout: login.conf retries and blocklistd for sshd
   AREA: Account management (CIS Control 5)
@@ -443,12 +442,11 @@
   # pfctl -a 'blocklistd/22' -t port22 -T show
   # tcpdump -n -e -ttt -i pflog0
   # grep -nE '^pass in' /etc/pf.conf
-  WHY: A planted pass in rule or anchor stays out of sight in a casual look.
-       pfctl -sr prints the main ruleset, where an anchor shows as one line;
-       pfctl -sA lists the anchors attached to the main ruleset (add -v to list
-       nested ones), and pfctl -a '*' -sr prints every anchor's rules. pflog0
-       shows what is being blocked live, which also answers investigation
-       questions about scanning.
+  WHY: A planted pass in rule or anchor hides from a casual look. pfctl -sr
+       prints the main ruleset, where an anchor shows as one line. pfctl -sA
+       lists the anchors attached to the main ruleset (-v adds nested ones).
+       pfctl -a '*' -sr prints every anchor's rules. pflog0 shows live blocks,
+       which also answers investigation questions about scanning.
 
 [A-06] Recall drill: Linux habit to FreeBSD equivalent
       Say each FreeBSD equivalent out loud, then check your answers in the places named below.
@@ -458,12 +456,11 @@
       /etc/login.defs -> ?     pam_faillock -> ?
       ss -tulpn -> ?           /etc/sudoers -> ?        md5sum -> ?
       journalctl -> ?          auditd (Linux) -> ?      useradd/userdel -> ?
-  WHY: Recall each row, then check it against Defense Ladder se1 (its tables
-       Linux habit, FreeBSD equivalent; su, sudo, and doas on FreeBSD; and
-       Hunting on any Unix) and against items B-02, I-02, I-06, I-09, and A-04
-       here. Most people meet FreeBSD after learning Linux: the concepts carry
-       over, and the file paths and command names change. Pulling each pair from
-       memory is what makes it stick.
+  WHY: Say each FreeBSD equivalent, then check Defense Ladder se1 (tables Linux
+       habit, FreeBSD equivalent; su, sudo, and doas on FreeBSD; Hunting on any
+       Unix) and items B-02, I-02, I-06, I-09, and A-04 here. The concepts carry
+       over from Linux; the file paths and command names change. Pulling each
+       pair from memory makes it stick.
 
 [A-07] Verify loop, every thirty minutes
   # sockstat -46l; pw groupshow wheel; awk -F: '$3==0' /etc/passwd

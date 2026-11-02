@@ -443,7 +443,7 @@ details.more>summary{cursor:pointer;margin:.4rem 0;font-size:var(--t-md);color:v
   function placeholder() {
     var d = el('div', {cls: 'd'});
     d.appendChild(el('h2', {text: 'Pick a concept'}));
-    d.appendChild(el('p', {text: 'Choose one from the list, or type in the search box. Each concept shows the Defense Ladder unit that teaches it, the drills and labs that practice it, and the commands on each system.'}));
+    d.appendChild(el('p', {text: 'Choose one from the list or search. Each concept shows the Defense Ladder unit that teaches it, the drills and labs that practice it, and its commands on each system.'}));
     var lg = el('div', {cls: 'legend'}, [el('p', {text: 'Kinds of practice:'})]);
     var dl = el('dl');
     [['k', 'Drill', 'Quick questions or a short exercise: remember it.'], ['k k-build', 'Build', 'Configure it from instructions: apply it.'],
@@ -658,7 +658,7 @@ details.more>summary{cursor:pointer;margin:.4rem 0;font-size:var(--t-md);color:v
   function cliPlaceholder() {
     var d = el('div', {cls: 'd'});
     d.appendChild(el('h2', {text: 'Find a command'}));
-    d.appendChild(el('p', {text: 'Type what you want to do, such as routing table, vlan, lockout, or firewall, or the start of a command, such as sh ip int. Pick a command to see its options, where each lesson, drill, and lab uses it, and the expected answers.'}));
+    d.appendChild(el('p', {text: 'Type a task (routing table, vlan, lockout, firewall) or the start of a command (sh ip int). Pick a command to see its options, every lesson, drill, and lab that uses it, and the expected answers.'}));
     var lg = el('div', {cls: 'legend'}, [el('p', {text: 'Labels on options and places:'})]);
     var dl = el('dl');
     [['k k-exp', 'Expected', 'An answer, a fix, or a drill needs it.'], ['k', 'In a lesson', 'A lesson or reference shows it.'],
@@ -779,7 +779,7 @@ details.more>summary{cursor:pointer;margin:.4rem 0;font-size:var(--t-md);color:v
     stack.appendChild(el('button', {cls: 'host g-host', type: 'button', style: 'grid-row:8', 'aria-pressed': String(S.layer === 'host'), 'data-layer': 'host',
       'aria-label': 'Host, the machine itself: ' + plural(count('host'), 'concept', 'concepts')}, [el('span', {cls: 'nm', text: 'Host: the machine itself'}), el('span', {cls: 'ct', text: String(count('host'))})]));
     filters.appendChild(stack);
-    filters.appendChild(el('p', {cls: 'stack-note', text: 'Layers 1 to 7 are the OSI model; the right column is TCP/IP. In TCP/IP, session (5) and presentation (6) jobs happen inside the application protocols, so concepts appear at 5 or 6 by what they do: idle timeouts at 5, encryption in transit at 6. Tap a layer to filter, tap again to clear.'}));
+    filters.appendChild(el('p', {cls: 'stack-note', text: 'Tap a layer to filter; tap again to clear. Left: OSI layers 1 to 7. Right: TCP/IP, which folds session (5) and presentation (6) into its Application layer. Concepts sit at 5 or 6 by what they do: idle timeouts at 5, encryption in transit at 6.'}));
     var list = D.concepts.filter(function (c) { return queryOk(c) && layerOk(c); });
     status(list, S.layer ? layerPhrase(S.layer) : '');
     if (!list.length) { emptyMsg(box); return; }
@@ -844,7 +844,7 @@ details.more>summary{cursor:pointer;margin:.4rem 0;font-size:var(--t-md);color:v
     if (!ids.length) {
       st.textContent = '';
       box.appendChild(el('div', {cls: 'empty'}, [
-        el('p', {text: 'Rate a few concepts first: open any concept and choose New, Shaky, or Solid. Your path then lists what to work on, in an order where each step builds on the last.'}),
+        el('p', {text: 'Rate a few concepts first: open one and choose New, Shaky, or Solid. Your path then lists what to work on, each step building on the last.'}),
         el('p', null, [el('button', {cls: 'pill', type: 'button', 'data-tab': 'track', text: 'Start with what every track needs'})])
       ]));
       return;

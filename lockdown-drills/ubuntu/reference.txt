@@ -32,11 +32,10 @@
        questions before any change (Defense Ladder f1).
   NOTE: Unfamiliar is distinct from unauthorized: trace it and ask before
         removing an agent (Defense Ladder s1). Keep a second terminal open as
-        root (sudo -i) before touching PAM, sudoers, or SSH, so a typo leaves
-        you a way back in. Right after the brief, start B-08's upgrade in a
-        second terminal so it runs while you fix accounts, and read its result
-        near the end; while it runs, other apt commands (B-05, B-09) wait for
-        its lock, so work on the items without apt first.
+        root (sudo -i) before touching PAM, sudoers, or SSH, so a typo leaves a
+        way back in. Start B-08's upgrade now in another terminal; apt items
+        (B-05, B-09) wait for its lock, so do the apt-free items first and read
+        the result near the end.
 
 [B-01] List human users, admins, and UID-0 accounts
   AREA: Account management (CIS Control 5)
@@ -48,10 +47,10 @@
   WHY: An extra UID-0 user is a second root. sudo is the admin group (wheel on
        some distributions); docker, lxd, and disk are root-equivalent, since
        they can mount the host filesystem or read and write raw disks; adm reads
-       logs. The default sudoers file also grants %admin, so a group named admin
-       is a second admin path. An account whose primary group (field 4 of
-       /etc/passwd) is sudo holds admin rights while staying out of the member
-       list that getent group sudo prints.
+       logs. The default sudoers also grants %admin, so a group named admin is a
+       second admin path. An account whose primary group (field 4 of
+       /etc/passwd) is sudo holds admin rights and stays out of the list getent
+       group sudo prints.
 
 [B-02] Remove or disable an unauthorized user
   AREA: Account management (CIS Control 5)
@@ -233,17 +232,16 @@
        game in one pass. apt's history log shows what someone installed and
        when. Packages install outside /usr/local, so anything there was placed
        by hand.
-  NOTE: Packages the brief requires (vsftpd, apache2, samba, openssh-server,
-        mysql) stay; harden them in Watchman I-12. On Ubuntu, Firefox and
-        several apps are snaps; they never show in apt list. Check both.
-        Expected stock hits to keep: cracklib-runtime and libcrack2 (the
-        dictionary pam_pwquality uses), netcat-openbsd (part of ubuntu-minimal:
-        purging it also removes that metapackage), and transmission-gtk, which
-        the full desktop installs: it is still a P2P client, so the brief
-        decides whether it stays. Leave out -y and read apt's REMOVED list
-        before answering Y, because --auto-remove also removes every package apt
-        already marks as no longer required. apt stops at an unknown name, so
-        purge only the names dpkg lists.
+  NOTE: Required packages (vsftpd, apache2, samba, openssh-server, mysql) stay;
+        harden them in Watchman I-12. Firefox and several apps are snaps and
+        never show in apt list: check both. Stock hits to keep: cracklib-runtime
+        and libcrack2 (pam_pwquality's dictionary), netcat-openbsd (part of
+        ubuntu-minimal, so purging it removes that metapackage), and
+        transmission-gtk, which the full desktop installs: it is still a P2P
+        client, so the brief decides whether it stays. Leave out -y and read
+        apt's REMOVED list before answering Y: --auto-remove also removes every
+        package apt already marks as no longer required. apt stops at an unknown
+        name, so purge only the names dpkg lists.
 
 [B-10] Find unapproved media files
   AREA: Data protection (CIS Control 3)
@@ -254,14 +252,14 @@
        search also surfaces hidden folders in /home and /var/tmp. file reads
        each file's first bytes, so a song renamed to notes.txt still shows as
        audio/mpeg. -printf records owner, size, and path for the change log.
-  NOTE: Confirm each path against the brief, then rm. Write the path down in
-        case an investigation question needs it, and if a question asks for its
-        hash, run sha256sum first (Defense Ladder s6). The OS ships its own
-        sounds under /usr/share, so the search skips /usr except /usr/local; a
-        hit inside an app folder (~/.local/share/flatpak, ~/snap, /opt/<app>)
-        usually belongs to the app, so judge it against the brief, and images go
-        only when the brief bans them. locate reads a nightly index that skips
-        /tmp and /dev/shm, so find is the search to trust.
+  NOTE: Confirm each path against the brief, then rm. Record the path for
+        investigation questions, and run sha256sum before rm when a question
+        wants the hash (Defense Ladder s6). The OS keeps its own sounds under
+        /usr/share, so the search skips /usr except /usr/local. A hit inside an
+        app folder (~/.local/share/flatpak, ~/snap, /opt/<app>) usually belongs
+        to the app, so judge it against the brief; images go only when the brief
+        bans them. locate reads a nightly index that skips /tmp and /dev/shm, so
+        trust find.
 
 [B-11] Services: what runs, what listens
   AREA: Secure configuration (CIS Control 4)
@@ -273,13 +271,12 @@
   WHY: Telnet and FTP are cleartext; avahi, cups, rpcbind, nfs and smb are
        exposure when nobody needs them. ss -tulpn shows the PID and program for
        every open port.
-  NOTE: Required services stay. disable --now means stop it and do not start it
-        at boot. Check what starts a service before you trust that: a systemd
-        .socket unit can keep the port open after its .service is stopped (ss
-        then shows systemd holding it). systemctl list-sockets shows each socket
-        unit with the service it starts; disable the .socket as well as the
-        .service. To trace an unknown listener to its unit and package, use
-        I-07.
+  NOTE: Required services stay. disable --now stops the unit and keeps it off at
+        boot. Check what starts a service before trusting that: a .socket unit
+        can hold the port after its .service stops, and ss shows systemd holding
+        it. systemctl list-sockets pairs each socket with its service, so
+        disable the .socket as well as the .service. I-07 traces an unknown
+        listener to its unit and package.
 
 [B-12] GDM auto-login and screen lock
   AREA: Secure configuration (CIS Control 4)
@@ -333,24 +330,21 @@
   $ systemctl list-units 'ssh*' --no-pager     (is ssh.socket the unit that listens on 22?)
   $ sudo systemctl daemon-reload && sudo systemctl restart ssh.socket   (after a Port or ListenAddress change)
   $ sudo find / -name authorized_keys -exec ls -l {} \; -exec cat {} \; 2>/dev/null
-  WHY: Root over SSH means no accountability and the prime brute-force target. A
-       planted authorized_keys file is a password-less backdoor that survives
-       every password you fix. The && runs the restart only when sshd -t passes,
-       so a config typo leaves the running server in place. Check how sshd is
-       started: when ssh.socket owns port 22, a Port change or a disable aimed
-       only at ssh.service leaves ssh.socket listening on the old port. sshd
-       keeps the first value it reads, and the Include line at the top of
-       sshd_config reads sshd_config.d/*.conf in name order, so one
-       00-hardening.conf wins over the shipped drop-ins and the main file. sshd
-       -T prints the values in force; -C applies any Match block, which plain -T
-       skips.
-  NOTE: Not required: sudo systemctl disable --now ssh.socket ssh.service &&
-        sudo apt purge -y openssh-server, then confirm with sudo ss -tlpn that
-        nothing holds port 22. Also read /etc/ssh/sshd_config.d/*.conf because
-        Include files override. A drop-in whose name sorts before 00- still
-        wins: the grep and sshd -T show it. If sshd -t or sshd -T stops at
-        'Missing privilege separation directory: /run/sshd', run sudo mkdir -p
-        /run/sshd and test again.
+  WHY: Root over SSH removes accountability and is the prime brute-force target.
+       A planted authorized_keys file is a password-free backdoor that outlives
+       every password fix. Confirm with sshd -T, which prints the values in
+       force; -C applies any Match block, which plain -T skips.
+  NOTE: The && runs the restart only when sshd -t passes, so a config typo
+        leaves the running server in place. sshd keeps the first value it reads,
+        and Include reads sshd_config.d/*.conf in name order, so
+        00-hardening.conf wins over the shipped drop-ins and the main file; a
+        drop-in that sorts before 00- still wins, and the grep and sshd -T show
+        it. When ssh.socket owns port 22, a Port change or a disable aimed at
+        ssh.service alone leaves the socket listening on the old port. Not
+        required: sudo systemctl disable --now ssh.socket ssh.service && sudo
+        apt purge -y openssh-server; confirm with sudo ss -tlpn that port 22 is
+        closed. If sshd -t or sshd -T stops at 'Missing privilege separation
+        directory: /run/sshd', run sudo mkdir -p /run/sshd and test again.
 
 [I-02] sudoers audit
   AREA: Access control (CIS Control 6)
@@ -536,11 +530,11 @@
   NOTE: vsftpd reads each line as option=value with no spaces around the = sign
         and stops on a bad line, so is-active proves the restart took; openssl
         shows TLS working, and /etc/ftpusers lists the accounts FTP refuses,
-        root among them. Apache rejects a line that mixes signed and plain
+        root among them. Apache refuses a line that mixes signed and plain
         options (Options -Indexes FollowSymLinks): write Options FollowSymLinks
         or -Indexes +FollowSymLinks. curl should print Server: Apache (or nginx)
-        with no version, and TRACE should answer 405 (sudo apt install curl if
-        it is missing).
+        without a version, and TRACE should answer 405 (sudo apt install curl if
+        missing).
 
 [I-13] Browser protections (Firefox and Chromium)
   AREA: Secure configuration (CIS Control 4)
@@ -565,15 +559,14 @@
        file locks each setting for every user, where a Settings checkbox covers
        one profile. A user.js line restores its value at every start, so a
        protection turned off there is a persistence finding.
-  NOTE: Firefox reads /etc/firefox/policies/policies.json in place of the copy
-        in its own folder, so cp brings the shipped policies along first; a
-        brand-new file needs the outer wrapper {"policies": { ... }}. Use
-        "enabled" in place of "force_enabled" when the brief names a site that
-        works over HTTP alone. Restart the browser to apply. The Chromium snap
-        reads policies from /etc/chromium-browser/policies. Updates come from
-        sudo snap refresh (B-08), so Help, About Firefox reports the version
-        only; close the browser first, because snap updates a running app only
-        after it closes.
+  NOTE: Firefox reads /etc/firefox/policies/policies.json in place of its own
+        copy, so cp brings the shipped policies along first; a new file needs
+        the wrapper {"policies": { ... }}. Write "enabled" rather than
+        "force_enabled" when the brief names a site that works over HTTP alone.
+        Restart the browser. The Chromium snap reads policies from
+        /etc/chromium-browser/policies. Updates come from sudo snap refresh
+        (B-08), so Help, About Firefox reports the version only; close the
+        browser first, because snap updates a running app only after it closes.
 
 ------------------------------ HUNTER ------------------------------------------
  Hunt and harden. Kernel and network sysctl, rootkits and tampered packages, the
@@ -601,21 +594,19 @@
   $ sysctl -a 2>/dev/null | grep -E 'rp_filter|accept_redirects'      (an interface that still reads 2 keeps loose checking: sudo sysctl -w net.ipv4.conf.<iface>.rp_filter=1)
   $ sudo grep -rnE 'ip_forward|randomize_va_space|accept_redirects|rp_filter' /etc/sysctl.conf /etc/sysctl.d/ /etc/ufw/sysctl.conf 2>/dev/null
   WHY: ip_forward=1 turns the host into a pivot; syncookies and rp_filter blunt
-       SYN floods and spoofing; ASLR at 2 and suid_dumpable 0 make exploitation
-       harder. sysctl --system loads every file, including /etc/sysctl.d/;
-       sysctl -p reads /etc/sysctl.conf alone. ip_forward goes first because
-       changing it resets the interface settings, which would undo lines above
-       it. The kernel applies the higher of the all value and each interface
-       value for rp_filter, so the default line and the per-interface read-back
-       both matter.
-  NOTE: A bad change can leave ip_forward=1 or randomize_va_space=0 in
-        /etc/sysctl.conf, a file in /etc/sysctl.d/, or /etc/ufw/sysctl.conf,
-        which ufw applies each time it starts (its keys use slashes:
-        net/ipv4/ip_forward). The stock ufw file sets log_martians=0, so with
-        ufw on, change its two log_martians lines to 1 as well. On 24.04,
-        /etc/sysctl.conf applies last and wins. Ubuntu and Mint ship rp_filter =
-        2 (loose) in /etc/sysctl.d/10-network-security.conf; 1 is strict and can
-        drop traffic on a machine with two network paths.
+       SYN floods and spoofing; ASLR at 2 and suid_dumpable 0 raise the cost of
+       exploitation. Apply with sysctl --system, which loads every file,
+       /etc/sysctl.d/ included (sysctl -p reads /etc/sysctl.conf alone).
+  NOTE: ip_forward goes first: changing it resets the interface settings and
+        would undo lines above it. A bad change can leave ip_forward=1 or
+        randomize_va_space=0 in /etc/sysctl.conf, a file in /etc/sysctl.d/, or
+        /etc/ufw/sysctl.conf, which ufw applies at each start (its keys use
+        slashes: net/ipv4/ip_forward). The stock ufw file sets log_martians=0,
+        so with ufw on, set its two log_martians lines to 1 as well. On 24.04,
+        /etc/sysctl.conf applies last and wins. Stock rp_filter is 2 (loose) in
+        /etc/sysctl.d/10-network-security.conf; 1 is strict and can drop traffic
+        on a host with two network paths. The kernel takes the higher of the all
+        value and each interface value for rp_filter, so read both back.
 
 [A-02] Rootkits, tampered packages, malware
   AREA: Malware defenses (CIS Control 10)
@@ -747,13 +738,13 @@
        later package installs. Priority sets the order: 1024 runs before
        pam_unix (256), and 0 runs after it. Indent each module line under its
        Auth: or Account: field.
-  NOTE: After a hand edit (B-06), pam-auth-update answers 'Local modifications
-        to /etc/pam.d/common-*, not updating.' and still exits 0, so always read
-        common-auth back. Restore your backup first, or add --force, which keeps
-        the old files as /etc/pam.d/common-*.pam-old and brings nullok back:
-        strip it again (A-04) and move the .pam-old copies out of /etc/pam.d.
-        Keep a root shell open and run the su - test from B-06. faillock.conf
-        (B-06) still holds the numbers.
+  NOTE: After a hand edit (B-06), pam-auth-update prints 'Local modifications to
+        /etc/pam.d/common-*, not updating.' and still exits 0, so read
+        common-auth back every time. Restore your backup first, or add --force,
+        which keeps the old files as /etc/pam.d/common-*.pam-old and brings
+        nullok back. Strip nullok again (A-04) and move the .pam-old copies out
+        of /etc/pam.d. Keep a root shell open and rerun the su - test from B-06.
+        faillock.conf (B-06) still holds the numbers.
 
 [A-10] Self-audit with Lynis
   AREA: Secure configuration (CIS Control 4)

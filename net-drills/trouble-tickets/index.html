@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Ba69FMSrcULMzLjZHGX0yi/Nd4TztOhhI5CZcJ3q2/k=' 'sha256-vWastmdoUifHUy+i5ptp9FRK9hueqe2d10k/RhSswNY='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Ba69FMSrcULMzLjZHGX0yi/Nd4TztOhhI5CZcJ3q2/k=' 'sha256-GLbU0D5Yrq/+7cV3iMjyC16m59KDIJO5gXlklSLU8bg='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Study the complaint and real device output, then pick the root cause. Every ticket ends with the fix and the configuration habits that prevent it.">
 <link rel="canonical" href="https://freeapp4that.store/net-drills/trouble-tickets/">
@@ -130,7 +130,7 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
     <span class="jack on" style="--c:var(--brown)" aria-current="page">Trouble Tickets</span>
   </p>
   <h1>Trouble Tickets</h1>
-  <p class="lede">Read the complaint, study the real device output, and pick the root cause. Every ticket ends with the fix, including the ones where everything works but the config still doesn't match the plan.</p>
+  <p class="lede">Read the complaint, study the real device output, and pick the root cause. Every ticket ends with the fix, including the ones where everything works yet the config still differs from the plan.</p>
 </header>
 <div class="sbar" role="toolbar" aria-label="Reading support"><button type="button" id="sbTheme">Theme: auto</button><button type="button" id="sbText">Text: Default</button><button type="button" id="sbRead">Read aloud</button><button type="button" id="sbTerms" aria-controls="termsbox">Terms</button></div>
 
@@ -240,7 +240,7 @@ Interface              IP-Address      OK? Method Status                Protocol
 GigabitEthernet0/0     192.168.10.1    YES manual up                    up
 GigabitEthernet0/1     192.168.20.1    YES manual administratively down down`]],
   opts: ['G0/1 has been shut down and needs no shutdown', 'The cable on G0/1 is bad', 'G0/1 has the wrong IP address', 'R1 needs a routing protocol for the second floor'],
-  why: 'administratively down means the interface is disabled in the configuration: someone typed shutdown, or it was never enabled (router ports start shut down). A cabling fault shows plain down/down instead.',
+  why: 'administratively down means the interface is disabled in the configuration. Someone typed shutdown, or the port kept its default state (router ports start shut down). A cabling fault shows plain down/down instead.',
   fix: 'interface g0/1\nno shutdown' },
 { id: 'phys', cat: 'Physical', title: 'Dead link after the office move',
   sym: 'The link from R1 to the second-floor switch has been dead since the move. The switch is powered on.',
@@ -265,7 +265,7 @@ Reply from 8.8.8.8: bytes=32 time=21ms TTL=117
 C:\\>ping www.example.com
 Ping request could not find host www.example.com. Please check the name and try again.`]],
   opts: ['DNS is failing, so names never turn into addresses', 'The default gateway is wrong, so traffic stays on the LAN', 'The website blocks ping', 'The PC has an APIPA address'],
-  why: 'Pinging an internet IP works, so addressing, the gateway, and routing are fine. "Could not find host" means the name never became an address, which is DNS. A site that blocks ping would time out, not fail to resolve.',
+  why: 'Pinging 8.8.8.8 works, so addressing, the gateway, and routing are fine. "Could not find host" means the name never became an address: DNS. A site that blocks ping would time out after its name resolved.',
   fix: 'Check the DNS server with ipconfig /all, fix the DHCP dns-server option or static DNS entry, and confirm the DNS server is up.' },
 { id: 'svi', cat: 'Switching', title: 'Cannot manage the new switch',
   sym: 'PCs plugged into the new switch work fine, but I cannot ping or SSH to the switch itself at 10.1.20.2.',
@@ -278,8 +278,8 @@ FastEthernet0/2        unassigned      YES unset  up                    up
 FastEthernet0/3        unassigned      YES unset  down                  down
 GigabitEthernet0/1     unassigned      YES unset  up                    up`]],
   opts: ['The management interface (the VLAN 20 SVI) is shut down', 'The switch needs a routing protocol', 'The PCs are in the wrong VLAN', 'Each switch port needs its own IP address'],
-  why: "Switching frames needs no IP address, so the PCs work. The switch's own IP lives on an SVI, and administratively down means Vlan20 is shut in the config. Interface Vlan1 ships shut down. An SVI's line protocol comes up only when its VLAN exists in the VLAN database and at least one up access or trunk port carries it (autostate), so after no shutdown, check for up/up. Larger networks give management its own dedicated VLAN; this network keeps it on Teachers so the Teachers-only ACL and the management subnet are one and the same.",
-  fix: 'interface vlan 20\nno shutdown\nend\nshow ip interface brief' },
+  why: "Frames switch without an IP address, so the PCs work. The switch's own address lives on the Vlan20 SVI, and administratively down means it is shut in the config. Interface Vlan1 ships shut down.",
+  fix: 'interface vlan 20\nno shutdown\nend\nshow ip interface brief (expect Vlan20 up/up once VLAN 20 exists and an up port carries it: autostate)' },
 { id: 'dgw', cat: 'Switching', title: 'Manageable from only one subnet',
   sym: 'Managing SwA works from a Teachers PC at Site A, on the same subnet, and fails from a Teachers PC at Site B.',
   ev: [['SwA running-config (excerpt)', `interface Vlan20
@@ -301,7 +301,7 @@ SwA#`],
     ['Pings to 10.1.20.2', `From Site A Teachers PC 10.1.20.30: Reply from 10.1.20.2: bytes=32 time<1ms TTL=255
 From Site B Teachers PC 10.2.20.20: Request timed out.`]],
   opts: ['SwA is missing its ip default-gateway', 'Access list 20 blocks the Site B Teachers subnet', 'The Site B PC needs the switch MAC address', 'SSH is disabled on SwA'],
-  why: 'A Layer 2 switch reaches other networks through ip default-gateway, and the filtered show running-config comes back empty, so SwA lacks one. Without it, SwA answers same-subnet hosts, and its replies to other subnets have nowhere to go. Access list 20 permits both Teachers subnets, and access-class filters only VTY logins, so pings pass it by. Larger networks give management its own dedicated VLAN; this network keeps it on Teachers so the Teachers-only ACL and the management subnet are one and the same.',
+  why: 'The filtered show running-config returns nothing: SwA lacks an ip default-gateway. A Layer 2 switch answers its own subnet by itself; replies to 10.2.20.20 need a gateway and have nowhere to go. Access list 20 permits both Teachers subnets, and access-class filters only VTY logins, so pings pass it by.',
   fix: 'ip default-gateway 10.1.20.1' },
 { id: 'mode', cat: 'Device config', title: 'The hostname command fails',
   sym: 'A new technician typed the exact command from the setup guide and got an error.',
@@ -375,7 +375,7 @@ Last Source Address:Vlan   : 0001.4297.A3C1:10
 Security Violation Count   : 1`]],
   opts: ['Port security saw a new MAC and err-disabled the port', 'The new laptop has a bad network card or driver', 'The DHCP pool ran out of addresses for the classroom', 'Spanning tree put the port in the blocking state to break a loop'],
   why: 'The port learned the old laptop as its one allowed MAC. The new MAC triggered a violation, and violation mode shutdown err-disabled the port. That is port security doing its job.',
-  fix: 'If the new laptop is approved, remove the old sticky MAC and bounce the port. On real IOS:\nclear port-security sticky interface f0/5\nIn Packet Tracer, under the interface:\nno switchport port-security mac-address sticky <old MAC from show port-security address>\nThen:\ninterface f0/5\nshutdown\nno shutdown' },
+  fix: 'If the new laptop is approved, clear the old sticky MAC, then bounce the port:\nclear port-security sticky interface f0/5\n(Packet Tracer, under the interface: no switchport port-security mac-address sticky <old MAC from show port-security address>)\ninterface f0/5\nshutdown\nno shutdown' },
 { id: 'cable', cat: 'Physical', title: 'The link stays red in Packet Tracer',
   sym: 'In Packet Tracer, the link between PC0 and R1 stays red even after no shutdown.',
   ev: [['Packet Tracer: the cable between PC0 and R1', `Connection: PC0 FastEthernet0  <->  R1 GigabitEthernet0/0
@@ -384,14 +384,14 @@ Cable:      Copper Straight-Through`],
 Interface              IP-Address      OK? Method Status                Protocol
 GigabitEthernet0/0     192.168.1.1     YES manual down                  down`]],
   opts: ['A PC-to-router link needs a crossover cable', 'The router port needs speed 100', 'PCs can never connect straight to routers', 'The PC needs a default gateway before the link comes up'],
-  why: 'A PC and a router transmit on the same pins, so they need a crossover cable. Straight-through joins unlike devices, such as PC to switch or switch to router. Many real ports auto-detect this (Auto-MDIX), but Packet Tracer and certification exams expect you to know the rule. Here the cable chosen between the PC and the router is Copper Straight-Through; that pair needs a crossover, so the link shows red.',
-  fix: 'Replace it with a Copper Cross-Over cable, or connect the PC through a switch.' },
+  why: 'A PC and a router transmit on the same pins, so the pair needs a crossover. Straight-through joins unlike devices, such as PC to switch or switch to router. The Copper Straight-Through cable here joins PC0 and R1, so the link shows red.',
+  fix: 'Replace it with a Copper Cross-Over cable, or connect the PC through a switch.\n(Many real ports auto-detect the cable type with Auto-MDIX; Packet Tracer and certification exams expect you to know the rule.)' },
 { id: 'native', cat: 'Switching', title: 'A warning keeps scrolling on S1',
   sym: 'This message keeps appearing on the S1 console since the trunk changes.',
   ev: [['S1 console log', `%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on GigabitEthernet0/1 (99), with S2 GigabitEthernet0/1 (1).`]],
   opts: ['The two ends of the trunk use different native VLANs', 'VLAN 99 is missing from the VLAN database on S1', 'CDP must be turned off to fix the trunk', 'The trunk cable is faulty'],
-  why: 'S1 sends untagged trunk traffic in VLAN 99 and S2 uses VLAN 1. Untagged frames can leak between those VLANs, which is why CDP warns about it. Both ends set native VLAN 99, a VLAN that carries no hosts, so every user VLAN crosses the trunk tagged.',
-  fix: 'On S2:\nvlan 99\nname NATIVE\ninterface g0/1\nswitchport trunk native vlan 99\nEvery trunk in the path uses native VLAN 99, including a router-on-a-stick link, where the native subinterface carries no IP:\ninterface g0/0.99\nencapsulation dot1Q 99 native' },
+  why: 'S1 sends untagged trunk frames as VLAN 99 and S2 as VLAN 1. Untagged frames can leak between those VLANs, which is why CDP warns about it. Both ends set native VLAN 99, a VLAN that stays free of hosts, so every user VLAN crosses the trunk tagged.',
+  fix: 'On S2:\nvlan 99\nname NATIVE\ninterface g0/1\nswitchport trunk native vlan 99' },
 { id: 'vlan', cat: 'Switching', title: 'Wrong subnet on one desk',
   sym: 'PC4 on port Fa0/4 keeps getting a 192.168.20.x address. It belongs on the users network, 192.168.10.x.',
   ev: [['S1 console', `S1#show vlan brief
@@ -409,14 +409,14 @@ VLAN Name                             Status    Ports
   ev: [['Change request (excerpt)', `Configure the switch hostname as S1-Floor2.`],
     ['S1 running-config (excerpt)', `hostname S1-floor2`]],
   opts: ['The value is case-sensitive: S1-floor2 is not S1-Floor2', 'Hostnames cannot contain hyphens', 'The hostname only takes effect after a reload', 'Hostnames must be set from user EXEC mode'],
-  why: 'IOS keeps the hostname exactly as typed, and the tools that read it (inventory and monitoring systems, config compliance scripts, log searches, a graded lab checker) compare strings exactly. One wrong letter case fails the check even though the switch forwards traffic fine. Copy names, VLAN names, and passwords character for character from the change record.',
+  why: 'IOS keeps the hostname exactly as typed, and compliance scripts, inventory and monitoring systems, log searches, and lab checkers compare strings exactly. S1-floor2 forwards traffic fine and still fails a check for S1-Floor2. Copy names, VLAN names, and passwords character for character from the change record.',
   fix: 'hostname S1-Floor2\nThen save it:\nend\ncopy running-config startup-config' },
 { id: 'bannertext', cat: 'Config accuracy', title: 'Security review rejects the banner',
   sym: 'The warning banner shows up when we log in, but the security review still lists it as a finding.',
   ev: [['Security policy (excerpt)', `Every network device must display this approved warning before login: Unauthorized Access Prohibited!`],
     ['R1 running-config (excerpt)', `banner motd ^CUnauthorized access prohibited^C`]],
   opts: ['The capitals and punctuation differ from the approved text', 'Security reviews ignore MOTD banners and only read login banners', 'The delimiter has to be #', 'The banner text needs quotation marks'],
-  why: 'A warning banner is legal text: organizations have it approved once and then audit devices against that exact wording, character for character. Capitals and punctuation count; the delimiter character does not, and IOS displays it as ^C in the running-config.',
+  why: 'A warning banner is legal text, approved once and audited character for character. Capitals and punctuation count. The delimiter stays outside the text, and IOS shows it as ^C in the running-config.',
   fix: 'banner motd #Unauthorized Access Prohibited!#' },
 { id: 'wrongif', cat: 'Config accuracy', title: 'Right address, wrong interface',
   sym: 'The addressing table gives G0/1 the address 192.168.20.1. We configured it, but hosts on that LAN still cannot ping their gateway.',
@@ -426,7 +426,7 @@ GigabitEthernet0/0     192.168.10.1    YES manual up                    up
 GigabitEthernet0/1     unassigned      YES unset  administratively down down
 GigabitEthernet0/2     192.168.20.1    YES manual up                    up`]],
   opts: ['The address landed on G0/2 in place of G0/1', 'The mask should be /16', 'G0/1 needs a description before it accepts an address', '192.168.20.1 is a reserved address'],
-  why: 'The design puts that address on one specific interface, and the cable goes to G0/1. The router happily accepted the address on G0/2, where it helps nobody. Before you call a change done, compare show ip interface brief with the addressing table line by line; documentation, monitoring, and any lab checker all expect the address where the table says.',
+  why: 'The design puts 192.168.20.1 on G0/1, where the cable goes. The router accepted it on G0/2, where it helps nobody. Before calling a change done, compare show ip interface brief with the addressing table line by line; documentation, monitoring, and any lab checker all expect the address where the table says.',
   fix: 'interface g0/2\nno ip address\nshutdown\ninterface g0/1\nip address 192.168.20.1 255.255.255.0\nno shutdown' },
 { id: 'parent', cat: 'Device config', title: 'Subinterfaces configured, nothing works',
   sym: 'Router-on-a-stick is configured exactly per the design, but no VLAN can reach its gateway.',
@@ -455,7 +455,7 @@ Gig0/1      10,30,99
 Port        Vlans in spanning tree forwarding state and not pruned
 Gig0/1      10,30,99`]],
   opts: ["VLAN 20 is missing from the trunk's allowed list on G0/1", 'SVIs answer only hosts on the same switch, never across a trunk', 'The native VLAN must be 20 so the SVI traffic crosses untagged', 'SwA needs a routing protocol to reach the Teachers gateway'],
-  why: 'A pruned allowed list carries only the VLANs listed. Everything else, including Teachers and the management SVI on VLAN 20, stops at the trunk port. Larger networks give management its own dedicated VLAN; this network keeps it on Teachers so the Teachers-only ACL and the management subnet are one and the same.',
+  why: 'A pruned allowed list carries only the VLANs listed. Teachers frames and the management SVI on VLAN 20 stop at the trunk port. Larger networks give management its own dedicated VLAN; this network keeps it on Teachers so the Teachers-only ACL and the management subnet are one and the same.',
   fix: 'interface g0/1\nswitchport trunk allowed vlan add 20\n(add keeps 10, 30, and 99; a bare list replaces them)' },
 { id: 'encap', cat: 'Device config', title: 'The gateway tags the wrong VLAN',
   sym: 'VLAN 10 hosts have the right gateway address configured but cannot reach it.',
@@ -478,7 +478,7 @@ interface GigabitEthernet0/0.50
 Pool: 10.1.10.0 /24, default gateway 10.1.10.1
 Server address: 10.1.50.10`]],
   opts: ['G0/0.10 needs ip helper-address 10.1.50.10', 'The server must be moved into VLAN 10', 'The pool has to live on the router instead', 'PCs need a static gateway before DHCP works'],
-  why: 'Routers keep broadcasts inside their subnet, so Students DHCP requests stop at G0/0.10, the VLAN 10 gateway. ip helper-address on that interface turns the DHCP broadcast into a unicast to the server and relays the reply back.',
+  why: 'Routers keep broadcasts inside their subnet, so Students DHCP requests stop at G0/0.10, the VLAN 10 gateway. ip helper-address there turns the broadcast into a unicast to the server and relays the reply.',
   fix: 'interface g0/0.10\nip helper-address 10.1.50.10' },
 { id: 'acldir', cat: 'Access lists', title: 'The ACL is applied, Students still get through',
   sym: 'Policy keeps Students out of the management subnet, which is the Teachers VLAN. The ACL is written and applied, but Students still reach it.',
@@ -494,8 +494,8 @@ interface GigabitEthernet0/0.20
  encapsulation dot1Q 20
  ip address 10.1.20.1 255.255.255.0
  ip access-group NO-STUDENT-MGMT in`]],
-  opts: ['The ACL sits inbound on G0/0.20, where Students traffic leaves the router', 'Extended ACLs work only on physical interfaces, so G0/0.20 skips it', 'The permit ip any any entry has to come before the deny entry', 'The wildcard masks in the deny entry are reversed, so it matches other hosts'],
-  why: 'Direction is relative to the interface. Students-to-Teachers packets enter on the Students subinterface and exit the Teachers one; inbound on .20 sees only packets sourced from Teachers, such as the replies, so the deny entry never matches. An extended ACL belongs close to the source, inbound on G0/0.10. Larger networks give management its own dedicated VLAN; this network keeps it on Teachers so the Teachers-only ACL and the management subnet are one and the same.',
+  opts: ['The ACL sits inbound on G0/0.20, where Students traffic leaves the router', 'Extended ACLs work only on physical interfaces, so G0/0.20 skips it', 'The permit ip any any entry has to come before the deny entry', "The deny entry's wildcard masks are reversed"],
+  why: 'Direction is relative to the interface. Students-to-Teachers packets enter on G0/0.10 and exit G0/0.20, so inbound on .20 sees only Teachers-sourced packets, such as the replies, and the deny matches nothing. An extended ACL belongs close to the source, inbound on G0/0.10.',
   fix: 'interface g0/0.20\nno ip access-group NO-STUDENT-MGMT in\ninterface g0/0.10\nip access-group NO-STUDENT-MGMT in' },
 { id: 'defroute', cat: 'Device config', title: 'Everything inside works, the internet does not',
   sym: 'Every internal ping succeeds, and R1 can ping the ISP router, but nothing past it answers.',
@@ -509,8 +509,8 @@ L        192.168.10.1/32 is directly connected, GigabitEthernet0/0.10
 C        203.0.113.0/30 is directly connected, GigabitEthernet0/1
 L        203.0.113.2/32 is directly connected, GigabitEthernet0/1`]],
   opts: ['R1 has no default route toward the ISP', 'The ISP link needs DHCP', 'The LAN subnet mask is wrong', 'Pings to the internet require a routing protocol'],
-  why: '"Gateway of last resort is not set" means R1 only knows its connected networks. A default route sends everything else to the ISP. NAT on the edge router is assumed here, since a provider routes only public addresses.',
-  fix: 'ip route 0.0.0.0 0.0.0.0 203.0.113.1' },
+  why: '"Gateway of last resort is not set" means R1 knows only its connected networks. A default route sends everything else to the ISP.',
+  fix: 'ip route 0.0.0.0 0.0.0.0 203.0.113.1\n(NAT on the edge router is assumed: a provider routes only public addresses)' },
 { id: 'studentnative', cat: 'Switching', title: 'Students lost their gateway',
   sym: 'Every Students PC at Site A lost its gateway this morning. Teachers and Principals work fine.',
   ev: [['SwA console', `SwA#show interfaces trunk
@@ -536,7 +536,7 @@ interface GigabitEthernet0/0.20
 interface GigabitEthernet0/0.99
  encapsulation dot1Q 99 native`]],
   opts: ['SwA sets Students VLAN 10 as the trunk native VLAN', 'VLAN 10 is missing from the trunk allowed list on SwA', 'G0/0.10 has the wrong gateway address for the Students subnet', 'The Students PCs need static IP addresses in 10.1.10.0/24'],
-  why: 'The native VLAN crosses the trunk untagged. RtrA files untagged frames under its native subinterface, G0/0.99, which has no IP, so Students frames never reach G0/0.10. Teachers and Principals frames still carry their tags and match their subinterfaces. Native VLAN 99 carries no hosts, so every user VLAN stays tagged.',
+  why: 'The native VLAN crosses the trunk untagged. RtrA files untagged frames under its native subinterface G0/0.99, which lacks an IP, so Students frames never reach G0/0.10. Teachers and Principals frames stay tagged and match their subinterfaces. Native VLAN 99 stays free of hosts, so every user VLAN stays tagged.',
   fix: 'On SwA:\ninterface g0/1\nswitchport trunk native vlan 99\nRtrA already has the matching end:\ninterface g0/0.99\nencapsulation dot1Q 99 native' },
 { id: 'allowed30', cat: 'Switching', title: 'Principals stuck on their own VLAN',
   sym: 'The Principals PCs reach each other and stop at the edge of their VLAN: the gateway, Teachers, and the internet all time out.',
@@ -566,7 +566,7 @@ Gig0/1      10,20,99
 Port        Vlans in spanning tree forwarding state and not pruned
 Gig0/1      10,20,99`]],
   opts: ["VLAN 30 is missing from the trunk's allowed list on G0/1", 'VLAN 30 is missing from the VLAN database', 'The Principals ports must be trunk ports instead of access ports', 'RtrA needs a static route to 10.1.30.0/24'],
-  why: 'show vlan brief lists PRINCIPALS with its ports, so the VLAN exists and its PCs talk to each other. The trunk carries only 10, 20, and 99, so VLAN 30 frames never reach RtrA. RtrA learns 10.1.30.0/24 as a connected route from G0/0.30, so a static route adds nothing.',
+  why: 'show vlan brief lists PRINCIPALS with its ports, so the VLAN exists and its PCs reach each other. The trunk carries only 10, 20, and 99, so VLAN 30 frames stop before RtrA. RtrA learns 10.1.30.0/24 as a connected route from G0/0.30, so a static route adds nothing.',
   fix: 'interface g0/1\nswitchport trunk allowed vlan add 30\n(add keeps 10, 20, and 99; a bare list replaces them)' },
 { id: 'vtyacl', cat: 'Remote access', title: 'Teachers refused, Students let in',
   sym: 'Teachers get "Connection refused" when they SSH to SwA, yet a Students PC reached the login prompt.',
@@ -585,9 +585,9 @@ line vty 5 15
  access-class 20 in
  login local
  transport input ssh`]],
-  opts: ['ACL 20 permits the Students subnets in place of Teachers', 'SSH is disabled on SwA, so the VTY lines refuse every SSH session', 'Teachers must use Telnet, because SSH admits only one subnet', 'The ACL belongs on interface Vlan20 with ip access-group 20 in'],
-  why: 'access-class 20 in admits only the sources ACL 20 permits, and an implicit deny any ends every ACL. These entries permit 10.1.10.0 and 10.2.10.0, the Students subnets, so Students get a login prompt and Teachers get refused. A Students PC reaching the prompt also proves SSH works. The design permits the Teachers subnets at both sites. Larger networks give management its own dedicated VLAN; this network keeps it on Teachers so the Teachers-only ACL and the management subnet are one and the same.',
-  fix: 'From the console, so your own session stays up:\nconfigure terminal\nno access-list 20\naccess-list 20 permit 10.1.20.0 0.0.0.255\naccess-list 20 permit 10.2.20.0 0.0.0.255\nline vty 0 15\naccess-class 20 in' },
+  opts: ['ACL 20 permits the Students subnets in place of Teachers', 'SSH is disabled on SwA', 'Teachers must use Telnet, because SSH admits only one subnet', 'The ACL belongs on interface Vlan20 with ip access-group 20 in'],
+  why: 'access-class 20 in admits only sources ACL 20 permits, and an implicit deny ends every ACL. The entries permit 10.1.10.0 and 10.2.10.0, the Students subnets, so Students reach the prompt and Teachers are refused. The design permits the Teachers subnets at both sites.',
+  fix: 'From the console, so your own session stays up:\nno access-list 20\naccess-list 20 permit 10.1.20.0 0.0.0.255\naccess-list 20 permit 10.2.20.0 0.0.0.255' },
 { id: 'bpduerr', cat: 'Physical', title: 'Classroom port died when a spare switch went in',
   sym: 'A teacher plugged a spare managed switch into the classroom wall jack to add a second PC, and the jack went dead right away.',
   ev: [['SwA console log', `%SPANTREE-2-BLOCK_BPDUGUARD: Received BPDU on port FastEthernet0/5 with BPDU Guard enabled. Disabling port.
@@ -628,15 +628,15 @@ router ospf 1
  network 10.0.0.0 0.0.0.3 area 0
  network 10.1.0.0 0.0.255.255 area 0`]],
   opts: ['RtrA redistributes static without the subnets keyword', 'OSPF is down between RtrA and RtrB', 'Static routes always beat OSPF, so RtrB can never learn 8.8.8.8 from RtrA', 'A static route needs a /24 mask, so 8.8.8.8 255.255.255.255 is invalid'],
-  why: 'OSPF works: RtrB learns every Site A subnet as an O route through 10.0.0.1. Only the O E2 8.8.8.8/32 route is missing. On IOS 15, redistribute static without subnets carries classful networks only, so the 8.8.8.8/32 host route stays out of OSPF, and IOS warns "Only classful networks will be redistributed" when you type it; newer IOS XE releases add subnets for you. With subnets in place, RtrB holds the Site A copy as a backup: its own static route (AD 1) beats O E2 (AD 110) while its uplink is up, and O E2 8.8.8.8/32 [110/20] takes over when it fails.',
-  fix: 'On RtrA, and the same on RtrB so each site backs up the other:\nrouter ospf 1\nredistribute static subnets\nThen on RtrB, with its uplink still shut:\nshow ip route 8.8.8.8\n(expect Known via "ospf 1", distance 110, metric 20, type extern 2)' }
+  why: 'OSPF is up: Site A subnets arrive as O routes through 10.0.0.1. Only O E2 8.8.8.8/32 is missing. On IOS 15, redistribute static without subnets carries classful networks only, so the /32 stays out. Newer IOS XE adds subnets itself.',
+  fix: 'On RtrA (and RtrB, so each site backs up the other):\nrouter ospf 1\nredistribute static subnets\nOn RtrB, uplink still shut:\nshow ip route 8.8.8.8\n(expect Known via "ospf 1", distance 110, metric 20, type extern 2)' }
 ];
 
 /* One reason per wrong option (opts[1], opts[2], opts[3]) for every ticket. Each reason says what the chosen cause would look like
    in the evidence, and what the evidence shows instead. */
 const OPTWHY = {
   apipa: [
-    "A DNS failure leaves the laptop with a real address and a gateway, and only names fail. This laptop holds 169.254.87.14 and no gateway, so it never received an address at all.",
+    "A DNS failure leaves a real address and a gateway, so only names fail. This laptop holds 169.254.87.14 with an empty gateway, so DHCP handed out nothing.",
     "There is no gateway to be wrong: the Default Gateway line is empty. A self-assigned 169.254 address never comes with one.",
     "255.255.0.0 is the correct mask for the 169.254.0.0/16 link-local range. The mask is a symptom of APIPA, and the cause is the failed DHCP lease."
   ],
@@ -646,7 +646,7 @@ const OPTWHY = {
     "A duplicate address would break local traffic too, and the ping to the printer at .30 replies cleanly."
   ],
   mask: [
-    "Any address inside the subnet can be the gateway, and .1 is a common choice. The rule here is that the gateway must sit inside PC3's subnet, and with a /26 it does not.",
+    "Any address inside the subnet can be the gateway, and .1 is a common choice. PC3's /26 runs .64 to .127, so .1 sits outside it.",
     "In 192.168.1.64/26 the broadcast is .127. The address .70 is an ordinary host address in that block.",
     "R1 is directly connected to 192.168.1.0/24, so it already knows the way to PC3. The mismatch is on PC3's side, in its mask."
   ],
@@ -672,7 +672,7 @@ const OPTWHY = {
   ],
   dgw: [
     "Access list 20 permits 10.2.20.0/24, and access-class applies only to VTY logins, so pings pass it by.",
-    "Hosts on other subnets send to their own gateway, never to the switch's MAC address. ARP handles the local subnet on its own.",
+    "Hosts on other subnets send to their gateway, never to the switch's MAC address. ARP covers the local subnet by itself.",
     "transport input ssh is configured, and the Site A PC manages the switch fine. The problem is reaching it across subnets."
   ],
   mode: [
@@ -692,7 +692,7 @@ const OPTWHY = {
   ],
   refused: [
     "A powered-off router gives no answer, and the PC would time out. 'Connection refused' is an answer from a live device.",
-    "A wrong password would reach a prompt and fail there. This session is refused before any prompt, because Telnet is no longer allowed.",
+    "A wrong password reaches a prompt and fails there. This session is refused before any prompt, because the VTY lines admit SSH alone and the PC tried Telnet.",
     "A wrong gateway makes the session time out with no reply. The router replied, so the path is fine."
   ],
   nopw: [
@@ -716,7 +716,7 @@ const OPTWHY = {
     "The gateway is a Layer 3 setting. Links come up at Layer 1 whether or not a gateway is set."
   ],
   native: [
-    "A missing VLAN would show in show vlan brief, and CDP would stay quiet. The message compares the two ends' native VLANs, 99 and 1.",
+    "A missing VLAN shows in show vlan brief and leaves CDP quiet. This message compares the two ends' native VLANs, 99 and 1.",
     "CDP is the messenger, and the mismatch is the problem. Silencing it hides a real fault that can leak frames between VLANs.",
     "A faulty cable gives no CDP neighbor at all. The two switches are talking; they disagree on the native VLAN."
   ],
@@ -732,7 +732,7 @@ const OPTWHY = {
   ],
   bannertext: [
     "The policy says 'before login', and a MOTD banner shows before login. The banner type is fine; the wording differs.",
-    "Any delimiter character works, and IOS displays it as ^C regardless. The review compares the text, and the delimiter is never part of it.",
+    "Any delimiter character works. IOS shows it as ^C either way. The review compares the text alone.",
     "Banner text takes no quotation marks. The finding is the capitals and the missing exclamation mark."
   ],
   wrongif: [
@@ -747,7 +747,7 @@ const OPTWHY = {
   ],
   allowed: [
     "An SVI answers any host whose frames reach it, including across trunks. The trunk is dropping VLAN 20 before they arrive.",
-    "Making 20 the native VLAN would send management frames untagged and break the matching end. The fix is to allow VLAN 20 on the trunk.",
+    "Native VLAN 20 would send management frames untagged and break the matching end. Allow VLAN 20 on the trunk instead.",
     "The switch reaches other networks through its default gateway, and needs no routing protocol. VLAN 20 is pruned from the trunk."
   ],
   encap: [
@@ -792,7 +792,7 @@ const OPTWHY = {
   ],
   noredist: [
     "RtrB learns every Site A subnet as an O route via 10.0.0.1, so OSPF is up.",
-    "Administrative distance applies only while RtrB holds its own static route. Once the uplink fails, the OSPF external route would take over, if it existed.",
+    "RtrB's own static route (AD 1) wins only while RtrB holds it. Once the uplink fails, the O E2 route (AD 110) would take over, if it existed.",
     "A /32 host route is valid and common. The route exists on RtrA; it is simply never redistributed."
   ]
 };
