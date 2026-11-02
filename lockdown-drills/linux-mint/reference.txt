@@ -82,9 +82,9 @@
   $ groups alice
   GUI: Users and Groups: Account Type Standard or Administrator (Administrator =
        sudo group); the Groups row opens a tick list of every other group.
-  WHY: Least privilege. -aG appends; -G alone replaces every group the user had.
-       Open sessions keep their starting groups: a removed admin keeps sudo
-       until each session ends, and a new member gains it at the next sign-in.
+  WHY: Least privilege. -aG appends; -G alone replaces existing groups. Open
+       sessions keep their starting groups: removed admins keep sudo until
+       each session ends; new members gain it at next sign-in.
 
 [B-04] Passwords: strong, forced change, no empties, root locked
   AREA: Account management (CIS Control 5)
@@ -102,9 +102,9 @@
        shared root password. Mint's login screen signs in every nopasswdlogin
        member with no password at all, and passwd leaves that membership in
        place, so check the group.
-  NOTE: Record changed passwords somewhere safe (on paper, in a lab). Keep your
-        own sign-in password unless the brief says to change it; leave service
-        accounts and key-only accounts out of the bulk chage line.
+  NOTE: Record changed passwords safely (on paper, in a lab). Keep your own
+        sign-in password unless the brief says otherwise; leave service and
+        key-only accounts out of the bulk chage line.
 
 [B-05] Password aging and quality
   AREA: Account management (CIS Control 5)
@@ -228,10 +228,9 @@
   $ flatpak uninstall -y <application-id>
   GUI: Software Manager (mintinstall), Installed
   WHY: Hacking tools, games, and P2P clients are acceptable-use violations and
-       attack surface. The description search catches a tool by what it does
-       when its name is unfamiliar, Section lists every installed game, apt's
-       history log dates each install, and anything in /usr/local was placed by
-       hand.
+       attack surface. Description search finds tools by purpose, Section
+       lists games, apt's history.log dates installs, and /usr/local holds
+       hand-placed files.
   NOTE: Required packages (vsftpd, apache2, samba, openssh-server, mysql) stay;
         harden them in Watchman I-12. Mint blocks snapd with
         /etc/apt/preferences.d/nosnap.pref; that file is normal, not a finding.
@@ -302,10 +301,9 @@
   $ sudo find /home /root /tmp /var/tmp /dev/shm /srv /opt -xdev -type f \( -iname '*.zip' -o -iname '*.7z' -o -iname '*.rar' -o -iname '*.tar' -o -iname '*.tgz' -o -iname '*.tar.gz' -o -iname '*.tar.xz' -o -iname '*.txt' \) -printf '%u\t%TY-%Tm-%Td\t%p\n' 2>/dev/null
   $ sudo unzip -l '<file.zip>'; sudo python3 -m zipfile -l '<file.zip>'; sudo tar -tvf '<file.tar.gz>'
   $ file '<file>'
-  WHY: A password list opens every account it names; an archive slips tools past
-       a package search. grep finds credentials by content whatever the file is
-       called; unzip -l, python3 -m zipfile -l, and tar -tvf list an archive
-       without extracting it; file names the real type of a renamed one.
+  WHY: Password lists open every named account; archives slip tools past
+       package searches. grep matches content under any name; unzip -l and tar
+       -tvf list without extracting; file unmasks renamed ones.
   NOTE: Judge each .txt before deleting it: the brief, the investigation
         questions, and required documents stay, and ~/.ssh keys are expected for
         users the brief lets sign in with keys (I-01). Record the path and hash
@@ -334,9 +332,8 @@
   $ sudo systemctl daemon-reload && sudo systemctl restart ssh.socket   (after a Port or ListenAddress change)
   $ sudo find / -name authorized_keys -exec ls -l {} \; -exec cat {} \; 2>/dev/null
   WHY: Root over SSH erases accountability and invites brute force; a planted
-       authorized_keys file is a password-free backdoor that outlives every
-       password fix. sshd -T prints the values in force; -C applies Match blocks
-       that plain -T skips.
+       authorized_keys backdoor survives every password fix. sshd -T, plus -C
+       for Match blocks, confirms the values in force.
   NOTE: The && runs the restart only when sshd -t passes, so a config typo
         leaves the running server in place. sshd keeps the first value it reads,
         and Include reads sshd_config.d/*.conf in name order, so
@@ -450,10 +447,10 @@
   WHY: Mandatory access control: a compromised service cannot read files outside
        its profile. Ubuntu and Mint enable it by default, so a stopped or
        disabled AppArmor is itself a finding.
-  NOTE: Enforce profiles by name. aa-enforce /etc/apparmor.d/* also enforces
-        shipped profiles that are deliberately unconfined and only grant one
-        permission (see Version notes), which breaks those apps. Test the apps
-        the brief requires after.
+  NOTE: Enforce profiles by name: aa-enforce /etc/apparmor.d/* also enforces
+        shipped, deliberately unconfined profiles that only grant one
+        permission (see Version notes), breaking those apps. Test the brief's
+        required apps after.
 
 [I-09] Logging and audit
   AREA: Audit logging (CIS Control 8)
@@ -473,8 +470,8 @@
   $ sudo grep -E 'Accepted|Failed|useradd|userdel|usermod' /var/log/auth.log | tail -40
   $ journalctl -p err -b --no-pager | tail
   WHY: Audit rules answer who changed /etc/passwd and when. auditd starts
-       partway through boot, so audit=1 makes the kernel record from the first
-       process; audit=0 anywhere on the line keeps auditing off.
+       mid-boot, so audit=1 makes the kernel record from the first process;
+       audit=0 anywhere on the kernel line keeps auditing off.
   NOTE: If rsyslog is not installed (journald only, as on a default Debian
         install), use journalctl.
 
@@ -555,10 +552,10 @@
        locks a setting for every user; a Settings checkbox covers one profile. A
        user.js line restores its value at every start, so a protection turned
        off there is a persistence finding.
-  NOTE: /etc/firefox/policies/policies.json replaces Firefox's shipped copy: cp
-        it first and keep the {"policies": { ... }} wrapper. Write "enabled"
-        rather than "force_enabled" when a named site works over HTTP alone,
-        then restart the browser.
+  NOTE: /etc/firefox/policies/policies.json replaces the shipped copy: cp that
+        copy there first, keeping the {"policies": { ... }} wrapper. Use
+        "HttpsOnlyMode": "enabled" rather than "force_enabled" for an
+        HTTP-only named site; restart Firefox.
 
 ------------------------------ HUNTER ------------------------------------------
  Hunt and harden. Kernel and network sysctl, rootkits and tampered packages, the
@@ -738,9 +735,9 @@
   $ sudo grep -E '^(warning|suggestion)' /var/log/lynis-report.dat
   $ sudo grep '^hardening_index=' /var/log/lynis-report.dat
   $ sudo lynis show details <TEST-ID>
-  WHY: Lynis changes nothing: it reads the system and writes warnings,
-       suggestions, and a hardening index from 0 to 100. Run it before and after
-       your fixes and watch the index climb.
+  WHY: Lynis reads the system without changing it, then reports warnings,
+       suggestions, and a hardening index from 0 to 100. Run it before and
+       after fixes; the index should climb.
   NOTE: A suggestion is a lead to check, since some would break a service the
         brief requires. show details prints the log lines behind one test ID
         from the report.

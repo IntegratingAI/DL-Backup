@@ -54,10 +54,9 @@
   RtrA(config-line)# login
   RtrA(config-line)# exec-timeout 5 0
   RtrA(config-line)# exit
-  WHY: login makes each line ask for its password; a line without it lets
-       anyone straight in. exec-timeout 5 0 drops an unattended session after
-       five idle minutes. logging synchronous keeps log output separate from
-       what you type.
+  WHY: login enforces each line's password; without it, anyone walks in.
+       exec-timeout 5 0 ends any session idle for five minutes. logging
+       synchronous keeps log output separate from your typing.
   NOTE: Watchman replaces line passwords with local usernames and SSH. Switches
         with 16 VTY lines use line vty 0 15. The passwords here are
         placeholders; give every line and secret its own unique passphrase.
@@ -78,10 +77,9 @@
   WHY: The banner tells anyone connecting that access is restricted and
        monitored, with wording legal counsel has reviewed. Leave out device
        name, model, software, and owner; Welcome reads as an invitation.
-  NOTE: The delimiter ends the banner at its next appearance, so choose one
-        the text lacks. On the console the MOTD shows first, then the login
-        banner, then the login prompt. Over SSH version 2 the login banner
-        shows before authentication, so it carries the notice too.
+  NOTE: Pick a delimiter the text lacks; its next use ends the banner. Console
+        order: MOTD, login banner, login prompt. SSH version 2's
+        pre-authentication login banner carries the notice too.
 
 [B-05] Save the config
   AREA: Secure configuration
@@ -433,10 +431,10 @@
        three VLANs route to each other through RtrA. encapsulation dot1Q 99
        native matches the switch's native VLAN 99, so untagged frames land on
        a subinterface with no IP and no hosts.
-  NOTE: Subinterfaces follow the physical port: no shutdown goes on G0/0
-        itself, which stays without an IP address. The switch end is the trunk
-        from Watchman I-05. On an ISR 4000 (IOS XE) the port is
-        GigabitEthernet0/0/0; subinterface commands match.
+  NOTE: Subinterfaces follow the physical port: no shutdown goes on G0/0,
+        which stays unaddressed. Watchman I-05 builds the switch-side trunk.
+        An ISR 4000 (IOS XE) names it GigabitEthernet0/0/0; subinterface
+        commands match.
 
 [A-09] Host route to 8.8.8.8, shared through OSPF (concept)
   AREA: Secure configuration

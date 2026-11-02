@@ -92,10 +92,9 @@
   PS> Disable-ADAccount -Identity Guest
   CMD> net user Administrator /active:no
   PS> Set-ADUser -Identity Administrator -PasswordNeverExpires $false
-  WHY: Well-known accounts are brute-forced by name. Disable Guest; keep
-       Administrator enabled only when the brief uses it, with a strong
-       password. The built-in Administrator's SID ends in -500 and Guest's in
-       -501, so the first lines find both even after a rename.
+  WHY: Well-known names invite brute force. Disable Guest; keep Administrator
+       enabled only when the brief uses it, with a strong password. Match SID
+       -500 (Administrator) and -501 (Guest) to catch renames.
   NOTE: Keep the account the brief tells you to log in with enabled; whoami
         /user shows your SID, and -500 marks the built-in Administrator. Rename
         both as a last step, only when the brief or policy asks
@@ -130,11 +129,10 @@
   GUI: gpmc.msc, Default Domain Policy, Computer Configuration, Policies, Windows Settings, Security Settings, Account Policies, Password Policy
   CMD> net accounts /minpwlen:12 /maxpwage:60 /minpwage:1 /uniquepw:24   (member server)
   GUI: secpol.msc, Account Policies, Password Policy (member server)
-  WHY: Default Domain Policy overrides net accounts and secpol.msc on domain
-       controllers; member servers use local policy. Reversible encryption off
-       protects only new passwords: reset the passwords set while it was on, and
-       check the per-account flag with Get-ADUser <name> -Properties
-       AllowReversiblePasswordEncryption.
+  WHY: Default Domain Policy overrides net accounts and secpol.msc on DCs
+       only. Passwords set while reversible encryption was on stay
+       recoverable: reset them, and check accounts with Get-ADUser <name>
+       -Properties AllowReversiblePasswordEncryption.
   NOTE: The brief sets the numbers; these are one sample. CIS Benchmark: 14 or
         more characters, history 24 or more, maximum age 1–365 days, minimum age
         1 day or more.
@@ -165,10 +163,9 @@
   WHY: Default-deny inbound covers the service you have not found yet.
        Misconfigured machines often have exactly one profile off, usually
        Public.
-  NOTE: DefaultInboundAction should be Block. ActiveStore shows the values in
-        force, Group Policy included; the plain view reads NotConfigured for a
-        value left at its Windows default (Block for inbound). Allow-rule review
-        is a Watchman item.
+  NOTE: DefaultInboundAction should be Block. ActiveStore shows values in
+        force, Group Policy included; the plain view reads NotConfigured for
+        values left at default (Block inbound). Watchman covers allow rules.
 
 [B-09] Windows Update on a server
   AREA: Patching (CIS Control 7)
@@ -178,10 +175,10 @@
   PS> Get-Service wuauserv,BITS,UsoSvc | Select-Object Name,Status,StartType
   CMD> reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate /s
   GUI: gpmc.msc (or gpedit.msc), Computer Configuration, Policies, Administrative Templates, Windows Components, Windows Update: Configure Automatic Updates = Enabled (4)
-  WHY: Patching closes known holes, and the automatic-update setting matters on
-       its own; on a server, a GPO owns any setting that will not stick.
-       NoAutoUpdate 1 disables automatic updates; UseWUServer 1 sends checks to
-       WUServer, which the brief must name.
+  WHY: Patching closes known holes; automatic updates keep closing them. A
+       reverting setting is GPO-owned: NoAutoUpdate 1 disables automatic
+       updates; UseWUServer 1 sends checks to WUServer, which the brief must
+       name.
   NOTE: Start updates early and recheck after each restart until Windows Update
         reports up to date. wuauserv ships as Manual (starts on demand);
         Disabled is the finding. Save work before any reboot.
@@ -285,9 +282,9 @@
   CMD> net user kekoa * /add   (member server)
   CMD> net localgroup Accounting /add   (member server)
   CMD> net localgroup Accounting kekoa /add   (member server)
-  WHY: A user or group the brief lists and the machine lacks locks someone out
-       of sign-in and the job's files. Creating exactly the listed set keeps the
-       account list matching the brief, the source of truth.
+  WHY: A listed user or group missing from the machine locks someone out of
+       sign-in and the job's files. Create exactly that set; the brief is the
+       source of truth.
   NOTE: Read-Host and net user * prompt for the password, keeping it out of
         command history. Security events 4720 (account created) and 4728 (added
         to a global group) record each step.
@@ -359,11 +356,9 @@
        or relay, SMB relay, pre-auth shutdown, and UAC bypass. NTLMv1 lingers
        before Windows 11 24H2 and Windows Server 2025: check the level on older
        releases and mixed domains.
-  NOTE: Command-line routes: registry (Hunter A-02) or secedit (Hunter A-01).
-        With Do not require CTRL+ALT+DEL Disabled, a VM sends the sequence from
-        its window menu or shortcut (Ctrl+Alt+End in Hyper-V and Remote
-        Desktop). The machine inactivity limit locks every idle session, whoever
-        signed in.
+  NOTE: The inactivity limit locks every idle session. A VM sends the required
+        CTRL+ALT+DEL from its window menu or Ctrl+Alt+End (Hyper-V, Remote
+        Desktop). Command line: Hunter A-02 (registry) or A-01 (secedit).
 
 [I-03] UAC to Always notify
   AREA: Secure configuration (CIS Control 4)
@@ -380,10 +375,10 @@
        for programs outside Windows; FilterAdministratorToken 1 puts the
        built-in Administrator, the account most often used on a server, under
        UAC too.
-  NOTE: EnableLUA takes effect after a reboot. ConsentPromptBehaviorUser 0
-        refuses elevation from standard sessions, so admins elevate from their
-        own session. A Security Options policy for these values overrides the
-        slider at the next refresh; gpresult /scope computer /v shows it.
+  NOTE: EnableLUA needs a reboot. ConsentPromptBehaviorUser 0 refuses
+        standard-user elevation; admins elevate from their own sessions. A
+        Security Options policy overrides the slider at refresh; gpresult
+        /scope computer /v shows it.
 
 [I-04] Service audit: what runs, from where
   AREA: Secure configuration (CIS Control 4)
@@ -454,9 +449,9 @@
   CMD> schtasks /query /fo LIST /v
   CMD> auditpol /set /subcategory:"Other Object Access Events" /success:enable /failure:enable
   PS> Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4698} | Format-List TimeCreated,Message
-  WHY: Planted tasks re-add users, reopen ports, or run scripts from a user
-       folder every five minutes. Event 4698 records each new task's XML and
-       creator once Other Object Access Events auditing is on.
+  WHY: Planted tasks re-add users, reopen ports, or run user-folder scripts
+       every five minutes. Event 4698 logs each new task's XML and creator
+       once Other Object Access Events auditing is on.
   NOTE: Tasks under \Microsoft\Windows are mostly stock; judge each root-path
         task by its program, since vendor updaters live there too. Export before
         removing: the XML keeps action, account, and author.
@@ -544,14 +539,13 @@
   CMD> reg query HKLM\SOFTWARE\Policies /s
   CMD> gpupdate /force
   CMD> gpresult /r /scope computer
-  WHY: In a domain, GPO wins over local clicks. Password and lockout live in
-       Default Domain Policy; a planted GPO that disables Defender or the
-       firewall re-applies at every background refresh: about every 90 minutes
-       on members, every 5 on domain controllers.
-  NOTE: Look for GPOs modified recently or with odd names; read the HTML report.
-        reg query HKLM\SOFTWARE\Policies /s lists every machine policy value; an
-        absent value means Not Configured. DisableAntiSpyware 1 under Windows
-        Defender is the Turn off Microsoft Defender Antivirus policy.
+  WHY: Domain GPOs override local clicks; password and lockout live in Default
+       Domain Policy. Planted GPOs disabling Defender or the firewall re-apply
+       about every 90 minutes on members, 5 on DCs.
+  NOTE: Flag odd or recently changed GPOs in gpo.html. reg query
+        HKLM\SOFTWARE\Policies /s lists machine policies; absent means Not
+        Configured. DisableAntiSpyware 1 under Windows Defender is "Turn off
+        Microsoft Defender Antivirus."
 
 [I-14] Event Viewer for investigations
   AREA: Investigation (forensics basics)
@@ -604,15 +598,14 @@
   PS> Set-ItemProperty -Path $wc -Name AllowBasic -Value 0 -Type DWord; Set-ItemProperty -Path $wc -Name AllowUnencryptedTraffic -Value 0 -Type DWord; Set-ItemProperty -Path $wc -Name AllowDigest -Value 0 -Type DWord
   GUI: gpedit.msc (or gpmc.msc), Computer Configuration, Administrative Templates, Windows Components, Windows Remote Management (WinRM), WinRM Service and WinRM Client
   CMD> gpupdate /force
-  WHY: WinRM (5985 and 5986) is remote PowerShell and Server Manager. Basic
-       authentication sends passwords in reversible form; unencrypted traffic
-       exposes every command. Kerberos and the default encrypted channel stay;
-       DisableRunAs keeps plug-ins from storing a RunAs password.
-  NOTE: AllowUnencrypted = true in winrm get output is the finding. winrm get
-        needs the WinRM service running; while it is stopped, read the registry
-        values instead. On the client, Disallow Digest authentication writes
-        AllowDigest 0. Remote management uses WinRM, so the service keeps
-        running when the brief names it.
+  WHY: WinRM (5985, 5986) carries remote PowerShell and Server Manager. Basic
+       sends reversible passwords; unencrypted traffic exposes every command.
+       Kerberos and default encryption stay; DisableRunAs keeps plug-ins from
+       storing RunAs passwords.
+  NOTE: Flag AllowUnencrypted = true in winrm get winrm/config; with WinRM
+        stopped, read the registry. Client policy "Disallow Digest
+        authentication" writes AllowDigest 0. Remote management in the brief
+        keeps WinRM running.
 
 [I-18] Apache on Windows when the brief requires it
   AREA: Secure configuration (CIS Control 4)
@@ -626,10 +619,10 @@
   PS> Restart-Service -Name Apache2.4
   CMD> curl.exe -sI http://localhost/
   CMD> curl.exe -s -o NUL -w "%{http_code}" -X TRACE http://localhost/
-  WHY: A required Apache stays up and gives away less: ServerTokens Prod hides
-       the version in headers, ServerSignature Off keeps it off error pages,
-       TraceEnable Off refuses TRACE requests, and removing Indexes ends
-       directory listings.
+  WHY: A required Apache stays up and reveals less. ServerTokens Prod hides
+       the version in headers; ServerSignature Off, on error pages.
+       TraceEnable Off refuses TRACE, and removing Indexes ends directory
+       listings.
   NOTE: httpd.exe -t must print Syntax OK before every restart, because a typo
         stops the site. The curl lines read back a Server header of Apache alone
         and 405 for TRACE. ServerSignature Off is already the default, so the
@@ -654,10 +647,9 @@
   CMD> secedit /analyze /db C:\Windows\security\local.sdb /cfg C:\Temp\secpol.cfg
   WHY: One file, every account policy, repeatable and auditable, and the only
        command-line path to complexity and reversible encryption.
-  NOTE: A typo in the .cfg is silently ignored; verify with net accounts. Member
-        servers only: on a DC the domain policy wins (B-06). Before /configure,
-        keep only the [Unicode], [Version], and [System Access] sections, so
-        audit policy and registry values stay.
+  NOTE: On a DC, domain policy wins (B-06). Before /configure, keep only
+        [Unicode], [Version], and [System Access], so audit and registry
+        settings stay. Typos fail silently: verify with net accounts.
 
 [A-02] LSA and anonymous-access registry hardening
   AREA: Secure configuration (CIS Control 4)
@@ -835,10 +827,10 @@
   PS> Set-MpPreference -PUAProtection Enabled -MAPSReporting Advanced -SubmitSamplesConsent SendAllSamples
   PS> Add-MpPreference -AttackSurfaceReductionRules_Ids 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 -AttackSurfaceReductionRules_Actions Enabled
   PS> Get-MpThreatDetection | Select-Object DomainUser,ProcessName,InitialDetectionTime
-  WHY: Attackers exclude their folder rather than disable Defender; PUA
-       protection catches junkware, and the LSASS rule blocks mimikatz-style
-       dumping. A ThreatIDDefaultAction of 6 (Allow) lets that one threat run: a
-       hiding place beside exclusions.
+  WHY: Attackers exclude their folder instead of disabling Defender, or set
+       ThreatIDDefaultAction 6 (Allow) so one threat runs; Get-MpPreference
+       shows both. PUA protection catches junkware; the LSASS rule blocks
+       mimikatz-style dumping.
   NOTE: An exclusion set by policy returns after Remove-MpPreference: set the
         policy to Not Configured in gpedit.msc (or delete the value under the
         policy key) first, then remove the local one.
@@ -856,10 +848,9 @@
   WHY: Disabled Kerberos pre-auth invites AS-REP roasting, a user-account SPN
        invites Kerberoasting, and stale admins or never-expiring passwords hold
        quiet persistence. One cmdlet finds each flag; one fixes it.
-  NOTE: SPNs belong on service accounts with long passwords or group managed
-        service accounts. A changed service-account password breaks the service
-        until set there too: services.msc, the service, Log On tab (SQL Server
-        Configuration Manager for SQL Server).
+  NOTE: SPNs belong on long-password service accounts or group managed service
+        accounts. A new password breaks the service until entered in
+        services.msc, Log On tab (SQL Server Configuration Manager for SQL).
 
 [A-11] SMB and LDAP signing
   AREA: Secure configuration (CIS Control 4)
@@ -909,10 +900,10 @@
   WHY: AlwaysInstallElevated at 1 in both HKLM and HKCU runs any user's .msi as
        SYSTEM: a one-step privilege escalation Microsoft strongly discourages.
        EnableUserControl 0 keeps install options with administrators.
-  NOTE: HKCU covers only the signed-in user. Check each profile the brief keeps
-        by signing in as that user, or read
-        HKEY_USERS\<SID>\SOFTWARE\Policies\Microsoft\Windows\Installer; reg add
-        creates a missing key and keeps existing values.
+  NOTE: HKCU covers only the signed-in user. Check each profile the brief
+        keeps: sign in as that user, or read
+        HKEY_USERS\<SID>\SOFTWARE\Policies\Microsoft\Windows\Installer; reg
+        add creates missing keys and keeps existing values.
 
 ------------------------------ FIX OR BREAK? (practice cards) ------------------
   Brief: Authorized administrators: alice. Authorized users: bob, carol.

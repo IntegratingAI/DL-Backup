@@ -47,10 +47,9 @@
   WHY: Authorized users, wheel members, and required services decide what is a
        fix and what breaks the business. rc.conf is the service list on FreeBSD;
        read it before touching anything.
-  NOTE: Evidence first: answer the investigation questions before any change.
-        Unfamiliar is distinct from unauthorized: trace it and ask before
-        removing an agent. Keep a second root shell open before editing pam,
-        login.conf, or sshd_config.
+  NOTE: Answer investigation questions before any change. Unfamiliar differs
+        from unauthorized: trace an agent and ask before removing it. Keep a
+        second root shell open before editing pam, login.conf, or sshd_config.
 
 [B-01] List users, UID 0 accounts, and the wheel group
   AREA: Account management (CIS Control 5)
@@ -58,10 +57,10 @@
   # awk -F: '$3==0 {print $1}' /etc/passwd
   # awk -F: '$1=="toor" {print $1": "$2}' /etc/master.passwd
   # pw groupshow wheel
-  WHY: wheel may su to root; any other UID-0 account is a second root, except
-       toor, FreeBSD's default disabled alternate root, while its hash is a
-       star. sudo is a package: in /usr/local/etc/sudoers, uncomment %wheel
-       ALL=(ALL:ALL) ALL and leave NOPASSWD commented.
+  WHY: wheel may su to root; other UID-0 accounts are second roots, except
+       toor, FreeBSD's spare root. sudo is a package: in
+       /usr/local/etc/sudoers, uncomment %wheel ALL=(ALL:ALL) ALL and leave
+       NOPASSWD commented.
   NOTE: toor with a real hash instead of * means someone set it a password. That
         is a finding.
 
@@ -300,7 +299,7 @@
   # sysctl kern.securelevel
   WHY: schg makes a file immutable: pw, passwd, and vi fail with a misleading
        Operation not permitted; sappnd is append-only. ls -lo shows flags;
-       kern.securelevel 1 or higher keeps them until single-user reboot.
+       kern.securelevel 1+ locks them until single-user reboot.
 
 [I-07] Processes and connections: find the backdoor
   AREA: Malware defenses (CIS Control 10)
@@ -340,9 +339,9 @@
   # pw usershow alice -P
   # pw groupshow operator; pw groupshow wheel
   # ls -l /root/.ssh/authorized_keys /home/*/.ssh/authorized_keys 2>/dev/null
-  WHY: A service account with a real shell is a login; operator reads raw
-       disks, and with them the password hashes. The login class pw usershow
-       -P shows decides which login.conf policy applies.
+  WHY: Service accounts with real shells can sign in. The operator group's
+       members read raw disks, password hashes included. pw usershow -P shows
+       the login class, which decides the login.conf policy.
 
 [I-11] pkg repository hygiene
   AREA: Patching (CIS Control 7)

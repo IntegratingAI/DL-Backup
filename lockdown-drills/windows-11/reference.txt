@@ -125,10 +125,9 @@
   GUI: secpol.msc, Account Policies, Password Policy. Turn on 'Password must
        meet complexity requirements' and keep 'Store passwords using reversible
        encryption' off.
-  WHY: Length wins; minimum age plus history stops cycling through 24 new
-       passwords to reuse an old one. Reversible encryption is plaintext in
-       disguise; turning it off protects only new passwords, so reset the ones
-       set while it was on.
+  WHY: Length wins. Minimum age plus 24-password history blocks cycling back
+       to an old one. Reversible encryption is disguised plaintext; disabling
+       it protects only new passwords, so reset earlier ones.
   NOTE: The scenario brief sets the numbers; these commands show one sample
         brief. The CIS Benchmark asks for 14 or more characters, a history of
         24, a maximum age of 365 days or fewer (and above 0), and a minimum age
@@ -162,10 +161,9 @@
   WHY: Default-deny inbound covers the service you have not found yet.
        Misconfigured machines often have exactly one profile off, usually
        Public.
-  NOTE: DefaultInboundAction should be Block. ActiveStore shows the values in
-        force, Group Policy included; the plain view reads NotConfigured for a
-        value left at its Windows default (Block for inbound). Allow-rule review
-        is a Watchman item.
+  NOTE: DefaultInboundAction should be Block. ActiveStore shows values in
+        force, Group Policy included; the plain view reads NotConfigured for
+        values left at default (Block inbound). Watchman covers allow rules.
 
 [B-09] Windows Update: run it and automate it
   AREA: Patching (CIS Control 7)
@@ -250,9 +248,9 @@
   PS> Get-NetTCPConnection -State Listen -LocalPort 21,3389 -ErrorAction SilentlyContinue
   GUI: Settings, System, Remote Desktop: Off unless the brief requires it.
        services.msc for the rest: set Startup type to Disabled.
-  WHY: Telnet and FTP send credentials in cleartext, Remote Registry accepts
-       edits from the network, RDP draws brute force, and Remote Assistance,
-       allowed by default on Windows 11, hands an invited helper the desktop.
+  WHY: Telnet and FTP send cleartext credentials; Remote Registry accepts
+       network edits. RDP draws brute force; Remote Assistance, allowed by
+       default on Windows 11, hands an invited helper the desktop.
   NOTE: If the brief requires RDP, FTP, or SSH, harden it (I-11) rather than
         stop it. Turning Remote Desktop off takes the setting plus its firewall
         group. The @FirewallAPI names work in any display language. Home lacks
@@ -284,9 +282,9 @@
   CMD> net localgroup Accounting /add
   CMD> net localgroup Accounting kekoa /add
   PS> Get-LocalGroupMember -Group Accounting
-  WHY: A user or group the brief lists and the machine lacks locks someone out
-       of sign-in and the job's files. Creating exactly the listed set keeps the
-       account list matching the brief, the source of truth.
+  WHY: A listed user or group missing from the machine locks someone out of
+       sign-in and the job's files. Create exactly that set; the brief is the
+       source of truth.
   NOTE: net user /add places the account in Users only; add the groups the brief
         names, then read the membership back. Security event 4720 records each
         new account.
@@ -361,10 +359,10 @@
   PS> Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name ConsentPromptBehaviorUser -Value 0 -Type DWord
   GUI: Control Panel, User Accounts, Change User Account Control settings,
        slider to the top.
-  WHY: UAC off hands admin processes full rights silently.
-       ConsentPromptBehaviorAdmin 2 (Always notify) prompts on the secure
-       desktop for every elevation; 5, the default, skips the prompt for Windows
-       programs. FilterAdministratorToken 1 covers the built-in Administrator.
+  WHY: UAC off silently hands admin processes full rights.
+       ConsentPromptBehaviorAdmin 2 prompts on the secure desktop for every
+       elevation; default 5 auto-elevates Windows programs.
+       FilterAdministratorToken 1 covers the built-in Administrator.
   NOTE: ConsentPromptBehaviorUser 0 refuses elevation from standard sessions, so
         admins elevate from their own; keep 3 (ask for credentials) where the
         brief has helpdesk staff type admin passwords. A Security Options policy
@@ -399,9 +397,9 @@
   PS> Disable-WindowsOptionalFeature -Online -FeatureName TelnetClient -NoRestart
   PS> Disable-WindowsOptionalFeature -Online -FeatureName SimpleTCP,Printing-Foundation-LPDPrintService -NoRestart
   PS> Disable-WindowsOptionalFeature -Online -FeatureName IIS-FTPServer -NoRestart
-  WHY: SMBv1 is the EternalBlue and WannaCry hole; Telnet and TFTP clients send
-       cleartext. Simple TCP/IP services (echo, daytime, chargen) answer anyone
-       and reflect traffic, and LPD takes print jobs on 515.
+  WHY: SMBv1 is the EternalBlue and WannaCry hole; Telnet and TFTP clients
+       send cleartext. Simple TCP/IP (echo, daytime, chargen) answers anyone
+       and reflects traffic; LPD takes print jobs on 515.
   NOTE: Remove IIS and its FTP server only when the brief leaves out a web or
         FTP server. -NoRestart lets you batch the restart with the others.
 
@@ -415,12 +413,9 @@
   WHY: An unexpected share is a data exfiltration path. Check the ACLs on the
        shares you must keep. Event 5142 names who added a share once File Share
        auditing is on.
-  NOTE: ADMIN$, C$, and IPC$ are system defaults; leave them in place. The
-        filter line lists only added shares. A $ at the end of a name hides a
-        share from browsing and keeps it working: judge every $ share beyond
-        ADMIN$, IPC$, PRINT$, FAX$, and a drive letter that points at its own
-        drive root. A share on C:\Users or a profile folder exposes that user's
-        files.
+  NOTE: ADMIN$, C$, and IPC$ are defaults; leave them. The filter line lists
+        only added shares; a trailing $ merely hides one from browsing. A
+        share under C:\Users exposes profile files.
 
 [I-07] Scheduled tasks
   AREA: Malware defenses (CIS Control 10)
@@ -432,9 +427,9 @@
   CMD> schtasks /query /fo LIST /v
   CMD> auditpol /set /subcategory:"Other Object Access Events" /success:enable /failure:enable
   PS> Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4698} | Format-List TimeCreated,Message
-  WHY: Planted tasks re-add users, reopen ports, or run scripts from a user
-       folder every five minutes. Event 4698 records each new task's XML and
-       creator once Other Object Access Events auditing is on.
+  WHY: Planted tasks re-add users, reopen ports, or run user-folder scripts
+       every five minutes. Event 4698 logs each new task's XML and creator
+       once Other Object Access Events auditing is on.
   NOTE: Tasks under \Microsoft\Windows are mostly stock; judge each root-path
         task by its program, since vendor updaters live there too. Export before
         removing: the XML keeps action, account, and author.
@@ -570,9 +565,9 @@
        scans them, and memory integrity (HVCI) blocks unsigned kernel drivers,
        the rootkit class. Confirm ShellSmartScreenLevel reads Block; Warn still
        allows the click-through.
-  NOTE: New-Item -Force on the System key erases the other policies there; the
-        Test-Path guard keeps them. Inside a VM without nested virtualization
-        memory integrity may be unavailable; the toggle simply stays hidden.
+  NOTE: New-Item -Force on the System key erases its other policies; the
+        Test-Path guard keeps them. A VM without nested virtualization may
+        lack memory integrity, so its toggle stays hidden.
 
 [I-17] Browsers: updated and protected by policy
   AREA: Malware defenses (CIS Control 10)
@@ -630,11 +625,9 @@
   CMD> secedit /analyze /db C:\Windows\security\local.sdb /cfg C:\Temp\secpol.cfg
   WHY: One file, every account policy, repeatable and auditable, and the only
        command-line path to complexity and reversible encryption.
-  NOTE: A typo in the .cfg is ignored quietly: verify with net accounts. Keep
-        only the [Unicode], [Version], and [System Access] sections, so
-        /configure leaves audit policy and registry values alone. secedit ships
-        on Home too, so this is the command-line route to complexity on every
-        edition.
+  NOTE: secedit ignores .cfg typos quietly; verify with net accounts. Keep
+        only [Unicode], [Version], and [System Access], so /configure leaves
+        audit policy and registry values alone. Home includes secedit too.
 
 [A-02] LSA and anonymous-access registry hardening
   AREA: Secure configuration (CIS Control 4)
@@ -664,9 +657,8 @@
        the network, the pass-the-hash road: remove it so remote local admins
        stay filtered.
   NOTE: This is the registry form of the Watchman Security Options. A missing
-        LocalAccountTokenFilterPolicy is the good result; leave it absent.
-        MSV1_0 and the System key exist on every install, so Set-ItemProperty
-        writes into them directly.
+        LocalAccountTokenFilterPolicy is the good result. MSV1_0 and the
+        System key always exist, so Set-ItemProperty writes there directly.
 
 [A-03] Credential-theft hardening: LLMNR, NetBIOS, WDigest
   AREA: Secure configuration (CIS Control 4)
@@ -882,10 +874,10 @@
   WHY: AlwaysInstallElevated at 1 in both HKLM and HKCU runs any user's .msi as
        SYSTEM: a one-step privilege escalation Microsoft strongly discourages.
        EnableUserControl 0 keeps install options with administrators.
-  NOTE: HKCU covers only the signed-in user. Check each profile the brief keeps
-        by signing in as that user, or read
-        HKEY_USERS\<SID>\SOFTWARE\Policies\Microsoft\Windows\Installer; reg add
-        creates a missing key and keeps existing values.
+  NOTE: HKCU covers only the signed-in user. Check each profile the brief
+        keeps: sign in as that user, or read
+        HKEY_USERS\<SID>\SOFTWARE\Policies\Microsoft\Windows\Installer; reg
+        add creates missing keys and keeps existing values.
 
 ------------------------------ FIX OR BREAK? (practice cards) ------------------
   Brief: Authorized administrators: alice. Authorized users: bob, carol.

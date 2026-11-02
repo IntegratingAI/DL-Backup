@@ -123,7 +123,7 @@
       "icon": "path",
       "category": "cyber",
       "section": "learning",
-      "sha256": "7cd0883b3df12d763e6e135f853dc4987ff14f7b38439e9553cab730ecfaf010",
+      "sha256": "1ab3ae1a5dfeb5a35bde040002c8627919689eaeed1db99a71e76c1e7a586221",
       "updated": "2026-11-02"
     },
     {
@@ -225,7 +225,7 @@
           "download_as": "windows-11-lockdown-reference.txt"
         }
       ],
-      "sha256": "4ce16fcb49cb9fd15171f17804d5641e5550765b1d03e9e00200e9b5202be4f7",
+      "sha256": "dffc23734ec14cf261b5c9a187be7b9b8ff2b561551e5a0494afdfe04c1553a1",
       "updated": "2026-11-02"
     },
     {
@@ -251,7 +251,7 @@
           "download_as": "windows-server-lockdown-reference.txt"
         }
       ],
-      "sha256": "5844ec42faa23270d71dc51064da0ecf21d58c496c793fab18e0489d2b4db062",
+      "sha256": "b9f8108a4ac123f354293c1d1d97e6d02f0cc3ab5ccf694d4c6bc6c374796922",
       "updated": "2026-11-02"
     },
     {
@@ -277,7 +277,7 @@
           "download_as": "linux-mint-lockdown-reference.txt"
         }
       ],
-      "sha256": "93f180935d408d2a1693c2c955212d424bd26030d78bcc24fbc223cb758c13ed",
+      "sha256": "fd8be032c74524490c12ee474916f0242ff4febb42268a6418f6d7370f73b428",
       "updated": "2026-11-02"
     },
     {
@@ -303,7 +303,7 @@
           "download_as": "ubuntu-lockdown-reference.txt"
         }
       ],
-      "sha256": "0f47d25dd9b06b85b5a6f2392219dbbf156f1755821fb9167e47a899de3139fc",
+      "sha256": "70bb12c9eedf812e780a3777b16e3bf1f7839e8eb11269c90d8a33d1442aab78",
       "updated": "2026-11-02"
     },
     {
@@ -329,7 +329,7 @@
           "download_as": "freebsd-lockdown-reference.txt"
         }
       ],
-      "sha256": "9c32ee64ac90184fba1b42e5112f31e08497abb126c8d088ad3269a9087c19f7",
+      "sha256": "31de8f6abe518c29c5eb6b7e978872ea70aa872a5114b195ff14e8217b7337cc",
       "updated": "2026-11-02"
     },
     {
@@ -348,7 +348,7 @@
       "icon": "lock",
       "category": "cyber",
       "series": "lockdown-drills",
-      "sha256": "4c347fff12fa34ba4da727a381a793997f09af8077b003bc1330f355736fc1a5",
+      "sha256": "276713e5c35a1987689f9184b6169b67bfc8fdbdbfcd2421509daea22029c1a8",
       "updated": "2026-11-02",
       "extras": [
         {
