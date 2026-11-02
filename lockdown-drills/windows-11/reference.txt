@@ -617,6 +617,28 @@
         Chrome, Manage Exceptions in Firefox. Current Firefox replaced Do Not
         Track with Global Privacy Control.
 
+[I-18] Automatic updates: policy keeps them on (NoAutoUpdate 0, no WSUS redirect)
+  AREA: Patching (CIS Control 7)
+  CMD> reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU /v NoAutoUpdate
+  CMD> reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate /v WUServer
+  CMD> reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU /v NoAutoUpdate /t REG_DWORD /d 0 /f
+  CMD> reg delete HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate /v WUServer /f
+  CMD> reg delete HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU /v UseWUServer /f
+  GUI: gpedit.msc, Computer Configuration, Administrative Templates, Windows Components, Windows Update, Manage end user experience: Configure Automatic Updates Enabled, option 4; Manage updates offered from Windows Server Update Service: Specify intranet Microsoft update service location Not Configured
+  CMD> gpupdate /force
+  PS> (New-Object -ComObject Microsoft.Update.AutoUpdate).Results
+  WHY: B-09 starts the service and installs what is pending; this item keeps
+       the updates coming. Policy outranks the Settings page: NoAutoUpdate 1
+       switches automatic updates off while the service looks healthy, and a
+       WUServer entry with UseWUServer 1 sends every check to a server the
+       brief never mentioned, so the machine stops patching from Microsoft. A
+       reg query on the two policy keys takes seconds and settles both.
+  NOTE: A real domain may set WUServer on purpose for its own update server;
+        on a stand-alone lab machine the brief lists no such server, so the
+        entry is a finding. Keep NoAutoUpdate at 0 or absent, then confirm
+        with the AutoUpdate results: LastSearchSuccessDate and
+        LastInstallationSuccessDate should be recent after a check.
+
 ------------------------------ HUNTER ------------------------------------------
  Hunt and harden. Baselines from the command line, registry hardening against
  credential theft, persistence hunting, Defender depth, SMB signing, and version

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-JnGyQWoqhJ+NcdVhzEXPi/bzbbHqzbuXT7IjlNyunJs='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-CMzLE56IGl+pQWcqbeUc2yd7GSr3gnj6seWxi32UVek=' 'sha256-JnGyQWoqhJ+NcdVhzEXPi/bzbbHqzbuXT7IjlNyunJs='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Windows Server baseline hardening in three levels: beginner, intermediate, and advanced. Comes with a command reference that explains why each step matters.">
 <link rel="canonical" href="https://freeapp4that.store/lockdown-drills/windows-server/">
@@ -152,6 +152,21 @@ p{margin:0 0 10px;max-width:68ch}
 @media (min-width:1101px){ .modes .rep{display:none} }
 @media (max-width:760px){ header.top{position:static} .learn{grid-template-columns:1fr} .list{flex-direction:row;overflow-x:auto;padding-bottom:6px;gap:6px} .list button{grid-template-columns:auto auto;white-space:nowrap;border:1px solid var(--line)} .list button.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)} .list button .ttl{display:none} .levels{margin-left:0} .score{margin-left:auto} }
 .picked{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:.92rem}.missed{display:grid;gap:6px;margin:10px 0}.miss{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:.9rem;text-align:left}.small{font-size:.85rem;color:var(--muted)}.rr .g.due{color:var(--muted)}.report .ex{margin-top:10px;font-size:.85rem}.report .ex dt{font-family:var(--mono);color:var(--muted);margin-top:6px}.report .ex dd{margin:0}
+
+/* reading support (panel review): text size, support bar, terms panel, banner, contrast, forced colours, print */
+:root[data-text="large"]{font-size:112.5%}:root[data-text="larger"]{font-size:125%}
+:root[data-text="large"] body{font-size:18px}:root[data-text="larger"] body{font-size:20px}
+.sbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 14px;max-width:100%;font-size:.85rem}
+.sbar button,.theme.sb{font:inherit;font-size:.8rem;padding:5px 10px;border-radius:999px;border:1px solid var(--line,var(--rule,#8a97a5));background:var(--panel,var(--face,#fff));color:var(--ink);cursor:pointer;white-space:nowrap}
+.termsbox{position:fixed;right:12px;bottom:12px;width:min(420px,calc(100vw - 24px));max-height:min(60vh,520px);overflow:auto;background:var(--panel,var(--face,#fff));color:var(--ink);border:1px solid var(--line,var(--rule,#8a97a5));border-radius:12px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.25);z-index:50;font-size:.92rem}
+.termsbox h2{margin:0 0 6px;font-size:1rem}.termsbox .trow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px}.termsbox input{flex:1;min-width:120px;font:inherit;padding:5px 8px;border:1px solid var(--line,var(--rule,#8a97a5));border-radius:8px;background:var(--panel,var(--face,#fff));color:var(--ink)}
+.termsbox button{font:inherit;font-size:.8rem;padding:4px 9px;border-radius:8px;border:1px solid var(--line,var(--rule,#8a97a5));background:var(--panel,var(--face,#fff));color:var(--ink);cursor:pointer}
+.termsbox dl{margin:6px 0 0}.termsbox dt{font-weight:600;margin-top:6px}.termsbox dd{margin:0}.termsbox .tdef{margin:4px 0;padding:6px 8px;border-left:3px solid currentColor;min-height:1.2em}
+.sharebar{display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;padding:.6rem .9rem;background:var(--soft,var(--face,#eef3f7));color:var(--ink);border-bottom:1px solid var(--line,var(--rule,#8a97a5));font-size:.92rem;max-width:100%}
+.sharebar button{font:inherit;font-size:.85rem;padding:.25rem .7rem;border-radius:6px;border:1px solid var(--line,var(--rule,#8a97a5));background:var(--panel,var(--face,#fff));color:var(--ink);cursor:pointer}
+@media (prefers-contrast:more){:root{--line:currentColor;--rule:currentColor}button,.btn,.opts button,.list button,.chk,.card,.ticket{border:1px solid currentColor}}
+@media (forced-colors:active){button,.btn,.opts button,.list button{border:1px solid ButtonText}.bar2 i,.fill{background:Highlight}}
+@media print{.sbar,.termsbox,.sharebar,header .levels,header .modes,header .theme,nav.series,aside.report,footer,.nav,button{display:none !important}.wrap{display:block}.list{flex-direction:column}.list button{display:grid !important;border:none}#view,.learn{display:block}body{background:#fff;color:#000}}
 </style>
 </head>
 <body data-mode="learn">
@@ -160,7 +175,7 @@ p{margin:0 0 10px;max-width:68ch}
     <div class="brand" id="brand"></div>
     <div class="levels" id="levels" role="tablist" aria-label="Level"></div>
     <div class="score" id="score"></div>
-    <button class="theme" id="theme" aria-label="Switch color theme">Theme</button>
+    <button class="theme" id="theme" aria-label="Switch color theme">Theme</button><button class="theme sb" id="sbText" type="button">Text: Default</button><button class="theme sb" id="sbRead" type="button">Read aloud</button><button class="theme sb" id="sbTerms" type="button" aria-controls="termsbox">Terms</button>
   </div>
   <nav class="modes" id="modes" aria-label="Mode"></nav>
   <nav class="series" id="series" aria-label="Lockdown Drills series" hidden></nav>
@@ -378,6 +393,90 @@ document.addEventListener('input',e=>{const d=e.target.dataset;
 window.addEventListener('resize',()=>{if(S.mode==='report'&&window.matchMedia('(min-width:1101px)').matches){S.mode='learn';render();}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('typein')&&Q&&!Q.fb){answer(null,e.target.value);render();}});
 render();
+})();
+</script>
+<div id="termsbox" class="termsbox" hidden role="dialog" aria-label="Terms on this page"><h2>Terms on this page</h2><div class="trow"><input id="termsQ" type="search" placeholder="Filter terms" aria-label="Filter terms"><button type="button" id="termsDefine">Define selection</button><button type="button" id="termsClose">Close</button></div><p class="tdef" id="termsDef" role="status">Select a word on the page and press Define selection, or browse the list. Definitions come from the Defense Ladder glossary.</p><dl id="termsList"></dl></div>
+<script>
+/* Reading support (panel review, UDL): text size, read aloud, terms, and (Drills) a shared-computer banner. Same code in every practice page. */
+(function(){
+  const C={"key": "lockdown-drills-windows-server", "progressKey": "lockdown-drills-windows-server-v1", "read": ["#view"], "gloss": [["Advanced audit policy", "About 60 audit subcategories under Advanced Audit Policy Configuration, finer than the nine basic categories."], ["Antivirus", "Software that checks files and programs against detection signatures and suspicious actions, then blocks, quarantines, or reports them."], ["AS-REP roasting", "Cracking offline the reply a domain controller sends for an account set to skip Kerberos pre-authentication."], ["Attack surface", "Every account, service, port, and program an attacker could reach on a system."], ["Audit policy", "The Windows settings that decide which Success and Failure events go to the Security log."], ["AutoPlay", "The Windows prompt that offers to open a drive or disc when it connects; turning it off removes one easy click for a planted USB stick."], ["Backdoor", "A hidden way back into a system, such as a netcat listener, an extra SSH key, or a rogue user."], ["Backup", "An independent copy on separate media that survives the loss of the original and earns trust after a test restore."], ["Baseline", "A record of how a system looks before you change it: its users, services, ports, software, and settings."], ["Certificate", "A signed record that binds a public key to a name; browsers accept it when the name matches the address, the dates are current, and the chain reaches a trusted root."], ["Change log", "One line per change: the time, the machine, what changed, and how to undo it."], ["Channel binding", "Ties a sign-in to the TLS session it travels in, so a sign-in relayed through another connection fails."], ["Cmdlet", "A PowerShell command named Verb-Noun, such as Get-LocalUser."], ["Command Prompt", "cmd.exe, the older Windows command line, where commands such as dir and del, and tools such as sc.exe, netsh, and reg, take their own options (such as /s or start= disabled) in place of PowerShell parameters."], ["Container", "An app packed with its own files and network that shares the host’s kernel: lighter than a VM, with a thinner wall."], ["CSV", "Comma-separated values: a table in plain text, with one record per line."], ["curl", "A command-line tool that sends one web request and prints the answer; curl -sI shows only the response headers."], ["Default Domain Policy", "The GPO linked at the domain that carries password and lockout policy for every domain account."], ["DHCP", "The service that hands hosts an address, mask, gateway, and DNS server automatically."], ["Directory listing", "A web server feature that shows every file in a folder to any visitor when the folder has no index page."], ["DNS", "The service that turns names into IP addresses."], ["DnsAdmins", "An AD group whose members can load code into the DNS service, which makes it an admin group by another road."], ["Domain account", "An account stored in Active Directory that can sign in to any computer in the domain."], ["DWORD", "A 32-bit number stored as a registry value, the type most security switches use."], ["Encryption", "Scrambling data so that only holders of the key can read it."], ["Evidence", "The files, logs, and settings an investigation question depends on, kept unchanged until the question is answered."], ["Hardening", "Shrinking a system’s attack surface by removing what is unneeded and securely configuring what remains."], ["Hosts file", "A local file of name-to-address pairs that the system reads before DNS."], ["HTTP", "The request-and-response language of the web, sent as readable text on port 80."], ["HTTPS", "HTTP inside TLS on port 443: private and protected against tampering."], ["Incident", "An event, or a set of events, that harms or truly threatens confidentiality, integrity, or availability; often an alert that evidence confirms."], ["Incident response", "The planned work of handling an incident: preparation, identification, containment, eradication, recovery, and lessons learned."], ["Investigation question", "A lab question about what happened on the machine, answered exactly in the format it asks for."], ["JSON", "A data format of braces, brackets, and quoted keys, used in API answers, cloud policies, and audit events."], ["Kerberoasting", "Requesting service tickets for user accounts with SPNs and cracking their passwords offline."], ["Kerberos", "The ticket-based sign-in protocol Active Directory uses by default."], ["krbtgt", "The built-in, disabled AD account whose key signs every ticket-granting ticket; Windows keeps it, so leave it in place."], ["LAN", "Local area network: devices in one building or campus, joined by links the owner controls."], ["LDAP signing", "Signs each LDAP message on port 389 so tampering shows; when a DC requires it, the DC refuses unsigned binds and simple binds sent without TLS."], ["Least privilege", "Giving every account and program only the access its job needs."], ["LLMNR and NBT-NS", "Fallback name lookups sent to every host on the local network (LLMNR by multicast, NBT-NS by broadcast), which an attacker on the LAN can answer to capture password hashes."], ["Local account", "An account stored on one computer and usable only there."], ["LSASS", "The Windows process that checks sign-ins and holds credentials in memory."], ["Member server", "A Windows Server joined to a domain that keeps its own local accounts and also accepts domain accounts."], ["NTLM", "The older Windows challenge-response sign-in family (LM, NTLMv1, and NTLMv2), used when Kerberos is unavailable."], ["NTLM relay", "An attack that forwards a captured NTLM sign-in to another server to act as the victim; required SMB signing blocks it to SMB servers, and LDAP signing with channel binding blocks it to domain controllers."], ["Null session", "An anonymous network connection that can list accounts and shares until Windows blocks anonymous enumeration."], ["Pass-the-hash", "Signing in with a stolen password hash instead of the password, which NTLM accepts as proof."], ["Persistence", "Any way malware arranges for the system to start it again after a reboot or sign-in, such as a service, scheduled task, or Run key."], ["Principal", "The “who” in a cloud policy statement: a user, a role, an account, or \"*\" for anyone."], ["Privilege escalation", "Turning limited access into more: vertical climbs to admin or root, and horizontal takes over a peer’s account."], ["Process", "A running program with its own memory, PID, and security identity; its threads share its rights."], ["RADIUS", "The server that answers 802.1X and VPN sign-in requests, assigns a VLAN, and logs each decision."], ["Real-time protection", "Microsoft Defender’s always-on scanning of files as they are opened, downloaded, or run."], ["Redirection", "Sends a command’s output into a file: &gt; replaces the file, and &gt;&gt; adds to its end."], ["Remote Assistance", "A Windows feature that lets an invited helper see and control a desktop over the network; Windows 11 turns it on, so turn it off when the brief rules out remote access."], ["root", "The Linux superuser, UID 0, with full control of the system."], ["Run key", "A registry key whose entries start a program at every sign-in."], ["Scenario brief", "The document that comes with a lab: authorized users and admins, required services, software policy, and investigation questions."], ["Scope", "The exact systems, accounts, methods, and time window that an authorization covers."], ["Script", "A text file of commands that an interpreter reads and runs. Read every line before you run one."], ["Script block logging", "Records the decoded text of each PowerShell script block as event 4104 in the PowerShell Operational log."], ["Security group", "A stateful cloud firewall attached to a VM’s network interface; it holds allow rules only."], ["Self-signed certificate", "A certificate whose issuer is its own subject, trusted only on devices where someone installed it."], ["Service name", "The short name commands use for a Windows service, such as RemoteRegistry, distinct from the display name services.msc shows."], ["Shell", "The program that reads the commands you type and runs them. Bash is the usual shell on Linux."], ["SMB signing", "A signature on every file-sharing message that proves the sender and blocks relay."], ["SMBv1", "The first, obsolete version of Windows file sharing, exploited by EternalBlue and WannaCry."], ["SSH", "Secure Shell, the encrypted remote-login service on TCP port 22."], ["SSL", "Secure Sockets Layer, the retired forerunner of TLS. “SSL certificate” lives on as a name for a TLS certificate."], ["Sysprep", "The Windows tool that strips a machine’s unique identity (computer name, security ID, and hardware-specific settings) so its image can become a template for many PCs."], ["Threat", "Who or what might attack or harm a system, such as a phishing crew or a flood of traffic."], ["TLS", "The protocol behind the padlock (a slider icon in Chrome): it encrypts a connection and checks the server’s certificate. It replaced the retired SSL."], ["TTL", "A packet counter each router lowers by one, so a looping packet eventually dies."], ["UPnP", "A router feature that lets apps open port forwards on their own. Turn it off and forward only what the brief names."], ["User Rights Assignment", "The policy section that grants privileges such as Allow log on locally and Debug programs to users and groups."], ["WDigest", "An old sign-in package that, with UseLogonCredential set to 1, keeps plaintext passwords in LSASS memory."], ["Web root", "The folder a web server serves files from, such as C:\\inetpub\\wwwroot on IIS or /var/www/html on Apache."], ["Webshell", "A script planted in a web root that gives an attacker commands through the web server."]]};
+  const $=s=>document.querySelector(s);
+  const lsGet=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
+  const lsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
+  const lsDel=k=>{try{localStorage.removeItem(k);}catch(e){}};
+  /* theme (pages without their own button) */
+  const themeBtn=$('#sbTheme');
+  if(themeBtn){
+    const apply=t=>{if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);else document.documentElement.removeAttribute('data-theme');themeBtn.textContent='Theme: '+(t||'auto');};
+    let t=lsGet(C.key+'-theme');if(t!=='light'&&t!=='dark')t='';apply(t);
+    themeBtn.addEventListener('click',()=>{t=t===''?'light':t==='light'?'dark':'';if(t)lsSet(C.key+'-theme',t);else lsDel(C.key+'-theme');apply(t);});
+  }
+  /* text size: Default, Large, Larger; the root font size scales rem text, and the body rule scales px text */
+  const textBtn=$('#sbText');
+  if(textBtn){
+    const SIZES=[['default','Default'],['large','Large'],['larger','Larger']];
+    const apply=v=>{const s=SIZES.find(x=>x[0]===v)||SIZES[0];if(s[0]==='default')document.documentElement.removeAttribute('data-text');else document.documentElement.setAttribute('data-text',s[0]);textBtn.textContent='Text: '+s[1];textBtn.title='Text size: '+s[1]+'. Press for the next size.';};
+    let v=lsGet(C.key+'-text');if(!SIZES.some(s=>s[0]===v))v='default';apply(v);
+    textBtn.addEventListener('click',()=>{const i=SIZES.findIndex(s=>s[0]===v);v=SIZES[(i+1)%SIZES.length][0];lsSet(C.key+'-text',v);apply(v);});
+  }
+  /* read aloud: the selection when there is one, else the first visible main region */
+  const readBtn=$('#sbRead');
+  if(readBtn){
+    if(!('speechSynthesis' in window)){readBtn.hidden=true;}
+    else{
+      const visible=el=>!!(el&&el.offsetParent!==null&&!el.hidden);
+      const region=()=>{for(const sel of C.read){const el=document.querySelector(sel);if(visible(el)&&el.textContent.trim())return el;}return document.body;};
+      let speaking=false;
+      const stop=()=>{speechSynthesis.cancel();speaking=false;readBtn.textContent='Read aloud';readBtn.setAttribute('aria-pressed','false');};
+      readBtn.setAttribute('aria-pressed','false');
+      readBtn.addEventListener('click',()=>{
+        if(speaking){stop();return;}
+        const sel=String(window.getSelection&&window.getSelection()||'').trim();
+        const text=(sel||region().innerText||'').replace(/\s+/g,' ').trim().slice(0,6000);
+        if(!text)return;
+        const u=new SpeechSynthesisUtterance(text);u.lang=document.documentElement.lang||'en';u.rate=1;
+        u.onend=stop;u.onerror=stop;
+        speechSynthesis.cancel();speechSynthesis.speak(u);speaking=true;readBtn.textContent='Stop reading';readBtn.setAttribute('aria-pressed','true');
+      });
+      window.addEventListener('pagehide',()=>{if(speaking)speechSynthesis.cancel();});
+    }
+  }
+  /* terms: the Defense Ladder glossary terms this page uses, plus Define selection */
+  const termsBtn=$('#sbTerms'),box=$('#termsbox');
+  if(termsBtn&&box){
+    const list=$('#termsList'),q=$('#termsQ'),def=$('#termsDef'),defBtn=$('#termsDefine'),close=$('#termsClose');
+    const G=C.gloss;
+    const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 .\-\/+]/g,' ').replace(/\s+/g,' ').trim();
+    const draw=f=>{list.textContent='';const ff=norm(f);let n=0;for(const [t,d] of G){if(ff&&norm(t).indexOf(ff)<0&&norm(d).indexOf(ff)<0)continue;const dt=document.createElement('dt');dt.textContent=t;const dd=document.createElement('dd');dd.textContent=d;list.append(dt,dd);n++;}if(!n){const dd=document.createElement('dd');dd.textContent='No term matches. Try a shorter word.';list.append(dd);}};
+    const open=o=>{box.hidden=!o;termsBtn.setAttribute('aria-expanded',o?'true':'false');termsBtn.textContent=o?'Close terms':'Terms';if(o){draw(q.value);q.focus();}else termsBtn.focus();};
+    termsBtn.setAttribute('aria-expanded','false');
+    termsBtn.addEventListener('click',()=>open(box.hidden));
+    close.addEventListener('click',()=>open(false));
+    q.addEventListener('input',()=>draw(q.value));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!box.hidden)open(false);});
+    defBtn.addEventListener('click',()=>{
+      const sel=norm(String(window.getSelection&&window.getSelection()||'')).replace(/[.,;:!?]+$/,'');
+      if(!sel){def.textContent='Select a word or phrase on the page first, then press Define selection.';return;}
+      const hit=G.find(([t])=>norm(t)===sel)||G.find(([t])=>norm(t)===sel.replace(/s$/,''))||G.find(([t])=>norm(t).indexOf(sel)===0)||G.find(([t])=>sel.indexOf(norm(t))>=0&&norm(t).length>3);
+      def.textContent=hit?hit[0]+': '+hit[1]:'"'+sel+'" is outside this page\u2019s glossary. The Defense Ladder glossary holds every course term.';
+    });
+    draw('');
+  }
+  /* Drills: a return after 30 minutes or more on a browser that holds progress */
+  if(C.progressKey){
+    const seenKey=C.progressKey+'-seen';const now=Date.now();const last=parseInt(lsGet(seenKey)||'0',10)||0;
+    let has=false;try{const o=JSON.parse(lsGet(C.progressKey)||'null');has=!!(o&&((o.learned&&Object.keys(o.learned).length)||(o.drilled&&Object.keys(o.drilled).length)||(o.best&&Object.keys(o.best).length)||(o.run&&o.run.done&&Object.keys(o.run.done).length)));}catch(e){}
+    if(has&&last&&now-last>=30*60*1000){
+      const mins=Math.round((now-last)/60000);const when=mins<120?mins+' minutes':Math.round(mins/60)+' hours';
+      const bar=document.createElement('div');bar.className='sharebar';bar.setAttribute('role','region');bar.setAttribute('aria-label','Saved progress');
+      const span=document.createElement('span');span.textContent='This browser last showed this trainer '+when+' ago and holds saved progress. On a shared computer it may be someone else\u2019s.';
+      const keep=document.createElement('button');keep.type='button';keep.textContent='Keep my progress';keep.addEventListener('click',()=>bar.remove());
+      const fresh=document.createElement('button');fresh.type='button';fresh.textContent='Start fresh';fresh.addEventListener('click',()=>{lsDel(C.progressKey);lsSet(seenKey,String(Date.now()));location.reload();});
+      bar.append(span,keep,fresh);document.body.insertBefore(bar,document.body.firstChild);
+    }
+    const stamp=()=>lsSet(seenKey,String(Date.now()));stamp();setInterval(stamp,60000);
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')stamp();});window.addEventListener('pagehide',stamp);
+  }
 })();
 </script>
 <!-- tool4that:foot --><p style="text-align:center;margin:28px 0 22px;font:14px/1.4 system-ui,-apple-system,Segoe UI,Arial,sans-serif"><a href="../../">More free tools at Tool4That</a></p><!-- /tool4that:foot -->
