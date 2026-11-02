@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-1bdaPq2zGSA8PNPotYf54bUxvCLm1j3rcR7bMIyipLg=' 'sha256-3B2o0xMIljM66Vo8KeVw4J8E4XOxt7OCmenv9PFskrU=' 'sha256-4vCbYyX7dvUWhvKvAfMHN6DFHqRVUHufayDUPL7XHyg=' 'sha256-e2SUMZvbZI6mY0f5M1BjMWWIlU0Q3Q5252EnnLHKhGQ=' 'sha256-fUbHLBogSPbkBKdJvoJl95L6CWBJxy3oGs4iS6baADk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-1bdaPq2zGSA8PNPotYf54bUxvCLm1j3rcR7bMIyipLg=' 'sha256-4vCbYyX7dvUWhvKvAfMHN6DFHqRVUHufayDUPL7XHyg=' 'sha256-fUbHLBogSPbkBKdJvoJl95L6CWBJxy3oGs4iS6baADk=' 'sha256-ubaKTCFQIwTt8bVNyxpAP7jbsdA7HurBHQSv+zizhzY=' 'sha256-v493RI+0vkTtYyE91lKvI8nbCoUC9WV04+Qykn9v2aQ='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/defense-ladder/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%8E%93%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -895,6 +895,9 @@ h2[tabindex="-1"]:focus:not(:focus-visible){outline:none}
 .upractice{margin:.2rem 0 .6rem;font-size:.92rem;opacity:.9}.upractice a{text-decoration:underline}
 .nx-ready a{text-decoration:underline}
 .card label.tl{display:block;margin:.6rem 0 .3rem;font-weight:600}.card input.typein{font-family:ui-monospace,Consolas,'Liberation Mono',monospace;width:100%;max-width:720px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:.95rem}
+:root[data-text="large"]{font-size:112.5%}:root[data-text="larger"]{font-size:125%}
+.selfcheck{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper-2)}.selfcheck h4{margin:0 0 6px;font-size:.95rem}
+.sc-auto{margin:0;padding-left:1.1em;font-size:.92rem;list-style:none}.sc-auto li{margin:3px 0}.sc-auto li.ok{color:var(--ok)}.sc-item{display:block;margin:4px 0;font-size:.95rem}
 </style>
 </head>
 <body>
@@ -913,7 +916,7 @@ h2[tabindex="-1"]:focus:not(:focus-visible){outline:none}
     <h2 class="mlbl">Grades</h2>
     <div class="ladder" id="ladder" role="list" aria-label="Grades"></div>
     <div class="pages" id="pages" role="list" aria-label="Pages"></div>
-    <div class="rail-tools"><button class="tbtn" id="themeBtn" type="button">Theme: auto</button><button class="tbtn" id="widthBtn" type="button">Width: Wide</button></div>
+    <div class="rail-tools"><button class="tbtn" id="themeBtn" type="button">Theme: auto</button><button class="tbtn" id="widthBtn" type="button">Width: Wide</button><button class="tbtn" id="textBtn" type="button">Text: Default</button></div>
     <div class="rail-foot">Unofficial practice, independent of, and unendorsed by, Microsoft, Canonical, Linux Mint, the FreeBSD Project, and Cisco. Progress stays in this browser.</div>
     </div>
   </nav>
@@ -944,7 +947,7 @@ const MATCH=(id,title,intro,pairs,bloom)=>({t:'match',id,title,intro,pairs,bloom
 const SPOT=(id,title,intro,lines)=>({t:'spot',id,title,intro,lines});
 const ORDER=(id,title,intro,items,bloom)=>({t:'order',id,title,intro,items,bloom});
 const LAB=(id,title,intro,steps)=>({t:'lab',id,title,intro,steps});
-const REFLECT=(id,title,prompt)=>({t:'reflect',id,title,prompt});
+const REFLECT=(id,title,prompt,checks)=>({t:'reflect',id,title,prompt,checks});
 const BUILDER=(id,title,intro,sections)=>({t:'builder',id,title,intro,sections});
 const PLANNER=(id)=>({t:'planner',id});
 const TIMER=(id)=>({t:'timer',id});
@@ -3055,6 +3058,14 @@ widthBtn.addEventListener('click',()=>{
   try{ localStorage.setItem(KEY+'-width',readWidth); }catch(e){}
   applyWidth(readWidth);
 });
+/* text size: Default, Large, or Larger, remembered on this device. Everything is sized in rem, so the root
+   font size scales the whole page, including the terminal blocks and the quiz options. */
+const textBtn=document.getElementById('textBtn');
+const TEXT_SIZES=[['default','Default'],['large','Large'],['larger','Larger']];
+let textSize=(function(){ try{ const v=localStorage.getItem(KEY+'-text'); return TEXT_SIZES.some(s=>s[0]===v)?v:'default'; }catch(e){ return 'default'; } })();
+function applyText(v){ const s=TEXT_SIZES.find(x=>x[0]===v)||TEXT_SIZES[0]; if(s[0]==='default')document.documentElement.removeAttribute('data-text'); else document.documentElement.setAttribute('data-text',s[0]); textBtn.textContent='Text: '+s[1]; textBtn.title='Text size: '+s[1]+'. Press for the next size.'; }
+applyText(textSize);
+textBtn.addEventListener('click',()=>{ const i=TEXT_SIZES.findIndex(x=>x[0]===textSize); textSize=TEXT_SIZES[(i+1)%TEXT_SIZES.length][0]; try{ localStorage.setItem(KEY+'-text',textSize); }catch(e){} applyText(textSize); });
 
 /* =====================================================================
    small helpers
@@ -4300,6 +4311,14 @@ function renderReflect(b){
   row.append(save,flowReflectCopy(ta,pill),pill);
   c.append(ta,flowReflectNote(b),row);
   if(rtext){pill.textContent=flowShared?'Saved in this tab':'Saved';pill.className='pill ok';}
+  if(Array.isArray(b.checks)&&b.checks.length){
+    const sc=el('div','selfcheck');sc.appendChild(el('h4',null,'Self-check'));
+    const rec=store.get(b.id+'-sc')||{};
+    b.checks.forEach((txt,i)=>{const lab=el('label','sc-item');const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!rec[i];
+      cb.addEventListener('change',()=>{const r=Object.assign({},store.get(b.id+'-sc')||{});r[i]=cb.checked;store.set(b.id+'-sc',r);});
+      lab.append(cb,document.createTextNode(' '+txt));sc.appendChild(lab);});
+    c.appendChild(sc);
+  }
   return c;
 }
 
@@ -4336,34 +4355,64 @@ function renderBuilder(b){
     if(key==='os')inp.type='text';
     inp.id=b.id+'-'+key;lab.htmlFor=inp.id;
     inp.value=vals[key]||'';
-    inp.addEventListener('input',()=>{vals[key]=inp.value;store.set(b.id,{done:!!(vals.os&&vals.accounts),vals});flowSaveMark(c);refreshChrome();});
+    inp.addEventListener('input',()=>{vals[key]=inp.value;store.set(b.id,Object.assign({},store.get(b.id)||{},{done:!!(vals.os&&vals.accounts),vals}));flowSaveMark(c);refreshChrome();signals();});
     fields[key]=inp;
     sec.appendChild(inp);
     c.appendChild(sec);
   });
+  /* self-check: what each filled section still needs, computed from the text as it is typed */
+  const sc=el('div','selfcheck');sc.appendChild(el('h4',null,'Self-check before you rely on it'));
+  const auto=el('ul','sc-auto');sc.appendChild(auto);c.appendChild(sc);
+  function signals(){
+    const secs=b.sections.filter(([k])=>k!=='os');const miss={source:[],cmd:[],value:[],verify:[]};let filled=0;
+    secs.forEach(([k,label])=>{const v=String(vals[k]||'');if(!v.trim())return;filled++;
+      if(!/(cis|stig|nist|benchmark|microsoft|ubuntu|debian|freebsd|red hat|canonical|cisco|vendor|\bdocs?\b|handbook|manual|https?:|release|version|\b20\d\d\b)/i.test(v))miss.source.push(label);
+      if(!/(\.msc|\.exe|\.conf|\/etc\/|\bsudo\b|\bnet\b|\bget-|\bset-|systemctl|\bufw\b|\bpw\b|sysrc|secpol|gpedit|lusrmgr|auditpol|\breg\b|passwd|chage|\bss\b|netstat|\bshow\b|>\s)/i.test(v))miss.cmd.push(label);
+      if(!/\d/.test(v))miss.value.push(label);
+      if(!/(verify|confirm|check|prove|compare|re-?run|\bshow\b|status|get-|\blist\b|-l\b)/i.test(v))miss.verify.push(label);});
+    const li=(ok,text)=>{const n=el('li',ok?'ok':'todo');n.textContent=(ok?'\u2713 ':'\u25CB ')+text;return n;};
+    auto.innerHTML='';
+    if(!filled){auto.appendChild(li(false,'Fill in a section, and this list tells you what each line still needs.'));return;}
+    const tail=a=>a.length?' (missing in: '+a.join(', ')+')':'';
+    auto.appendChild(li(!miss.source.length,'A source and its release are named in every section'+tail(miss.source)));
+    auto.appendChild(li(!miss.cmd.length,'Every section names the command or console that does the work'+tail(miss.cmd)));
+    auto.appendChild(li(!miss.value.length,'Every section carries a value: a length, a port, a count, or a path'+tail(miss.value)));
+    auto.appendChild(li(!miss.verify.length,'Every section ends with how you verify it'+tail(miss.verify)));
+    auto.appendChild(li(/(required|brief|keep|needed)/i.test(String(vals.services||'')),'Required services are listed before any removal: the Services section names the brief'));
+  }
+  signals();
   const row=el('div','row');
   const exp=el('button','btn sm','Export as text');
   const copy=el('button','btn sec sm','Copy to clipboard');
+  const cmpBtn=el('button','btn sec sm','Compare with my last version');cmpBtn.hidden=!(saved.last&&saved.last.text);
   const pill=el('span','pill');
-  row.append(exp,copy,pill);c.appendChild(row);
+  row.append(exp,copy,cmpBtn,pill);c.appendChild(row);
   const out=el('pre','term plan-out');out.style.display='none';c.appendChild(out);
+  const cmp=el('pre','term plan-out');cmp.hidden=true;c.appendChild(cmp);
+  /* each export keeps the one before it, so the student can see what a practice session changed */
+  function keepExport(txt){const rec=Object.assign({},store.get(b.id)||{});if(rec.prev&&rec.prev.text!==txt)rec.last=rec.prev;rec.prev={text:txt,date:new Date().toLocaleDateString()};rec.vals=vals;rec.done=!!(vals.os&&vals.accounts);store.set(b.id,rec);cmpBtn.hidden=!(rec.last&&rec.last.text);}
+  cmpBtn.addEventListener('click',()=>{const rec=store.get(b.id)||{};const last=rec.last;const cur=build();cmp.hidden=false;
+    if(!last||!last.text){cmp.textContent='No earlier export yet. Export once, refine the checklist after a practice session, then export again.';return;}
+    const a=last.text.split('\n'),bq=cur.split('\n');const A=new Set(a),B=new Set(bq);const add=bq.filter(l=>!A.has(l)&&l.trim()),rem=a.filter(l=>!B.has(l)&&l.trim());
+    cmp.textContent='Compared with the export from '+last.date+'\n+ added ('+add.length+')\n'+add.map(l=>'+ '+l).join('\n')+'\n- removed ('+rem.length+')\n'+rem.map(l=>'- '+l).join('\n');});
   function build(){
     let s=`Hardening checklist\nOperating system: ${vals.os||'(unnamed)'}\n(written from general standards and vendor documentation; cite a source for each line)\n`;
     b.sections.forEach(([key,label])=>{ if(key==='os')return; s+=`\n== ${label} ==\n${(vals[key]||'').trim()||'(fill in)'}\n`; });
     return s;
   }
-  exp.addEventListener('click',()=>{out.textContent=build();out.style.display='block';pill.textContent='Below. Select and copy, or use Copy.';pill.className='pill';});
-  copy.addEventListener('click',()=>{const t=build();navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{pill.textContent='Copied';pill.className='pill ok';},()=>{out.textContent=t;out.style.display='block';pill.textContent='Clipboard blocked; copy from below.';});});
+  exp.addEventListener('click',()=>{const txt=build();out.textContent=txt;out.style.display='block';pill.textContent='Below. Select and copy, or use Copy.';pill.className='pill';keepExport(txt);});
+  copy.addEventListener('click',()=>{const t=build();keepExport(t);navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{pill.textContent='Copied';pill.className='pill ok';},()=>{out.textContent=t;out.style.display='block';pill.textContent='Clipboard blocked; copy from below.';});});
   return c;
 }
 
 /* ---- session planner ---- */
+const PLANNER_PHASES=[['orient','Orientation: scenario brief, investigation questions, baseline, and roles',15],['accounts','Account management and access control',20],['policy','Password and lockout policy',10],['config','Firewall, services, and unauthorized software',20],['patch','Patching and malware defenses',15],['net','Network devices (if in scope)',0],['logging','Audit logging',15],['verify','Verify availability, sweep low-impact items',25]];
 function renderPlanner(b){
   const c=el('div','card');
   c.appendChild(el('h3',null,`Session planner<span class="blm">Create</span>`));
   c.appendChild(el('p','sum','Plan a timed practice session. Set its length, then the minutes for each phase; the running total keeps you honest.'));
   const saved=store.get(b.id)||{};
-  const phases=[['orient','Orientation: scenario brief, investigation questions, baseline, and roles',15],['accounts','Account management and access control',20],['policy','Password and lockout policy',10],['config','Firewall, services, and unauthorized software',20],['patch','Patching and malware defenses',15],['net','Network devices (if in scope)',0],['logging','Audit logging',15],['verify','Verify availability, sweep low-impact items',25]];
+  const phases=PLANNER_PHASES;
   const lenWrap=el('label','pl-len','Session length (minutes):');
   const lenInp=el('input');lenInp.type='number';lenInp.min='10';lenInp.step='5';lenInp.value=(saved.len!=null?saved.len:120);
   lenInp.addEventListener('input',total);lenWrap.appendChild(lenInp);c.appendChild(lenWrap);
@@ -4377,6 +4426,7 @@ function renderPlanner(b){
   });
   c.appendChild(grid);
   const row=el('div','row');const pill=el('span','pill');row.appendChild(pill);c.appendChild(row);
+  const sc=el('div','selfcheck');sc.appendChild(el('h4',null,'Self-check'));const hints=el('ul','sc-auto');sc.appendChild(hints);c.appendChild(sc);
   function total(){
     let sum=0;const vals={};phases.forEach(([k])=>{const v=parseInt(inputs[k].value||'0',10)||0;vals[k]=v;sum+=v;});
     const len=Math.max(0,parseInt(lenInp.value||'0',10)||0);vals.len=len;
@@ -4384,6 +4434,14 @@ function renderPlanner(b){
     const diff=len-sum;
     pill.textContent=`${sum} of ${len} minutes planned`+(diff===0?' (all allocated)':diff>0?` (${diff} unallocated)`:` (${-diff} over)`);
     pill.className='pill'+(diff===0?' ok':diff<0?' bad':'');
+    const hs=[];
+    if(vals.orient<10)hs.push('Orientation under 10 minutes: reading the brief and answering the investigation questions before any change takes at least that.');
+    if(vals.verify<15)hs.push('Verify under 15 minutes: re-running the baseline and checking every required service takes at least that.');
+    if(diff<0)hs.push('Over the session length: shorten a phase or lengthen the session.');
+    if(vals.net>0&&!vals.logging)hs.push('Network devices planned with no audit logging: device logs belong in the plan too.');
+    hints.innerHTML='';
+    if(hs.length)hs.forEach(h=>{const n=el('li','todo');n.textContent='\u25CB '+h;hints.appendChild(n);});
+    else{const n=el('li','ok');n.textContent='\u2713 Orientation comes first and long enough, verify closes the session, and the total fits.';hints.appendChild(n);}
   }
   total();
   return c;
@@ -4570,6 +4628,7 @@ function renderProgress(){
   progressRedraw=drawTotals;
   main.appendChild(totals);
   main.appendChild(renderMove(drawTotals));
+  main.appendChild(renderPortfolio());
   main.appendChild(flowSharedCard());
   const row=el('div','row');
   const reset=el('button','btn sec sm','Reset my progress');
@@ -4678,6 +4737,38 @@ function copyFromBox(box,pill){
   const fallback=()=>{ box.focus(); box.select(); try{ box.setSelectionRange(0,box.value.length); }catch(e){} let ok=false; try{ ok=document.execCommand('copy'); }catch(e){} done(ok); };
   if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(box.value).then(()=>done(true),fallback);
   else fallback();
+}
+/* ---- Portfolio: one text file with everything the student wrote here ---- */
+const PORTFOLIO_KEY='portfolio-debriefs';
+function findBlock(id){let f=null;LEVELS.forEach(L=>L.units.forEach(U=>U.blocks.forEach(b=>{if(b.id===id)f=b;})));return f;}
+function portfolioText(){
+  const lines=['Defense Ladder portfolio','Exported '+new Date().toLocaleString(),''];
+  const cb=store.get('se3b');
+  if(cb&&cb.vals&&Object.values(cb.vals).some(v=>String(v||'').trim())){lines.push('== Hardening checklist ==','Operating system: '+(cb.vals.os||'(unnamed)'));const B=findBlock('se3b');(B?B.sections:[]).forEach(([k,label])=>{if(k==='os')return;const v=String(cb.vals[k]||'').trim();if(v)lines.push('-- '+label+' --',v);});lines.push('');}
+  const pl=store.get('se4pl');
+  if(pl&&pl.len!=null){lines.push('== Session plan ==','Session length: '+pl.len+' minutes');PLANNER_PHASES.forEach(([k,label])=>{if(pl[k]!=null)lines.push(label+': '+pl[k]+' min');});lines.push('');}
+  const refl=[];LEVELS.forEach(L=>L.units.forEach(U=>U.blocks.forEach(b=>{if(b.t==='reflect'){const tx=flowReflectText(b.id);if(tx&&tx.trim())refl.push([L.grade,plain(U.title),plain(b.title),tx.trim()]);}})));
+  if(refl.length){lines.push('== Reflections ('+refl.length+') ==');refl.forEach(([g,u,bt,tx])=>lines.push('-- '+g+' / '+u+' / '+bt+' --',tx,''));}
+  const d=store.get(PORTFOLIO_KEY);if(d&&d.text&&d.text.trim()){lines.push('== Practice debriefs (pasted) ==',d.text.trim(),'');}
+  if(lines.length===3)lines.push('(nothing written yet: reflections, the checklist builder, the session planner, and pasted debriefs appear here)');
+  return lines.join('\n')+'\n';
+}
+function renderPortfolio(){
+  const c=el('div','card mv');
+  c.appendChild(el('h3',null,'Portfolio: everything you wrote here'));
+  c.appendChild(el('p','sum','One text file with your checklist, your session plan, every reflection, and any practice debriefs you paste below. Hand it to an instructor, keep it with your notes, or compare two versions a month apart.'));
+  const lab=el('label','tl','Practice debriefs: paste the text of a Lockdown Range debrief or a drill change log');
+  const ta=el('textarea','mv-code');ta.id='portfolio-debriefs';lab.htmlFor=ta.id;ta.placeholder='Paste here. Saved in this browser only.';ta.spellcheck=false;
+  const d=store.get(PORTFOLIO_KEY);if(d&&typeof d.text==='string')ta.value=d.text;
+  ta.addEventListener('input',()=>store.set(PORTFOLIO_KEY,{text:ta.value}));
+  const row=el('div','row');const show=el('button','btn sm','Show my portfolio');const copy=el('button','btn sec sm','Copy');const dl=el('button','btn sec sm','Download .txt');const pill=el('span','pill');pill.setAttribute('role','status');
+  const out=el('textarea','mv-code');out.readOnly=true;out.hidden=true;out.setAttribute('aria-label','Your portfolio');out.spellcheck=false;
+  show.addEventListener('click',()=>{out.value=portfolioText();out.hidden=false;pill.textContent=out.value.split('\n').length+' lines';pill.className='pill ok';});
+  copy.addEventListener('click',()=>{out.value=portfolioText();out.hidden=false;copyFromBox(out,pill);});
+  dl.addEventListener('click',()=>{const blob=new Blob([portfolioText()],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='defense-ladder-portfolio.txt';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);pill.textContent='Downloaded';pill.className='pill ok';});
+  row.append(show,copy,dl,pill);
+  c.append(lab,ta,row,out);
+  return c;
 }
 function renderMove(onMerged){
   const c=el('div','card mv');
@@ -11668,7 +11759,7 @@ COMPARE('Hunting on any Unix',[
           'The same structure runs real maintenance windows and incident response: a lead, a scribe, a clock, and a written plan (NIST CSF 2.0 calls that last part Respond). <a href="#senior/se13">Run the response</a> showed how to build that plan for a real incident.')),
    PLANNER('se4pl'),
    TIMER('se4tm'),
-   REFLECT('se4r','Write your team’s one-page runbook','In your own words: the order of operations for the first twenty minutes, who owns each machine and the network devices, who keeps the log, and the three checks the timekeeper calls out. Keep it to one page. Print it. Rehearse it.'),
+   REFLECT('se4r','Write your team’s one-page runbook','In your own words: the order of operations for the first twenty minutes, who owns each machine and the network devices, who keeps the log, and the three checks the timekeeper calls out. Keep it to one page. Print it. Rehearse it.',['The first twenty minutes are listed in order, with the investigation questions before any change.','Every machine and the network devices have one named owner, and the log has one named keeper.','The three checks the timekeeper calls out are written with their times.','It fits on one page and has been read aloud once.']),
    LINKS('Go further',['nist-csf','cis-controls','t4t-range'])
   ]},
  {id:'se14',title:'Your path: roles, certifications, and practice',bloom:'Create',sum:'Map security work roles, see which certifications fit which stage, pick safe places to practice, and write a two-year plan of your own.',
