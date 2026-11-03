@@ -123,7 +123,7 @@
       "icon": "path",
       "category": "cyber",
       "section": "learning",
-      "sha256": "7d8560bfbd61dd44e26abab0a8baf7482ae943f1676815a4e2714b684ca71b15",
+      "sha256": "1238fdd87f9d7e704d7a651dcc3137ef8ac0256f1b1c82459c43fe3c480db3eb",
       "updated": "2026-11-03"
     },
     {
@@ -198,8 +198,8 @@
       "download_as": "trouble-tickets.html",
       "icon": "wrench",
       "category": "cyber",
-      "sha256": "2e788bc41041bf216157bf7bd823de501f680b52b5c4b4fcc7df578c302d25a0",
-      "updated": "2026-11-02",
+      "sha256": "110cd97d94b02e68a0421857a374432483227e7ad165f13e95efeda4dc418643",
+      "updated": "2026-11-03",
       "series": "net-drills"
     },
     {
@@ -452,8 +452,8 @@
       "icon": "map",
       "category": "cyber",
       "section": "learning",
-      "sha256": "35096b4f0ca7f47a19a84c51daf0be6f470ae42a620346e5311f27b7654d4efd",
-      "updated": "2026-11-02"
+      "sha256": "35db8ee4921cae209423282290b5fa1db145085cd53cf4d206220a7e64ce203e",
+      "updated": "2026-11-03"
     }
   ]
 }

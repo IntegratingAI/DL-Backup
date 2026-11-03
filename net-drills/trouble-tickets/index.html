@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Ba69FMSrcULMzLjZHGX0yi/Nd4TztOhhI5CZcJ3q2/k=' 'sha256-GLbU0D5Yrq/+7cV3iMjyC16m59KDIJO5gXlklSLU8bg='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Ba69FMSrcULMzLjZHGX0yi/Nd4TztOhhI5CZcJ3q2/k=' 'sha256-FtICpDs2PiYfkXtaRTJBUCjlGDAcvg9oVpNnSZa/0bw='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Study the complaint and real device output, then pick the root cause. Every ticket ends with the fix and the configuration habits that prevent it.">
 <link rel="canonical" href="https://freeapp4that.store/net-drills/trouble-tickets/">
@@ -391,7 +391,7 @@ GigabitEthernet0/0     192.168.1.1     YES manual down                  down`]],
   ev: [['S1 console log', `%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on GigabitEthernet0/1 (99), with S2 GigabitEthernet0/1 (1).`]],
   opts: ['The two ends of the trunk use different native VLANs', 'VLAN 99 is missing from the VLAN database on S1', 'CDP must be turned off to fix the trunk', 'The trunk cable is faulty'],
   why: 'S1 sends untagged trunk frames as VLAN 99 and S2 as VLAN 1. Untagged frames can leak between those VLANs, which is why CDP warns about it. Both ends set native VLAN 99, a VLAN that stays free of hosts, so every user VLAN crosses the trunk tagged.',
-  fix: 'On S2:\nvlan 99\nname NATIVE\ninterface g0/1\nswitchport trunk native vlan 99' },
+  fix: 'On S2:\nvlan 99\nname NATIVE\ninterface g0/1\nswitchport trunk native vlan 99\nEvery trunk in the path uses native VLAN 99, including a router-on-a-stick link, whose native subinterface lacks an IP:\ninterface g0/0.99\nencapsulation dot1Q 99 native' },
 { id: 'vlan', cat: 'Switching', title: 'Wrong subnet on one desk',
   sym: 'PC4 on port Fa0/4 keeps getting a 192.168.20.x address. It belongs on the users network, 192.168.10.x.',
   ev: [['S1 console', `S1#show vlan brief
