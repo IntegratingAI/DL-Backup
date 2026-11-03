@@ -93,7 +93,7 @@
       "download_as": "pfat.html",
       "icon": "chart",
       "category": "finance",
-      "sha256": "b86aed5718843e2072b4075a2861fb70477649a7820f6653b48b2f5ac1afa095",
+      "sha256": "29cd2c8ac137182a9970904cc2155aef7d1dad87435c7230d79a1e8e056eff0d",
       "updated": "2026-11-03",
       "download_label": "Download",
       "download_note": "Both downloads are the full app. Download: reads PDFs and pictures when online. Download for offline use: reads PDFs, screenshots, and scanned statements on your device, completely offline.",
@@ -102,7 +102,7 @@
           "label": "Download for offline use",
           "file": "spend-lens/pfat-offline.html",
           "download_as": "pfat-offline.html",
-          "sha256": "ec20bb4afe8584a80bf0de05466c1674d6c5b4828bcb7ee505f0cafe952a333b",
+          "sha256": "68b5c9290d8e8b7a7219b4cff27c4cb567e852e334605213f4a2637db49ec4f9",
           "updated": "2026-11-03"
         }
       ]

@@ -40,8 +40,10 @@
           "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/"
         ],
         "allow_connect": [
-          "https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/"
+          "https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/",
+          "https://beta-bridge.simplefin.org/simplefin/"
         ],
+        "allow_fetch": true,
         "allow_connect_data": true,
         "allow_wasm": true,
         "allow_worker_blob": true,
@@ -59,6 +61,7 @@
           "prep": {
             "allow_script": [],
             "allow_connect": [],
+            "allow_fetch": false,
             "allow_script_blob": true,
             "pin_blocks": [
               "a8e29918d098b2b06e1012bdaeffb4aec0445c5d5654709023e0bd1f442a80e8",

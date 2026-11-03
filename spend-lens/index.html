@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-9Hl4SR4q/XUZNb69GKfLq+m5uEfWrvn5NcY5WrC29w4=' 'sha256-Boynny49Zg1EbaX/qWFbjmhiiy6Le8HW9ETWsMR8My8=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/ https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/ https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/; connect-src data: https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Boynny49Zg1EbaX/qWFbjmhiiy6Le8HW9ETWsMR8My8=' 'sha256-EKoAT+Aj/7Lo8n//nDiSs39RY+h8nDVZTT4165OgSM0=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/ https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/ https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/; connect-src data: https://beta-bridge.simplefin.org/simplefin/ https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out HUD, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
 <link rel="canonical" href="https://freeapp4that.store/spend-lens/">
@@ -410,6 +410,19 @@ body[data-tab="add"] .fab { display: none; }
 .kv dd { margin: 0; }
 .privacy { border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; color: var(--ink-2); font-size: 0.9rem; }
 .privacy p { margin-bottom: 6px; }
+/* feed: online edition only */
+.feed h3 { margin: 16px 0 6px; }
+.feedrisks li { font-size: 0.92rem; }
+.feedsteps { margin: 0 0 12px 20px; padding: 0; font-size: 0.92rem; }
+.feedsteps li { margin-bottom: 4px; }
+.feedmore { margin-top: 10px; }
+.feedmore summary { cursor: pointer; font-size: 0.92rem; }
+#feedOnce { width: 100%; font-family: ui-monospace, monospace; font-size: 0.85rem; margin: 6px 0; }
+.feedacct { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: flex-end; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--line); }
+.feedacct > div { min-width: 0; }
+.feedacct label { flex: 1 1 200px; max-width: 300px; font-size: 0.85rem; color: var(--ink-2); }
+.feedacct label > input { display: block; width: 100%; margin-top: 4px; }
+/* /feed */
 .recent .row { cursor: default; }
 footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
 .wide { overflow-x: auto; }
@@ -488,6 +501,7 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
         <button class="is-active" data-mode="manual" role="tab">By hand</button>
         <button data-mode="paste" role="tab">Paste text</button>
         <button data-mode="file" role="tab">From a file</button>
+        <!-- feed: online edition only --><button data-mode="feed" role="tab">Bank feed</button><!-- /feed -->
       </div>
 
       <div id="mode-manual" class="mode is-active">
@@ -525,6 +539,8 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
         <p class="hint" id="fileHint" style="margin-top:10px">Files are read in your browser and stay on this device. Bank, card, and investment statements all work: PDFs use pdf.js (fetched from cdnjs), and screenshots or scanned PDFs use Tesseract, the open-source OCR engine (fetched once from jsDelivr, with your OK first). The <a href="https://freeapp4that.store/finance/" target="_blank" rel="noopener">offline download</a> builds both in.</p>
         <div class="busy" id="busy" hidden></div>
       </div>
+
+      <!-- feed: online edition only --><div id="mode-feed" class="mode"><div id="feedBody"></div></div><!-- /feed -->
 
       <div id="preview" class="preview" hidden></div>
     </section>
@@ -5683,7 +5699,7 @@ function doImport() {
     ensureAhead(); ensureCheckup();
     if (b.settings) Object.assign(state.settings, b.settings);
     refreshCats(); compileRules();
-    state.txns = b.txns.map(t => makeTxn(Object.assign({}, t, { lock: t.lock !== undefined ? !!t.lock : true }), t.account || acct, 'backup'));
+    state.txns = b.txns.map(t => { const x = makeTxn(Object.assign({}, t, { lock: t.lock !== undefined ? !!t.lock : true }), t.account || acct, 'backup'); if (t.extId) x.extId = String(t.extId); return x; });
     pending = null; save(); applyTheme(); renderAll(); toast('Backup restored: ' + state.txns.length + ' transactions');
     nextInQueue(); return;
   }
@@ -5763,7 +5779,7 @@ function renderData() {
   h += '<section class="section"><h2>Appearance</h2><div class="grid2"><label>Theme <select id="theme"><option value="auto"' + (state.settings.theme === 'auto' ? ' selected' : '') + '>Match device</option><option value="light"' + (state.settings.theme === 'light' ? ' selected' : '') + '>Light</option><option value="dark"' + (state.settings.theme === 'dark' ? ' selected' : '') + '>Dark</option></select></label><label>Currency symbol <input type="text" id="currency" maxlength="4" value="' + esc(state.settings.currency) + '"></label><label>Call the first tab <select id="hudLabel"><option value="HUD"' + (state.settings.hudLabel !== 'Home' ? ' selected' : '') + '>HUD</option><option value="Home"' + (state.settings.hudLabel === 'Home' ? ' selected' : '') + '>Home</option></select></label></div><label class="check"><input type="checkbox" id="dayFirst"' + (state.settings.dayFirst ? ' checked' : '') + '> My bank writes dates day-first (DD/MM/YYYY)</label></section>';
   h += '<section class="section"><h2>Privacy</h2><div class="privacy"><p>Everything you add is parsed and analyzed in this browser tab and stays on this device.' + (PFAT_OFFLINE ? ' This file works completely offline.' : '') + '</p><p>If you keep data between visits, it lives in this browser\'s local storage on this device only. Clearing site data or using a private window removes it.</p>' +
     (PFAT_OFFLINE ? '<p>Two open-source libraries are built into this file and run on this device: pdf.js 3.11.174 (Apache-2.0) reads PDFs, and Tesseract (tesseract.js and tesseract.js-core 5.1.1, Apache-2.0, with the English model from @tesseract.js-data/eng 1.0.0, MIT) reads screenshots and scanned statements. Their license notices, with those of the libraries built into them, sit at the end of this file; open it in a text editor to read them.</p>'
-      : '<p>Two open-source libraries can be fetched when you need them: pdf.js from cdnjs to read PDFs, and Tesseract (Apache 2.0) from jsDelivr to read screenshots and scanned statements. Only the libraries and the English model download; your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in and reads PDFs and pictures completely offline.</p>') + (!PFAT_OFFLINE && state.settings.ocrOk ? '<p>You agreed to read pictures with Tesseract. <button class="btn small" id="ocrWithdraw">Stop reading pictures</button> (PFAT asks again next time).</p>' : '') + '</div></section>';
+      : '<p>Two open-source libraries can be fetched when you need them: pdf.js from cdnjs to read PDFs, and Tesseract (Apache 2.0) from jsDelivr to read screenshots and scanned statements. Only the libraries and the English model download; your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in and reads PDFs and pictures completely offline.</p>') + (!PFAT_OFFLINE && state.settings.ocrOk ? '<p>You agreed to read pictures with Tesseract. <button class="btn small" id="ocrWithdraw">Stop reading pictures</button> (PFAT asks again next time).</p>' : '') + (PFAT_OFFLINE ? '' : feedPrivacyNote()) + '</div></section>';
   el.innerHTML = h;
 }
 async function saveFile(filename, text, mime) {
@@ -6642,7 +6658,7 @@ function renderGuide() {
   h += step(6, 'Run the checkup', '<p><b>Checkup</b> covers what bank data cannot show: a pay-stub breakdown (effective tax rate and true savings rate), net-worth snapshots over time, card utilization, an insurance checklist, pension and Social Security against the nest egg you actually need, and a plain list of when a professional is the right call.</p>', 'check', 'Go to Checkup');
   h += step(7, 'Monthly routine', '<ul class="insights"><li>Import last month\'s statements (duplicates are caught automatically).</li><li>Glance at the HUD and Alerts.</li><li>Update balances on the HUD and Plan; take a net-worth snapshot.</li><li>Download a backup from Data.</li></ul>', 'data', 'Go to Data');
   h += '<section class="section"><h2>Five-minute demo path</h2><p class="sub">If you are showing someone the tool with no data on hand.</p><ol class="steps"><li>Data → Load sample data.</li><li>HUD: switch the period to Last month; point out expected vs actual and the card balance field.</li><li>Plan: enter an age, pay and a couple of accounts; watch the guideline colors and the year-end / 67 forecast appear.</li><li>Ahead → Debt payoff: type an APR and an extra $100; show the months and interest change.</li><li>Ahead → Next 30 days: enter a balance; show safe-to-spend.</li><li>Data → Remove sample data, then Add their own file.</li></ol></section>';
-  h += '<section class="section"><h2>Good to know</h2><ul class="insights"><li>' + (PFAT_OFFLINE ? 'This file works completely offline. pdf.js reads PDFs and the Tesseract engine reads pictures, both built into this file and running on this device. Your files stay on this device.' : 'The app works offline once loaded. Two outside requests can happen, only when you need them: pdf.js from cdnjs the first time you open a PDF, and, after you agree, the Tesseract engine and its English model from jsDelivr the first time you read a picture. Your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in, for reading PDFs and pictures completely offline.') + '</li><li>Data lives in this browser only. Clearing site data or switching devices starts fresh; restore a backup to bring your data back (Add → From a file → the backup JSON).</li><li>Guidelines are general rules of thumb, separate from personal advice. Checkup → When to see a human says where the line is.</li></ul></section>';
+  h += '<section class="section"><h2>Good to know</h2><ul class="insights"><li>' + (PFAT_OFFLINE ? 'This file works completely offline. pdf.js reads PDFs and the Tesseract engine reads pictures, both built into this file and running on this device. Your files stay on this device.' : 'The app works offline once loaded. Two outside requests can happen, only when you need them: pdf.js from cdnjs the first time you open a PDF, and, after you agree, the Tesseract engine and its English model from jsDelivr the first time you read a picture.' + feedGuideNote() + ' Your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in, for reading PDFs and pictures completely offline.') + '</li><li>Data lives in this browser only. Clearing site data or switching devices starts fresh; restore a backup to bring your data back (Add → From a file → the backup JSON).</li><li>Guidelines are general rules of thumb, separate from personal advice. Checkup → When to see a human says where the line is.</li></ul></section>';
   el.innerHTML = h;
 }
 
@@ -7118,13 +7134,371 @@ function setMode(mode, quiet) {
   $$('.segment button').forEach(b => b.classList.toggle('is-active', b.dataset.mode === mode));
   $$('.mode').forEach(m => m.classList.toggle('is-active', m.id === 'mode-' + mode));
   if (!quiet && mode === 'manual') $('#mDesc').focus();
+  if (mode === 'feed' && !PFAT_OFFLINE) feedShow();
 }
 function renderAll() { refreshCats(); compileRules(); renderScope(); renderHud(); renderPlan(); if (state.ui.tab === 'ahead') renderAhead(); if (state.ui.tab === 'check') renderCheckup(); renderOverview(); renderTransactions(); renderRecent(); if (state.ui.tab === 'more') renderMore(); }
+
+/* feed: online edition only */
+/* ---------- bank feed (SimpleFIN Bridge) ---------- */
+// Optional, and off until the member connects their own SimpleFIN Bridge subscription; this page contacts the Bridge only
+// when they press Sync. The access link is a long-lived credential: it stays in memory for this tab, or locked with the
+// member's passphrase (AES-GCM, key from PBKDF2-SHA256) under its own storage key, apart from pfat.v1, backups, and exports.
+// build.py leaves this block, and the marked markup and styles, out of the offline edition, so that file holds no network code.
+const FEED_BASE = 'https://beta-bridge.simplefin.org/simplefin/';
+// The Bridge recommends at most 45 days per request and about 24 requests a day: PFAT asks for 44 days and waits an hour.
+const FEED_HOST = new URL(FEED_BASE).hostname, FEED_KEY = 'pfat.feed', FEED_ITER = 600000, FEED_WAIT_MIN = 60, FEED_DAYS = 44, FEED_KEEP_DAYS = 120;
+const FEED_INIT = { credentials: 'omit', referrerPolicy: 'no-referrer', cache: 'no-store', redirect: 'error' };
+const FEED_AWAY = 'SimpleFIN Bridge is out of reach right now. Check the connection and try again.';
+let feedAccess = null, feedMem = null, feedMemSaved = false, feedShowOnce = null, feedNote = '', feedBusy = false, feedGen = 0, feedLastReq = 0, feedHeld = null, feedAbort = null;
+// While "Keep my data" is on, read fresh each time (another tab may have synced or forgotten); otherwise this tab's copy
+function feedMeta() {
+  if (state.settings.autosave) {
+    try { const raw = localStorage.getItem(FEED_KEY); if (raw) { feedMem = JSON.parse(raw); feedMemSaved = true; } else if (feedMemSaved) { feedMem = null; feedMemSaved = false; } } catch (e) { /* storage off: this tab's copy */ }
+  }
+  return feedMem;
+}
+// kept between visits only while "Keep my data in this browser" is on, like everything else; true when stored
+function feedStore(m) {
+  feedMem = m || null; feedMemSaved = false;
+  try { if (m && state.settings.autosave) { localStorage.setItem(FEED_KEY, JSON.stringify(m)); feedMemSaved = true; } else localStorage.removeItem(FEED_KEY); } catch (e) { /* storage off or full: this tab only */ }
+  return feedMemSaved;
+}
+// Forget also stops a sync under way, so nothing it returns can bring the link back
+function feedForget() {
+  const m = feedMeta(); if (m && m.lastReq) feedLastReq = Math.max(feedLastReq, m.lastReq);
+  feedGen++; if (feedAbort) feedAbort.abort(); feedAbort = null;
+  feedAccess = null; feedShowOnce = null; feedHeld = null; feedBusy = false; feedStore(null);
+}
+function feedCanLock() { return !!(window.crypto && crypto.subtle && state.settings.autosave); }
+function feedErr(msg, reached) { const e = new Error(msg); e.feed = true; e.reached = !!reached; return e; }
+function feedClean(s, n) { return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]+/g, ' ').trim().slice(0, n || 300); }
+// A Bridge time as a calendar date: whole UTC days and UTC noons (how date-only values arrive) keep their UTC date
+function feedDate(sec) { const d = new Date(sec * 1000); return sec % 43200 === 0 ? slISO(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate()) : slISO(d.getFullYear(), d.getMonth() + 1, d.getDate()); }
+function feedDay(ms) { const d = new Date(ms); return slISO(d.getFullYear(), d.getMonth() + 1, d.getDate()); }
+function feedWhen(ms) {
+  const min = Math.max(0, Math.round((Date.now() - ms) / 60000));
+  const ago = min < 1 ? 'just now' : min < 60 ? min + ' min ago' : min < 1440 ? Math.round(min / 60) + ' h ago' : Math.round(min / 1440) + ' days ago';
+  return slFmtDateShort(feedDay(ms)) + ', ' + new Date(ms).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + ' (' + ago + ')';
+}
+// Only SimpleFIN Bridge's own https addresses under /simplefin/ (the page's policy allows nothing else either)
+function feedURL(s) { try { const u = new URL(s); return u.protocol === 'https:' && u.hostname === FEED_HOST && !u.port && (u.pathname + '/').startsWith('/simplefin/') ? u : null; } catch (e) { return null; } }
+// What the member pasted: a setup token (base64 of a claim address) or an access link
+function feedRead(s) {
+  s = String(s || '').trim();
+  if (!s) return { error: 'Paste the setup token from SimpleFIN Bridge.' };
+  if (/^https?:/i.test(s)) { const u = feedURL(s); return u && u.username && u.password ? { access: u.href } : { error: 'A SimpleFIN Bridge access link starts with https:// and names ' + FEED_HOST + '; paste the whole link.' }; }
+  let dec = ''; try { dec = atob(s.replace(/\s+/g, '')); } catch (e) { /* not base64 */ }
+  const u = feedURL(dec);
+  if (u && !u.username && /^\/simplefin\/claim\/[\w.-]+$/.test(u.pathname)) return { claim: u.href };
+  let other = ''; try { other = /^https?:\/\//.test(dec) ? new URL(dec).hostname : ''; } catch (e) { /* not an address */ }
+  return { error: other ? 'This token points to ' + feedClean(other, 80) + '. PFAT connects only to SimpleFIN Bridge (' + FEED_HOST + ').' : 'A SimpleFIN Bridge setup token is one long line of letters and digits. Copy the whole token there and paste it again.' };
+}
+async function feedClaim(url) {
+  let r; try { r = await fetch(url, Object.assign({ method: 'POST' }, FEED_INIT)); } catch (e) { throw feedErr(FEED_AWAY); }
+  if (r.status === 403) throw feedErr('SimpleFIN Bridge reports this setup token as used up or unknown. Make a new one there. If you used none yourself, disable it at SimpleFIN Bridge: someone else may hold it.');
+  if (!r.ok) throw feedErr('SimpleFIN Bridge answered ' + r.status + '. Try again later; if it answers the same way, make a new setup token there.');
+  const got = feedRead((await r.text()).trim());
+  if (!got.access) throw feedErr('SimpleFIN Bridge answered with something other than an access link, and the setup token is now used up. Make a new one there and connect again.');
+  return got.access;
+}
+async function feedAccounts(access, startSec, signal) {
+  const u = new URL(access), auth = 'Basic ' + btoa(decodeURIComponent(u.username) + ':' + decodeURIComponent(u.password));
+  u.username = ''; u.password = '';
+  const url = u.href.replace(/\/?$/, '/') + 'accounts?version=2&start-date=' + startSec;
+  let r; try { r = await fetch(url, Object.assign({ headers: { Authorization: auth }, signal }, FEED_INIT)); } catch (e) { if (e && e.name === 'AbortError') throw e; throw feedErr(FEED_AWAY); }
+  if (r.status === 401 || r.status === 403) throw feedErr('SimpleFIN Bridge refused the access link; it may have been disabled there. Forget this connection, then connect again with a new setup token.', true);
+  if (r.status === 402) throw feedErr('SimpleFIN Bridge says the subscription needs attention. Check your account there.', true);
+  if (!r.ok) throw feedErr('SimpleFIN Bridge answered ' + r.status + '. Try again later.', true);
+  let data = null; try { data = await r.json(); } catch (e) { /* below */ }
+  if (!data || !Array.isArray(data.accounts)) throw feedErr('SimpleFIN Bridge sent an answer in an unexpected form. Try again later.', true);
+  return data;
+}
+const feedB64 = (u8) => btoa(String.fromCharCode.apply(null, u8)), feedUnB64 = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function feedKey(pass, salt, iter) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function feedLockUp(access, pass) {
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const data = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await feedKey(pass, salt, FEED_ITER), new TextEncoder().encode(access)));
+  return { salt: feedB64(salt), iv: feedB64(iv), data: feedB64(data), iter: FEED_ITER };
+}
+// the access link inside a lock, checked again like a pasted one
+async function feedOpen(lock, pass) {
+  try {
+    if (!lock || !(lock.iter >= 100000)) return null;
+    const plain = new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: feedUnB64(lock.iv) }, await feedKey(pass, feedUnB64(lock.salt), lock.iter), feedUnB64(lock.data)));
+    return feedRead(plain).access || null;
+  } catch (e) { return null; }
+}
+// Where a sync starts: a week before the oldest account's last complete sync, at most 44 days back. "late" lists the
+// accounts whose gap reaches past that, so the member knows which months need a statement.
+function feedStart(m, now) {
+  const cap = now - FEED_DAYS * 864e5, keys = Object.keys(m.map || {});
+  if (!keys.length) return { from: cap, late: [] };
+  const last = (k) => (m.through || {})[k] || m.connected || now, week = 7 * 864e5;
+  const oldest = Math.min(...keys.map(last)) - week;
+  return { from: Math.max(cap, oldest), late: keys.filter(k => last(k) - week < cap).map(k => ({ key: k, since: last(k) })) };
+}
+// SimpleFIN's accounts as PFAT rows: posted transactions only, dated by when they happened, each with an id per account.
+// - Already here: the same Bridge id, or the same row saved in the account it goes to (a statement, or a feed row the Bridge
+//   re-keyed), one for one. A row deleted here after an earlier sync stays out.
+// - Looks already here: the same amount within two days and a similar description, or the same row in another account;
+//   these wait for the member's tick.
+// - Accounts in a currency other than the one most accounts use are left out (PFAT works in one currency).
+// - An account the Bridge reports a connection problem for is "bad": its next sync starts from its last complete one.
+function feedRows(data, map, m) {
+  m = m || {};
+  const keyOf = (a) => (a.conn_id || (a.org && a.org.id) || '') + ':' + a.id;
+  const conns = {}; for (const c of data.connections || []) if (c && c.conn_id) conns[c.conn_id] = feedClean(c.name || c.org_name, 80);
+  const named = {}, cur = {}, ids = new Set();
+  for (const a of data.accounts) {
+    if (!a) continue;
+    named[a.name] = (named[a.name] || 0) + 1; if (a.currency) cur[a.currency] = (cur[a.currency] || 0) + 1;
+    for (const t of a.transactions || []) if (t) ids.add('sf:' + keyOf(a) + ':' + t.id);
+  }
+  const main = Object.keys(cur).sort((x, y) => cur[y] - cur[x])[0] || '';
+  const have = new Set(state.txns.map(t => t.extId).filter(Boolean)), known = m.added || {}, used = new Set();
+  const byCents = new Map();
+  for (const s0 of state.txns) { if (s0.extId && ids.has(s0.extId)) continue; const k = Math.round(Math.abs(s0.amount) * 100); if (!byCents.has(k)) byCents.set(k, []); byCents.get(k).push(s0); }
+  const names = accounts(), out = { accts: [], skipped: [], errors: [] }, bad = new Set(); let allBad = false;
+  const list = Array.isArray(data.errlist) ? data.errlist : (data.errors || []).map(s => ({ code: 'con', msg: s }));
+  for (const e of list) {
+    if (!e || !e.msg) continue;
+    out.errors.push(feedClean(e.msg));
+    const kind = String(e.code || '').split('.')[0];
+    if (kind === 'gen') continue;
+    if (kind === 'act' && e.account_id != null) bad.add('a:' + e.account_id); else if (e.conn_id) bad.add('c:' + e.conn_id); else allBad = true;
+  }
+  for (const a of data.accounts) {
+    if (!a || a.id == null) continue;
+    const conn = conns[a.conn_id] || feedClean(a.org && a.org.name, 80), key = keyOf(a);
+    const label = (feedClean(a.name, 80) || 'Account') + (named[a.name] > 1 && conn ? ' (' + conn + ')' : '');
+    if (main && a.currency && a.currency !== main) { out.skipped.push(label + ' (' + feedClean(a.currency, 12) + ')'); continue; }
+    // the name chosen before, else the account this Bridge account's rows were saved under (a reconnect), else a match by name
+    const prior = state.txns.find(x => x.extId && x.account && x.extId.startsWith('sf:' + key + ':'));
+    const target = map[key] || (prior && prior.account) || names.find(n => n.toLowerCase() === label.toLowerCase()) || label, tl = target.toLowerCase();
+    const fresh = [], maybe = []; let seen = 0, gone = 0;
+    for (const t of a.transactions || []) {
+      if (!t || t.pending || !(t.posted > 0)) continue;
+      const amount = slRound2(parseFloat(t.amount)); if (!isFinite(amount) || !amount) continue;
+      const date = feedDate(t.transacted_at > 0 ? t.transacted_at : t.posted), alt = feedDate(t.posted);
+      const row = { date, desc: feedClean(t.description || t.payee, 200) || 'Transaction', amount, extId: 'sf:' + key + ':' + t.id };
+      if (have.has(row.extId)) { seen++; continue; }
+      const near = (byCents.get(Math.round(Math.abs(amount) * 100)) || []).filter(s0 => !used.has(s0.id));
+      const how = (s0) => { const x = slSameTxn(s0, row); return x === 'same' || alt === date ? x : slSameTxn(s0, Object.assign({}, row, { date: alt })) || x; };
+      const hit = near.find(s0 => how(s0) === 'same' && (!s0.account || s0.account.toLowerCase() === tl));
+      if (hit) { used.add(hit.id); seen++; continue; }
+      if (known[row.extId]) { gone++; continue; }
+      if (near.some(s0 => how(s0))) maybe.push(row); else fresh.push(row);
+    }
+    const bal = parseFloat(a.balance);
+    out.accts.push({ key, label, conn, account: target, balance: isFinite(bal) ? bal : null, asOf: a['balance-date'] > 0 ? feedDate(a['balance-date']) : '', fresh, maybe, seen, gone, bad: allBad || bad.has('a:' + a.id) || bad.has('c:' + a.conn_id) });
+  }
+  return out;
+}
+function feedSay(msg) { feedNote = msg || ''; const n = $('#feedNote'); if (n) { n.textContent = feedNote; n.hidden = !feedNote; } }
+function feedBtn(busy, label) { const b = $('#feedBody button[type="submit"]'); if (!b) return; if (!b.dataset.label) b.dataset.label = b.textContent; b.disabled = !!busy; b.textContent = busy ? label : b.dataset.label; }
+// SimpleFIN Bridge expects about one sync a day and can disable an access link that asks too often
+function feedWait() {
+  const m = feedMeta(), last = Math.max(feedLastReq, (m && m.lastReq) || 0), left = last ? FEED_WAIT_MIN - (Date.now() - last) / 60000 : 0;
+  return left > 0 ? 'The last request to SimpleFIN Bridge was ' + Math.max(1, Math.round(FEED_WAIT_MIN - left)) + ' min ago. The Bridge expects about one sync a day and can disable an access link that asks too often, so PFAT waits an hour between syncs: try again in ' + Math.ceil(left) + ' min.' : '';
+}
+async function feedSync(access) {
+  const gen = feedGen, m0 = feedMeta(); if (!m0) return;
+  const now = Date.now(), start = feedStart(m0, now);
+  feedBusy = true; feedBtn(true, 'Syncing…'); feedSay('');
+  feedAbort = new AbortController();
+  try {
+    const data = await feedAccounts(access, Math.floor(start.from / 1000), feedAbort.signal);
+    if (gen !== feedGen) return;
+    const m1 = feedMeta(); if (!m1) { feedAccess = null; feedBusy = false; return renderFeed(); } // forgotten in another tab
+    feedAccess = access; feedLastReq = now; feedBusy = false;
+    feedStore(Object.assign({}, m1, { lastReq: now, lastSync: now }));
+    renderFeed();
+    const b = $('#feedBody button[type="submit"]'); if (b) b.focus();
+    const sync = { data, at: now, start };
+    // another sheet is open (a file being read, a dialog): the result waits for the member
+    if (!$('#sheet').hidden) { feedHeld = sync; renderFeed(); toast('Sync finished: review it under Add → Bank feed'); } else feedSheet(sync);
+  } catch (e) {
+    if (gen !== feedGen) return;
+    if (e.reached) { feedLastReq = now; const m1 = feedMeta(); if (m1) feedStore(Object.assign({}, m1, { lastReq: now })); }
+    feedBusy = false; feedBtn(false); feedSay(e.feed ? e.message : 'The sync stopped: ' + e.message);
+  } finally { if (gen === feedGen) feedAbort = null; }
+}
+async function feedConnect() {
+  const got = feedRead($('#feedToken').value), lock = feedCanLock() && !!$('#feedKeepLock') && $('#feedKeepLock').checked;
+  if (got.error) return feedSay(got.error);
+  if (got.access) { const wait = feedWait(); if (wait) return feedSay(wait); }
+  const pass = lock ? $('#feedPass').value : '';
+  if (lock && pass.length < 8) return feedSay('Choose a passphrase of at least 8 characters.');
+  if (lock && pass !== $('#feedPass2').value) return feedSay('The two passphrases differ. Type the same one twice.');
+  const gen = feedGen;
+  feedBusy = true; feedBtn(true, 'Connecting…'); feedSay('');
+  let access;
+  try { access = got.access || await feedClaim(got.claim); }
+  catch (e) { feedBusy = false; feedBtn(false); return feedSay(e.feed ? e.message : 'Connecting stopped: ' + e.message); }
+  if (gen !== feedGen) return;
+  // the setup token is spent now, so the access link is kept (locked, or shown once) before anything else can fail
+  const meta = { v: 1, mode: lock ? 'lock' : 'paste', connected: Date.now(), map: {} };
+  if (lock) { try { meta.lock = await feedLockUp(access, pass); } catch (e) { meta.mode = 'paste'; } }
+  if (!feedStore(meta) && meta.mode === 'lock') { delete meta.lock; meta.mode = 'paste'; feedStore(meta); }
+  if (meta.mode === 'paste' && got.claim) feedShowOnce = access;
+  feedAccess = access; feedBusy = false;
+  feedNote = lock && meta.mode === 'paste' ? 'This browser\'s storage is full or off, so the access link appears below once instead: save it in your password manager.' : '';
+  renderFeed();
+  await feedSync(access);
+}
+async function feedSyncNow() {
+  const m = feedMeta(); if (!m) { feedAccess = null; return renderFeed(); }
+  const wait = feedWait(); if (wait) return feedSay(wait);
+  let access = feedAccess;
+  if (!access && m.mode === 'lock') {
+    const pass = $('#feedPass').value; if (!pass) return feedSay('Type your passphrase.');
+    feedBusy = true; feedBtn(true, 'Unlocking…'); access = await feedOpen(m.lock, pass); feedBusy = false; feedBtn(false);
+    if (!access) return feedSay('The saved access link stays locked: that passphrase differs from the one you chose. PFAT keeps no copy of your passphrase; if it\'s forgotten, forget this connection and connect again with a new setup token.');
+  }
+  if (!access) { const got = feedRead($('#feedLink').value); if (!got.access) return feedSay('Paste the access link you saved. It starts with https:// and names ' + FEED_HOST + '.'); access = got.access; }
+  await feedSync(access);
+}
+// The sync preview: counts per account, a "Save as" name for each (matching follows it), then Add
+function feedSheet(sync) {
+  const m0 = feedMeta() || {}, first = feedRows(sync.data, Object.assign({}, m0.map), m0);
+  const nameOf = (k) => (m0.map || {})[k] || (first.accts.find(a => a.key === k) || {}).label || 'An account';
+  let h = '<div class="card" role="dialog" aria-modal="true" aria-label="From SimpleFIN Bridge"><h2>From SimpleFIN Bridge</h2><p id="feedSum"></p>';
+  for (const e of first.errors) h += '<p class="notice">' + esc(e) + '</p>';
+  for (const l of sync.start.late) h += '<p class="notice">' + esc(nameOf(l.key)) + ': the last complete sync was ' + esc(slFmtDateShort(feedDay(l.since))) + '. A sync reaches back ' + FEED_DAYS + ' days, so rows from before ' + esc(slFmtDateShort(feedDay(sync.start.from))) + ' need a statement (Add → From a file).</p>';
+  h += '<div class="feedaccts">' + first.accts.map((a, i) => '<div class="feedacct"><div><b>' + esc(a.label) + '</b>' + (a.conn ? ' <span class="muted small">' + esc(a.conn) + '</span>' : '') +
+    '<br><span class="muted small" id="feedCnt' + i + '"></span></div><label>Save as <input type="text" data-feedacct="' + i + '" list="accountList" value="' + esc(a.account) + '"></label></div>').join('') + '</div>';
+  if (first.skipped.length) h += '<p class="muted small">Left out, since PFAT works in one currency: ' + esc(first.skipped.join(', ')) + '.</p>';
+  h += '<label class="check" id="feedMaybeBox" hidden><input type="checkbox" id="feedMaybe"> <span id="feedMaybeText"></span></label>';
+  h += '<div class="actions"><button class="btn primary" id="feedAdd"></button><button class="btn" id="feedNo">Not now</button></div></div>';
+  const sheet = $('#sheet'); sheet.innerHTML = h; sheet.hidden = false; trapSheet(); sheetOnClose = null;
+  const names = () => { const o = Object.assign({}, m0.map); first.accts.forEach((a, i) => { o[a.key] = ($('[data-feedacct="' + i + '"]').value || '').trim() || a.label; }); return o; };
+  const looks = (k) => k + (k === 1 ? ' looks' : ' look') + ' already here';
+  let res = first;
+  const paint = () => {
+    res = feedRows(sync.data, names(), feedMeta() || m0);
+    const sum = (f) => res.accts.reduce((s, a) => s + f(a), 0), n = sum(a => a.fresh.length), seen = sum(a => a.seen), maybe = sum(a => a.maybe.length), gone = sum(a => a.gone);
+    const dates = res.accts.flatMap(a => a.fresh.map(t => t.date)).sort(), nAcct = res.accts.filter(a => a.fresh.length).length, k = n + ($('#feedMaybe').checked ? maybe : 0);
+    $('#feedSum').textContent = (n ? n + ' new transaction' + (n === 1 ? '' : 's') + ' in ' + nAcct + ' account' + (nAcct === 1 ? '' : 's') + ', ' + slFmtDateShort(dates[0]) + (dates[0] !== dates[n - 1] ? '–' + slFmtDateShort(dates[n - 1]) : '') : 'Nothing new since the last sync') +
+      (seen ? '; ' + seen + ' already here' : '') + (maybe ? '; ' + looks(maybe) : '') + (gone ? '; ' + gone + ' you deleted here ' + (gone === 1 ? 'stays' : 'stay') + ' out' : '') + '.';
+    res.accts.forEach((a, i) => { $('#feedCnt' + i).textContent = a.fresh.length + ' new · ' + a.seen + ' already here' + (a.maybe.length ? ' · ' + looks(a.maybe.length) : '') + (a.balance != null ? ' · balance ' + money(a.balance) + (a.asOf ? ' on ' + slFmtDateShort(a.asOf) : '') : ''); });
+    $('#feedMaybeBox').hidden = !maybe;
+    $('#feedMaybeText').textContent = 'Add the ' + maybe + (maybe === 1 ? ' that looks' : ' that look') + ' already here too: ' + (maybe === 1 ? 'it has' : 'each has') + ' the amount of a saved row within two days and a similar description, or reads the same as a row in another account.';
+    $('#feedAdd').textContent = k ? 'Add ' + k + ' transaction' + (k === 1 ? '' : 's') : 'Done';
+    $('#feedNo').hidden = !(n || maybe);
+  };
+  paint();
+  $$('#sheet [data-feedacct]').forEach(i => i.addEventListener('change', paint));
+  $('#feedMaybe').onchange = paint;
+  $('#feedAdd').onclick = () => {
+    paint();
+    const withMaybe = $('#feedMaybe').checked, map = names(), added = [];
+    for (const a of res.accts) for (const r of withMaybe ? a.fresh.concat(a.maybe) : a.fresh) { const t = makeTxn({ date: r.date, desc: r.desc, amount: r.amount }, a.account, 'simplefin'); t.extId = r.extId; added.push(t); }
+    if (added.length) {
+      state.txns.push(...added);
+      slPairTransfers(state.txns, { accounts: accountKinds() });
+      state.imports = state.imports || [];
+      const total = res.accts.reduce((s, a) => s + a.fresh.length + a.maybe.length + a.seen + a.gone, 0);
+      state.imports.push({ at: slTodayISO(), file: 'SimpleFIN Bridge', kind: 'simplefin', account: [...new Set(added.map(t => t.account))].join(', '), rows: total, imported: added.length });
+      if (state.imports.length > 200) state.imports = state.imports.slice(-200);
+      const r0 = currentRange(); if (!slFilter(state.txns, { from: r0.from, to: r0.to, account: state.ui.account }).length) state.ui.period = 'all';
+    }
+    const m = feedMeta();
+    if (m) {
+      // each account without a reported problem is complete through this sync; rows this connection saw here are remembered
+      // (for "you deleted here") for 120 days; an account the Bridge no longer lists, with no problem reported, leaves the map
+      const through = Object.assign({}, m.through), known = Object.assign({}, m.added), cut = slAddDays(slTodayISO(), -FEED_KEEP_DAYS);
+      for (const a of res.accts) if (!a.bad) through[a.key] = sync.at;
+      if (!res.errors.length) for (const k of Object.keys(map)) if (!res.accts.some(a => a.key === k)) { delete map[k]; delete through[k]; }
+      const here = new Map(state.txns.filter(t => t.extId).map(t => [t.extId, t.date]));
+      for (const a of sync.data.accounts || []) for (const t of (a && a.transactions) || []) { const id = a && t ? 'sf:' + (a.conn_id || (a.org && a.org.id) || '') + ':' + a.id + ':' + t.id : ''; if (here.has(id)) known[id] = here.get(id); }
+      for (const k of Object.keys(known)) if (!(known[k] >= cut)) delete known[k];
+      feedStore(Object.assign({}, m, { map, through, added: known, lastAdded: Date.now() }));
+    }
+    feedHeld = null;
+    save(); closeSheet(); renderAll(); renderFeed();
+    toast(added.length ? 'Added ' + added.length + ' transaction' + (added.length === 1 ? '' : 's') + ' from SimpleFIN Bridge' : 'Up to date');
+  };
+  $('#feedNo').onclick = () => closeSheet();
+  $('#feedAdd').focus();
+}
+function feedRisks() {
+  const a = (path, text) => '<a href="https://' + FEED_HOST + path + '" target="_blank" rel="noopener noreferrer">' + text + '</a>';
+  return '<ul class="insights feedrisks">' +
+    '<li><b>This page goes online.</b> Otherwise PFAT only downloads its PDF and picture readers, and your data stays on this device. With a bank feed, it also contacts SimpleFIN Bridge (' + FEED_HOST + ') when you press Sync. Your transactions travel from your bank through MX, the company SimpleFIN uses to connect to banks, then through SimpleFIN to this browser. PFAT has no server, so your data goes only to this browser.</li>' +
+    '<li><b>It costs money, paid to SimpleFIN.</b> SimpleFIN Bridge bills you $1.50 a month or $15 a year, plus tax. PFAT stays free and earns nothing from it.</li>' +
+    '<li><b>The access link works like a password that lasts until you disable it.</b> Whoever holds it can read your account names, balances, holdings, and transactions until you disable it at SimpleFIN Bridge. SimpleFIN\'s protocol only reads: moving money is outside what it does.</li>' +
+    '<li><b>You choose where the link lives.</b> Lock it on this device with a passphrase (PFAT keeps no copy of the passphrase), or keep it in your password manager and paste it when you sync; PFAT then holds it only until you close the tab. Either way, it stays out of PFAT\'s backups and exports.</li>' +
+    '<li><b>Daily, rather than live.</b> SimpleFIN refreshes about once a day, and banks can take a day or two to post a purchase. The first sync brings in the last ' + FEED_DAYS + ' days (less if your bank keeps less); import statements for older months.</li>' +
+    '<li><b>Your bank sign-in stays with MX.</b> SimpleFIN says your bank credentials stay with MX, away from its own servers, and PFAT asks only for the setup token.</li>' +
+    '<li><b>Stopping takes two steps.</b> Forget the connection here, then disable PFAT\'s access at SimpleFIN Bridge. Transactions already added stay in PFAT.</li></ul>' +
+    '<p class="muted small">SimpleFIN Bridge is an independent service, unaffiliated with Tool4That. Read its own ' + a('/info/security', 'security') + ', ' + a('/info/privacy', 'privacy') + ', and ' + a('/info/terms', 'terms') + ' pages first.</p>';
+}
+function renderFeed() {
+  const el = $('#feedBody'); if (!el) return;
+  const m = feedMeta(), note = '<p class="notice" id="feedNote" role="status"' + (feedNote ? '' : ' hidden') + '>' + esc(feedNote) + '</p>', busy = feedBusy ? ' disabled' : '';
+  el.dataset.state = m ? 'on' : 'off';
+  if (!m) {
+    const canLock = feedCanLock();
+    el.innerHTML = '<section class="section feed"><h2>Bank feed (optional)</h2><p class="sub">Bring in transactions from your bank about once a day through <b>SimpleFIN Bridge</b>, a paid service you sign up for. Everything else in PFAT works without it.</p>' + note +
+      '<h3>Before you connect</h3>' + feedRisks() +
+      '<label class="check"><input type="checkbox" id="feedOk"> I understand: this page will contact SimpleFIN Bridge when I sync, SimpleFIN charges me for its service, and the access link works like a password.</label>' +
+      '<div id="feedSetup" hidden><h3>Connect</h3><ol class="feedsteps"><li>Sign up at <a href="https://' + FEED_HOST + '/" target="_blank" rel="noopener noreferrer">SimpleFIN Bridge</a> and connect your banks there.</li><li>In SimpleFIN Bridge, create a setup token for a new app, and copy it.</li><li>Paste it here, and choose where PFAT keeps the access link.</li></ol>' +
+      '<form id="feedForm" class="form" autocomplete="off"><label>Setup token <input type="text" id="feedToken" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="aHR0cHM6Ly9…"></label>' +
+      '<div class="radios" role="radiogroup" aria-label="Where PFAT keeps the access link">' +
+      (canLock ? '<label><input type="radio" name="feedKeep" id="feedKeepLock" value="lock" checked> Lock it on this device with a passphrase</label>' : '') +
+      '<label><input type="radio" name="feedKeep" value="paste"' + (canLock ? '' : ' checked') + '> Keep it in my password manager: PFAT holds it only until this tab closes, and I paste it to sync</label></div>' +
+      (canLock ? '<div id="feedPassBox"><div class="grid2"><label>Passphrase <input type="password" id="feedPass" autocomplete="new-password"></label><label>Passphrase again <input type="password" id="feedPass2" autocomplete="new-password"></label></div><p class="muted small">At least 8 characters. PFAT keeps no copy of it; if it\'s forgotten, you connect again with a new setup token.</p></div>'
+        : '<p class="muted small">Locking the link on this device needs "Keep my data in this browser between visits" on (More → Data).</p>') +
+      '<div class="actions"><button type="submit" class="btn primary"' + busy + '>Connect and sync</button></div></form></div></section>';
+    return;
+  }
+  const locked = m.mode === 'lock';
+  el.innerHTML = '<section class="section feed"><h2>Bank feed</h2><p class="sub">SimpleFIN Bridge · ' + (m.lastSync ? 'last synced ' + esc(feedWhen(m.lastSync)) : 'awaiting its first sync') + ' · ' +
+    (locked ? (state.settings.autosave ? 'access link locked on this device' : 'access link locked in this tab only, since "Keep my data" is off') : 'access link kept in your password manager') + '</p>' +
+    (feedShowOnce ? '<div class="notice"><p><b>Save this access link in your password manager now.</b> This is the only time you\'ll see it: SimpleFIN hands it to PFAT once, and PFAT keeps it only until you close this tab.</p><input type="text" readonly id="feedOnce" aria-label="Access link" value="' + esc(feedShowOnce) + '"><div class="actions"><button type="button" class="btn" id="feedCopy">Copy</button><button type="button" class="btn" id="feedSaved">I saved it</button></div></div>' : '') +
+    (feedHeld ? '<div class="notice"><p>A sync finished while another window was open. <button type="button" class="btn small" id="feedReview">Review it</button></p></div>' : '') +
+    note + '<form id="feedSyncForm" class="form" autocomplete="off">' +
+    (feedAccess ? '' : locked ? '<label>Passphrase <input type="password" id="feedPass" autocomplete="current-password"></label>' : '<label>Access link <input type="password" id="feedLink" autocomplete="off" spellcheck="false" placeholder="https://…@' + FEED_HOST + '/simplefin"></label>') +
+    '<div class="actions"><button type="submit" class="btn primary"' + busy + '>' + (feedBusy ? 'Syncing…' : feedAccess ? 'Sync now' : locked ? 'Unlock and sync' : 'Sync') + '</button><button type="button" class="btn danger" id="feedForget">Forget this connection</button></div></form>' +
+    '<p class="muted small">This page contacts ' + FEED_HOST + ' only when you press Sync, at most once an hour.</p>' +
+    '<details class="feedmore"><summary>What this connection does</summary>' + feedRisks() + '</details></section>';
+}
+// Opening the Bank feed again keeps what was typed; it redraws when the connection changed meanwhile, or to refresh the
+// "last synced" line when nothing is typed
+function feedShow() {
+  const el = $('#feedBody'); if (!el) return;
+  const typed = $$('input', el).some(i => i.type !== 'radio' && i.type !== 'checkbox' && !i.readOnly && i.value);
+  const now = feedMeta() ? 'on' : 'off';
+  if (el.dataset.state !== now || (now === 'on' && !feedBusy && !typed)) renderFeed();
+}
+function bindFeed() {
+  const el = $('#feedBody'); if (!el) return;
+  el.addEventListener('submit', e => { e.preventDefault(); if (feedBusy) return; if (e.target.id === 'feedForm') feedConnect(); else if (e.target.id === 'feedSyncForm') feedSyncNow(); });
+  el.addEventListener('change', e => { if (e.target.id === 'feedOk') $('#feedSetup').hidden = !e.target.checked; if (e.target.name === 'feedKeep' && $('#feedPassBox')) $('#feedPassBox').hidden = e.target.value !== 'lock'; });
+  el.addEventListener('click', e => {
+    const id = e.target.id;
+    if (id === 'feedForget') armConfirm(e.target, 'Tap again to forget', () => { feedForget(); feedNote = 'Forgotten on this device. To end the connection for good, disable PFAT\'s access at SimpleFIN Bridge.'; renderFeed(); });
+    if (id === 'feedCopy') copyText(feedShowOnce || '').then(ok => toast(ok ? 'Copied' : 'Select the link and copy it', !ok));
+    if (id === 'feedSaved') { feedShowOnce = null; renderFeed(); }
+    if (id === 'feedReview' && feedHeld) { if ($('#sheet').hidden) feedSheet(feedHeld); else toast('Close the open window first', true); }
+  });
+}
+function feedGuideNote() { return ' A third happens only if you connect a bank feed (Add → Bank feed): SimpleFIN Bridge, a paid service you sign up for, when you press Sync.'; }
+function feedPrivacyNote() {
+  const m = feedMeta();
+  return '<p>' + (m ? 'Bank feed: connected. This page contacts SimpleFIN Bridge (' + FEED_HOST + ') only when you press Sync. Its access link stays out of backups and exports' + (m.mode === 'lock' ? ', locked on this device with your passphrase' : '') + '.'
+    : 'Bank feed (optional): off until you connect one under Add → Bank feed. Once connected, this page contacts SimpleFIN Bridge (' + FEED_HOST + ') only when you press Sync.') + '</p>';
+}
+/* /feed */
 
 /* ---------- events ---------- */
 function bind() {
   $$('.tab').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
   $$('.segment button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  if (!PFAT_OFFLINE) bindFeed();
   $('#period').addEventListener('change', e => { state.ui.period = e.target.value; save(); renderAll(); });
   $('#fromDate').addEventListener('change', e => { state.ui.from = e.target.value; save(); renderAll(); });
   $('#toDate').addEventListener('change', e => { state.ui.to = e.target.value; save(); renderAll(); });
@@ -7274,7 +7648,7 @@ function bind() {
     const id = e.target.id;
     if (id === 'saveNow') { const was = state.settings.autosave; state.settings.autosave = true; save(); state.settings.autosave = was; renderData(); toast('Saved'); }
     if (id === 'ocrWithdraw') { state.settings.ocrOk = false; save(); renderData(); toast('PFAT will ask before reading pictures again'); return; }
-    if (id === 'clearAll') armConfirm(e.target, 'Tap again to delete everything', () => { state.imports = []; state.settings.ocrOk = false; state.txns = []; state.rules = []; state.customCats = []; state.catOverrides = {}; state.budgets = {}; recentAdds = []; state.bills = null; state.balances = {}; state.plan = null; state.goals = null; state.accounts = null; state.cash = null; state.paycheck = null; state.snapshots = null; state.insurance = null; state.limits = null; ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup(); try { localStorage.removeItem(STORE_KEY); } catch (e2) { /* ignore */ } save(); renderAll(); renderData(); toast('Everything deleted'); });
+    if (id === 'clearAll') armConfirm(e.target, 'Tap again to delete everything', () => { state.imports = []; state.settings.ocrOk = false; state.txns = []; state.rules = []; state.customCats = []; state.catOverrides = {}; state.budgets = {}; recentAdds = []; state.bills = null; state.balances = {}; state.plan = null; state.goals = null; state.accounts = null; state.cash = null; state.paycheck = null; state.snapshots = null; state.insurance = null; state.limits = null; ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup(); try { localStorage.removeItem(STORE_KEY); localStorage.removeItem('pfat.feed'); } catch (e2) { /* ignore */ } if (!PFAT_OFFLINE) feedForget(); save(); renderAll(); renderData(); toast('Everything deleted'); });
     if (id === 'expCsv') saveFile('pfat-transactions.csv', slToCSV([...state.txns].sort((a, b) => a.date < b.date ? -1 : 1)), 'text/csv');
     if (id === 'expJson') saveFile('pfat-backup.json', backupJSON(), 'application/json');
     if (id === 'copyCsv') copyText(slToCSV(state.txns)).then(ok => toast(ok ? 'CSV copied' : 'Could not copy', !ok));
@@ -7282,7 +7656,7 @@ function bind() {
   });
   db.addEventListener('change', e => {
     const t = e.target;
-    if (t.id === 'autosave') { state.settings.autosave = t.checked; if (t.checked) save(); else { try { localStorage.removeItem(STORE_KEY); } catch (e2) { /* ignore */ } } renderData(); }
+    if (t.id === 'autosave') { state.settings.autosave = t.checked; if (t.checked) save(); else { try { localStorage.removeItem(STORE_KEY); } catch (e2) { /* ignore */ } } if (!PFAT_OFFLINE) feedStore(feedMeta()); renderData(); }
     if (t.id === 'theme') { state.settings.theme = t.value; applyTheme(); save(); }
     if (t.id === 'hudLabel') { state.settings.hudLabel = t.value; applyHudLabel(); save(); }
     if (t.id === 'currency') { state.settings.currency = t.value.trim() || '$'; save(); renderAll(); }

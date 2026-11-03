@@ -7,6 +7,7 @@ Usage:
       [--accept-runtime-fallback]   accept guarded claude.ai features that fall back when absent
       [--frame-guard]               refuse to run inside another site's frame (tools that read personal data)
       [--allow-connect URL]         let the page fetch data from this exact https address prefix (e.g. an OCR language model)
+      [--allow-fetch]               let the page's own script call fetch(), which its --allow-connect addresses limit (e.g. a bank feed the user connects)
       [--allow-wasm]                let the page run WebAssembly ('wasm-unsafe-eval'; e.g. an OCR engine)
       [--allow-worker-blob]         let the page start a web worker from a blob: address (e.g. tesseract.js)
       [--allow-connect-data]        add data: to connect-src, so an engine can decode its own embedded WebAssembly (data: never reaches the network)
@@ -47,6 +48,8 @@ BLOCKERS = [
 SCRIPT = re.compile(r"<script\b([^>]*)>([\s\S]*?)</script\s*>", re.I)
 SCRIPT_TYPE = re.compile(r"\btype\s*=\s*[\"']?([^\"'\s>]+)", re.I)
 RUNS = ("text/javascript", "application/javascript", "module")
+# With --allow-fetch the page's own fetch() passes, and connect-src (its --allow-connect addresses) limits where it reaches.
+NET_BESIDES_FETCH = (r'XMLHttpRequest|new\s+WebSocket|EventSource\s*\(|sendBeacon', "makes network requests other than fetch()")
 MARK = re.compile(r"<!-- tool4that:(head|foot) -->[\s\S]*?<!-- /tool4that:\1 -->\n?")
 
 
@@ -181,6 +184,7 @@ def main():
     ap.add_argument("--accept-runtime-fallback", action="store_true", help="accept guarded window.claude use that falls back when absent")
     ap.add_argument("--frame-guard", action="store_true", help="add a guard that refuses to run inside another site's frame")
     ap.add_argument("--allow-connect", action="append", default=[], metavar="URL", help="allow fetching data from this exact https address prefix")
+    ap.add_argument("--allow-fetch", action="store_true", help="let the page's own script call fetch(); needs --allow-connect, and connect-src limits it to those addresses")
     ap.add_argument("--allow-wasm", action="store_true", help="allow WebAssembly ('wasm-unsafe-eval'); still no eval of JavaScript")
     ap.add_argument("--allow-worker-blob", action="store_true", help="allow a web worker started from a blob: address")
     ap.add_argument("--allow-connect-data", action="store_true", help="add data: to connect-src (an engine decoding its own embedded WebAssembly); data: never reaches the network")
@@ -195,12 +199,15 @@ def main():
         sys.exit("--allow-script-blob needs the SHA-256 of each embedded file it may run: add one --pin-block SHA256 per data block.")
     if pins and not a.allow_script_blob:
         sys.exit("--pin-block goes with --allow-script-blob.")
+    if a.allow_fetch and not a.allow_connect:
+        sys.exit("--allow-fetch needs --allow-connect: the policy's connect-src is what limits where fetch() can reach.")
     if not re.fullmatch(r"[\w.-]+\.html", a.out) or a.out.startswith("."):
         sys.exit(f"--out must be a plain .html file name: {a.out}")
 
     page = MARK.sub("", Path(a.source).read_text(encoding="utf-8"))
     page = re.sub(r'<meta\s+http-equiv\s*=\s*["\']Content-Security-Policy["\'][^>]*>\s*', "", page, flags=re.I)
-    problems = [why for rx, why in BLOCKERS if re.search(rx, page, re.I)]
+    blockers = [NET_BESIDES_FETCH if why == "makes network requests" else (rx, why) for rx, why in BLOCKERS] if a.allow_fetch else BLOCKERS
+    problems = [why for rx, why in blockers if re.search(rx, page, re.I)]
     if a.accept_runtime_fallback:
         problems = [w for w in problems if "claude.ai-only" not in w]
     if a.allow_script_blob:

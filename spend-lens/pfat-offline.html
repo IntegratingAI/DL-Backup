@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Boynny49Zg1EbaX/qWFbjmhiiy6Le8HW9ETWsMR8My8=' 'sha256-RZHgBG3IxOC4rqxoMh62/r5yfH53ILdlY0H7ee8Ls/E=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' blob:; connect-src data:; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-BJ3Y1kLIuUpwf7ue47P5xi1PcGPond0/7y8yQJLhL48=' 'sha256-Boynny49Zg1EbaX/qWFbjmhiiy6Le8HW9ETWsMR8My8=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' blob:; connect-src data:; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out HUD, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
 <link rel="canonical" href="https://freeapp4that.store/spend-lens/">
@@ -525,6 +525,7 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
         <p class="hint" id="fileHint" style="margin-top:10px">Files are read in your browser and stay on this device. Bank, card, and investment statements all work: PDFs use pdf.js (fetched from cdnjs), and screenshots or scanned PDFs use Tesseract, the open-source OCR engine (fetched once from jsDelivr, with your OK first). The <a href="https://freeapp4that.store/finance/" target="_blank" rel="noopener">offline download</a> builds both in.</p>
         <div class="busy" id="busy" hidden></div>
       </div>
+
 
       <div id="preview" class="preview" hidden></div>
     </section>
@@ -5683,7 +5684,7 @@ function doImport() {
     ensureAhead(); ensureCheckup();
     if (b.settings) Object.assign(state.settings, b.settings);
     refreshCats(); compileRules();
-    state.txns = b.txns.map(t => makeTxn(Object.assign({}, t, { lock: t.lock !== undefined ? !!t.lock : true }), t.account || acct, 'backup'));
+    state.txns = b.txns.map(t => { const x = makeTxn(Object.assign({}, t, { lock: t.lock !== undefined ? !!t.lock : true }), t.account || acct, 'backup'); if (t.extId) x.extId = String(t.extId); return x; });
     pending = null; save(); applyTheme(); renderAll(); toast('Backup restored: ' + state.txns.length + ' transactions');
     nextInQueue(); return;
   }
@@ -5763,7 +5764,7 @@ function renderData() {
   h += '<section class="section"><h2>Appearance</h2><div class="grid2"><label>Theme <select id="theme"><option value="auto"' + (state.settings.theme === 'auto' ? ' selected' : '') + '>Match device</option><option value="light"' + (state.settings.theme === 'light' ? ' selected' : '') + '>Light</option><option value="dark"' + (state.settings.theme === 'dark' ? ' selected' : '') + '>Dark</option></select></label><label>Currency symbol <input type="text" id="currency" maxlength="4" value="' + esc(state.settings.currency) + '"></label><label>Call the first tab <select id="hudLabel"><option value="HUD"' + (state.settings.hudLabel !== 'Home' ? ' selected' : '') + '>HUD</option><option value="Home"' + (state.settings.hudLabel === 'Home' ? ' selected' : '') + '>Home</option></select></label></div><label class="check"><input type="checkbox" id="dayFirst"' + (state.settings.dayFirst ? ' checked' : '') + '> My bank writes dates day-first (DD/MM/YYYY)</label></section>';
   h += '<section class="section"><h2>Privacy</h2><div class="privacy"><p>Everything you add is parsed and analyzed in this browser tab and stays on this device.' + (PFAT_OFFLINE ? ' This file works completely offline.' : '') + '</p><p>If you keep data between visits, it lives in this browser\'s local storage on this device only. Clearing site data or using a private window removes it.</p>' +
     (PFAT_OFFLINE ? '<p>Two open-source libraries are built into this file and run on this device: pdf.js 3.11.174 (Apache-2.0) reads PDFs, and Tesseract (tesseract.js and tesseract.js-core 5.1.1, Apache-2.0, with the English model from @tesseract.js-data/eng 1.0.0, MIT) reads screenshots and scanned statements. Their license notices, with those of the libraries built into them, sit at the end of this file; open it in a text editor to read them.</p>'
-      : '<p>Two open-source libraries can be fetched when you need them: pdf.js from cdnjs to read PDFs, and Tesseract (Apache 2.0) from jsDelivr to read screenshots and scanned statements. Only the libraries and the English model download; your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in and reads PDFs and pictures completely offline.</p>') + (!PFAT_OFFLINE && state.settings.ocrOk ? '<p>You agreed to read pictures with Tesseract. <button class="btn small" id="ocrWithdraw">Stop reading pictures</button> (PFAT asks again next time).</p>' : '') + '</div></section>';
+      : '<p>Two open-source libraries can be fetched when you need them: pdf.js from cdnjs to read PDFs, and Tesseract (Apache 2.0) from jsDelivr to read screenshots and scanned statements. Only the libraries and the English model download; your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in and reads PDFs and pictures completely offline.</p>') + (!PFAT_OFFLINE && state.settings.ocrOk ? '<p>You agreed to read pictures with Tesseract. <button class="btn small" id="ocrWithdraw">Stop reading pictures</button> (PFAT asks again next time).</p>' : '') + (PFAT_OFFLINE ? '' : feedPrivacyNote()) + '</div></section>';
   el.innerHTML = h;
 }
 async function saveFile(filename, text, mime) {
@@ -6642,7 +6643,7 @@ function renderGuide() {
   h += step(6, 'Run the checkup', '<p><b>Checkup</b> covers what bank data cannot show: a pay-stub breakdown (effective tax rate and true savings rate), net-worth snapshots over time, card utilization, an insurance checklist, pension and Social Security against the nest egg you actually need, and a plain list of when a professional is the right call.</p>', 'check', 'Go to Checkup');
   h += step(7, 'Monthly routine', '<ul class="insights"><li>Import last month\'s statements (duplicates are caught automatically).</li><li>Glance at the HUD and Alerts.</li><li>Update balances on the HUD and Plan; take a net-worth snapshot.</li><li>Download a backup from Data.</li></ul>', 'data', 'Go to Data');
   h += '<section class="section"><h2>Five-minute demo path</h2><p class="sub">If you are showing someone the tool with no data on hand.</p><ol class="steps"><li>Data → Load sample data.</li><li>HUD: switch the period to Last month; point out expected vs actual and the card balance field.</li><li>Plan: enter an age, pay and a couple of accounts; watch the guideline colors and the year-end / 67 forecast appear.</li><li>Ahead → Debt payoff: type an APR and an extra $100; show the months and interest change.</li><li>Ahead → Next 30 days: enter a balance; show safe-to-spend.</li><li>Data → Remove sample data, then Add their own file.</li></ol></section>';
-  h += '<section class="section"><h2>Good to know</h2><ul class="insights"><li>' + (PFAT_OFFLINE ? 'This file works completely offline. pdf.js reads PDFs and the Tesseract engine reads pictures, both built into this file and running on this device. Your files stay on this device.' : 'The app works offline once loaded. Two outside requests can happen, only when you need them: pdf.js from cdnjs the first time you open a PDF, and, after you agree, the Tesseract engine and its English model from jsDelivr the first time you read a picture. Your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in, for reading PDFs and pictures completely offline.') + '</li><li>Data lives in this browser only. Clearing site data or switching devices starts fresh; restore a backup to bring your data back (Add → From a file → the backup JSON).</li><li>Guidelines are general rules of thumb, separate from personal advice. Checkup → When to see a human says where the line is.</li></ul></section>';
+  h += '<section class="section"><h2>Good to know</h2><ul class="insights"><li>' + (PFAT_OFFLINE ? 'This file works completely offline. pdf.js reads PDFs and the Tesseract engine reads pictures, both built into this file and running on this device. Your files stay on this device.' : 'The app works offline once loaded. Two outside requests can happen, only when you need them: pdf.js from cdnjs the first time you open a PDF, and, after you agree, the Tesseract engine and its English model from jsDelivr the first time you read a picture.' + feedGuideNote() + ' Your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in, for reading PDFs and pictures completely offline.') + '</li><li>Data lives in this browser only. Clearing site data or switching devices starts fresh; restore a backup to bring your data back (Add → From a file → the backup JSON).</li><li>Guidelines are general rules of thumb, separate from personal advice. Checkup → When to see a human says where the line is.</li></ul></section>';
   el.innerHTML = h;
 }
 
@@ -7118,13 +7119,16 @@ function setMode(mode, quiet) {
   $$('.segment button').forEach(b => b.classList.toggle('is-active', b.dataset.mode === mode));
   $$('.mode').forEach(m => m.classList.toggle('is-active', m.id === 'mode-' + mode));
   if (!quiet && mode === 'manual') $('#mDesc').focus();
+  if (mode === 'feed' && !PFAT_OFFLINE) feedShow();
 }
 function renderAll() { refreshCats(); compileRules(); renderScope(); renderHud(); renderPlan(); if (state.ui.tab === 'ahead') renderAhead(); if (state.ui.tab === 'check') renderCheckup(); renderOverview(); renderTransactions(); renderRecent(); if (state.ui.tab === 'more') renderMore(); }
+
 
 /* ---------- events ---------- */
 function bind() {
   $$('.tab').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
   $$('.segment button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  if (!PFAT_OFFLINE) bindFeed();
   $('#period').addEventListener('change', e => { state.ui.period = e.target.value; save(); renderAll(); });
   $('#fromDate').addEventListener('change', e => { state.ui.from = e.target.value; save(); renderAll(); });
   $('#toDate').addEventListener('change', e => { state.ui.to = e.target.value; save(); renderAll(); });
@@ -7274,7 +7278,7 @@ function bind() {
     const id = e.target.id;
     if (id === 'saveNow') { const was = state.settings.autosave; state.settings.autosave = true; save(); state.settings.autosave = was; renderData(); toast('Saved'); }
     if (id === 'ocrWithdraw') { state.settings.ocrOk = false; save(); renderData(); toast('PFAT will ask before reading pictures again'); return; }
-    if (id === 'clearAll') armConfirm(e.target, 'Tap again to delete everything', () => { state.imports = []; state.settings.ocrOk = false; state.txns = []; state.rules = []; state.customCats = []; state.catOverrides = {}; state.budgets = {}; recentAdds = []; state.bills = null; state.balances = {}; state.plan = null; state.goals = null; state.accounts = null; state.cash = null; state.paycheck = null; state.snapshots = null; state.insurance = null; state.limits = null; ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup(); try { localStorage.removeItem(STORE_KEY); } catch (e2) { /* ignore */ } save(); renderAll(); renderData(); toast('Everything deleted'); });
+    if (id === 'clearAll') armConfirm(e.target, 'Tap again to delete everything', () => { state.imports = []; state.settings.ocrOk = false; state.txns = []; state.rules = []; state.customCats = []; state.catOverrides = {}; state.budgets = {}; recentAdds = []; state.bills = null; state.balances = {}; state.plan = null; state.goals = null; state.accounts = null; state.cash = null; state.paycheck = null; state.snapshots = null; state.insurance = null; state.limits = null; ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup(); try { localStorage.removeItem(STORE_KEY); localStorage.removeItem('pfat.feed'); } catch (e2) { /* ignore */ } if (!PFAT_OFFLINE) feedForget(); save(); renderAll(); renderData(); toast('Everything deleted'); });
     if (id === 'expCsv') saveFile('pfat-transactions.csv', slToCSV([...state.txns].sort((a, b) => a.date < b.date ? -1 : 1)), 'text/csv');
     if (id === 'expJson') saveFile('pfat-backup.json', backupJSON(), 'application/json');
     if (id === 'copyCsv') copyText(slToCSV(state.txns)).then(ok => toast(ok ? 'CSV copied' : 'Could not copy', !ok));
@@ -7282,7 +7286,7 @@ function bind() {
   });
   db.addEventListener('change', e => {
     const t = e.target;
-    if (t.id === 'autosave') { state.settings.autosave = t.checked; if (t.checked) save(); else { try { localStorage.removeItem(STORE_KEY); } catch (e2) { /* ignore */ } } renderData(); }
+    if (t.id === 'autosave') { state.settings.autosave = t.checked; if (t.checked) save(); else { try { localStorage.removeItem(STORE_KEY); } catch (e2) { /* ignore */ } } if (!PFAT_OFFLINE) feedStore(feedMeta()); renderData(); }
     if (t.id === 'theme') { state.settings.theme = t.value; applyTheme(); save(); }
     if (t.id === 'hudLabel') { state.settings.hudLabel = t.value; applyHudLabel(); save(); }
     if (t.id === 'currency') { state.settings.currency = t.value.trim() || '$'; save(); renderAll(); }

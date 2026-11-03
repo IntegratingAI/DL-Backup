@@ -63,6 +63,7 @@ def prep_cmd(staged, s, prep, out=None):
     cmd += ["--frame-guard"] if prep.get("frame_guard") else []
     for u in prep.get("allow_connect", []):
         cmd += ["--allow-connect", u]
+    cmd += ["--allow-fetch"] if prep.get("allow_fetch") else []
     cmd += ["--allow-wasm"] if prep.get("allow_wasm") else []
     cmd += ["--allow-worker-blob"] if prep.get("allow_worker_blob") else []
     cmd += ["--allow-connect-data"] if prep.get("allow_connect_data") else []
