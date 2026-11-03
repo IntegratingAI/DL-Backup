@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-BJ3Y1kLIuUpwf7ue47P5xi1PcGPond0/7y8yQJLhL48=' 'sha256-Boynny49Zg1EbaX/qWFbjmhiiy6Le8HW9ETWsMR8My8=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' blob:; connect-src data:; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-+eaS0PVLnebOEvzGjwRzhMjKxJoKU3I3eXOoLw47iMY=' 'sha256-Yw999gw9qaK9RbKO91820ILIWUGz10xDY8XuAV9OyB8=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' blob:; connect-src data:; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out HUD, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
 <link rel="canonical" href="https://freeapp4that.store/spend-lens/">
@@ -24,7 +24,7 @@
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  --bg: #F3F5F7; --surface: #FFFFFF; --ink: #15202B; --ink-2: #5B6774; --ink-3: #8A95A1;
+  --bg: #F3F5F7; --surface: #FFFFFF; --ink: #15202B; --ink-2: #5B6774; --ink-3: #64707B; --field-line: #8A949F; --out-ink: #FFFFFF;
   --line: #D5DBE1; --line-2: #E8ECF0; --accent: #1E5A7A; --accent-ink: #FFFFFF; --accent-soft: #E3EEF4;
   --out: #B23A48; --in: #2E7D5B; --chip: #E8ECF0; --warn-bg: #FFF4D6; --warn-ink: #6B4E00; --focus: #1E5A7A;
   --display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
@@ -32,13 +32,13 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0F1720; --surface: #16222E; --ink: #E8EDF2; --ink-2: #A3AFBB; --ink-3: #74818E;
+    --bg: #0F1720; --surface: #16222E; --ink: #E8EDF2; --ink-2: #A3AFBB; --ink-3: #74818E; --field-line: #6A7988; --out-ink: #0F1720;
     --line: #2A3846; --line-2: #1F2B37; --accent: #7CC1E4; --accent-ink: #0F1720; --accent-soft: #1B2F3D;
     --out: #E8808F; --in: #62CC9A; --chip: #223040; --warn-bg: #3A2F10; --warn-ink: #F2D48A; --focus: #7CC1E4;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0F1720; --surface: #16222E; --ink: #E8EDF2; --ink-2: #A3AFBB; --ink-3: #74818E;
+  --bg: #0F1720; --surface: #16222E; --ink: #E8EDF2; --ink-2: #A3AFBB; --ink-3: #74818E; --field-line: #6A7988; --out-ink: #0F1720;
   --line: #2A3846; --line-2: #1F2B37; --accent: #7CC1E4; --accent-ink: #0F1720; --accent-soft: #1B2F3D;
   --out: #E8808F; --in: #62CC9A; --chip: #223040; --warn-bg: #3A2F10; --warn-ink: #F2D48A; --focus: #7CC1E4;
 }
@@ -93,7 +93,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Forms */
 .form label { display: block; font-size: 0.85rem; color: var(--ink-2); margin-bottom: 10px; }
 .form label > input, .form label > select, .form label > textarea { display: block; width: 100%; margin-top: 4px; font-size: 1rem; color: var(--ink); }
-input[type="text"], input[type="search"], input[type="date"], input[type="number"], input[type="email"], select, textarea { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; width: 100%; min-height: 42px; }
+input[type="text"], input[type="search"], input[type="date"], input[type="number"], input[type="email"], select, textarea { background: var(--surface); border: 1px solid var(--field-line); border-radius: 8px; padding: 9px 10px; width: 100%; min-height: 42px; }
 input[type="color"] { padding: 0; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 textarea { min-height: 180px; resize: vertical; font-size: 0.9rem; line-height: 1.4; }
 select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-2) 50%), linear-gradient(135deg, var(--ink-2) 50%, transparent 50%); background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 30px; }
@@ -123,7 +123,7 @@ select { appearance: none; -webkit-appearance: none; background-image: linear-gr
 .empty p { color: var(--ink-2); }
 
 /* Figures */
-.figures { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 0; padding: 0 0 14px; border-bottom: 1px solid var(--line); }
+.figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(8.5em, 100%), 1fr)); gap: 10px; margin: 14px 0 0; padding: 0 0 14px; border-bottom: 1px solid var(--line); }
 .figure .label { font-size: 0.82rem; color: var(--ink-2); }
 .figure .value { font-family: var(--display); font-size: clamp(1.15rem, 5.4vw, 1.7rem); font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; margin-top: 2px; overflow-wrap: anywhere; }
 .figure .delta { font-size: 0.78rem; color: var(--ink-2); margin-top: 2px; }
@@ -157,7 +157,7 @@ select { appearance: none; -webkit-appearance: none; background-image: linear-gr
 .mrow .amt { text-align: right; font-weight: 600; }
 .mrow .bar { grid-column: 1 / -1; height: 4px; background: var(--chip); border-radius: 2px; overflow: hidden; }
 .mrow .bar i { display: block; height: 100%; background: var(--accent); opacity: 0.8; }
-.mrow.inactive { opacity: 0.6; }
+.mrow.inactive { color: var(--ink-2); }
 .insights { list-style: none; padding: 0; margin: 0; }
 .insights li { padding: 8px 0 8px 18px; border-bottom: 1px solid var(--line-2); position: relative; }
 .insights li::before { content: ""; position: absolute; left: 2px; top: 16px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
@@ -201,7 +201,7 @@ select { appearance: none; -webkit-appearance: none; background-image: linear-gr
 .pv-table { margin-top: 10px; border-top: 1px solid var(--line); max-height: 420px; overflow: auto; }
 .pv-row { display: grid; grid-template-columns: 20px 68px 1fr auto; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 0.9rem; }
 .pv-row .date { font-size: 0.8rem; color: var(--ink-2); white-space: nowrap; }
-.pv-row.dupe { opacity: 0.6; }
+.pv-row.dupe { background: var(--line-2); }
 .pv-row .desc { display: flex; flex-direction: column; min-width: 0; }
 .pv-row .desc .d { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pv-row .desc .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
@@ -258,7 +258,10 @@ summary { cursor: pointer; color: var(--accent); font-weight: 500; }
 .hud-note { color: var(--ink-2); font-size: 0.88rem; margin: 8px 0 0; }
 .hud-note.fresh { background: var(--warn-bg); color: var(--warn-ink); border-radius: 8px; padding: 8px 12px; margin: 0 0 6px; }
 .hud-note.fresh .btn.link { color: inherit; text-decoration: underline; padding: 0 2px; min-height: 0; }
-.figures.hud { grid-template-columns: repeat(3, 1fr); }
+.figures.hud { grid-template-columns: repeat(auto-fit, minmax(min(8.5em, 100%), 1fr)); }
+.figure .value { white-space: nowrap; }
+.field-err { display: block; color: var(--out); font-size: 0.85rem; margin-top: 4px; }
+.stword { font-weight: 600; margin-right: 4px; }
 
 /* Plan */
 .sdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; background: var(--ink-3); }
@@ -402,7 +405,7 @@ body[data-tab="add"] .fab { display: none; }
 
 /* Toast */
 .toast { position: fixed; left: 50%; bottom: 0; transform: translateX(-50%); padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); margin-bottom: 20px; background: var(--ink); color: var(--bg); border-radius: 10px; font-size: 0.92rem; z-index: 30; max-width: calc(100% - 32px); box-shadow: 0 6px 24px rgba(0,0,0,0.25); }
-.toast.err { background: var(--out); color: #fff; }
+.toast.err { background: var(--out); color: var(--out-ink); }
 
 /* Data tab */
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 0.95rem; }
@@ -427,14 +430,14 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
 
   <div class="tabwrap">
   <nav class="tabs" role="tablist" aria-label="Sections">
-    <button class="tab is-active" role="tab" data-tab="hud">HUD</button>
-    <button class="tab" role="tab" data-tab="plan">Plan</button>
-    <button class="tab" role="tab" data-tab="ahead">Ahead</button>
-    <button class="tab" role="tab" data-tab="check">Checkup</button>
-    <button class="tab" role="tab" data-tab="overview">Overview</button>
-    <button class="tab" role="tab" data-tab="transactions">Transactions <span class="count" id="txCount" hidden></span></button>
-    <button class="tab" role="tab" data-tab="add">Add</button>
-    <button class="tab" role="tab" data-tab="more">More</button>
+    <button class="tab is-active" role="tab" id="tabbtn-hud" aria-controls="tab-hud" aria-selected="true" data-tab="hud">HUD</button>
+    <button class="tab" role="tab" id="tabbtn-plan" aria-controls="tab-plan" aria-selected="false" tabindex="-1" data-tab="plan">Plan</button>
+    <button class="tab" role="tab" id="tabbtn-ahead" aria-controls="tab-ahead" aria-selected="false" tabindex="-1" data-tab="ahead">Ahead</button>
+    <button class="tab" role="tab" id="tabbtn-check" aria-controls="tab-check" aria-selected="false" tabindex="-1" data-tab="check">Checkup</button>
+    <button class="tab" role="tab" id="tabbtn-overview" aria-controls="tab-overview" aria-selected="false" tabindex="-1" data-tab="overview">Overview</button>
+    <button class="tab" role="tab" id="tabbtn-transactions" aria-controls="tab-transactions" aria-selected="false" tabindex="-1" data-tab="transactions">Transactions <span class="count" id="txCount" hidden></span></button>
+    <button class="tab" role="tab" id="tabbtn-add" aria-controls="tab-add" aria-selected="false" tabindex="-1" data-tab="add">Add</button>
+    <button class="tab" role="tab" id="tabbtn-more" aria-controls="tab-more" aria-selected="false" tabindex="-1" data-tab="more">More</button>
   </nav>
   </div>
 
@@ -457,22 +460,22 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
       <select id="accountFilter" aria-label="Account" hidden><option value="">All accounts</option></select>
     </div>
 
-    <section id="tab-hud" class="panel is-active" role="tabpanel">
+    <section id="tab-hud" class="panel is-active" role="tabpanel" aria-labelledby="tabbtn-hud">
       <div id="hudBody"></div>
     </section>
 
-    <section id="tab-plan" class="panel" role="tabpanel"><div id="planBody"></div></section>
-    <section id="tab-ahead" class="panel" role="tabpanel"><div id="aheadBody"></div></section>
-    <section id="tab-check" class="panel" role="tabpanel"><div id="checkBody"></div></section>
+    <section id="tab-plan" class="panel" role="tabpanel" aria-labelledby="tabbtn-plan"><div id="planBody"></div></section>
+    <section id="tab-ahead" class="panel" role="tabpanel" aria-labelledby="tabbtn-ahead"><div id="aheadBody"></div></section>
+    <section id="tab-check" class="panel" role="tabpanel" aria-labelledby="tabbtn-check"><div id="checkBody"></div></section>
 
-    <section id="tab-overview" class="panel" role="tabpanel">
+    <section id="tab-overview" class="panel" role="tabpanel" aria-labelledby="tabbtn-overview">
       <div id="overviewBody"></div>
     </section>
 
-    <section id="tab-transactions" class="panel" role="tabpanel">
+    <section id="tab-transactions" class="panel" role="tabpanel" aria-labelledby="tabbtn-transactions">
       <div class="filters tx">
         <input type="search" id="txSearch" placeholder="Search description, note, account" aria-label="Search transactions">
-        <button type="button" class="btn small" id="txSortBtn" aria-label="Change sort order" title="Tap to change the order">Newest first</button>
+        <button type="button" class="btn small" id="txSortBtn" title="Tap to change the order">Newest first</button>
       </div>
       <div class="filters tx2">
         <select id="txCat" aria-label="Category filter"><option value="">All categories</option></select>
@@ -483,14 +486,14 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
       <div class="actions"><button class="btn" id="txMore" hidden>Show more</button></div>
     </section>
 
-    <section id="tab-add" class="panel" role="tabpanel">
+    <section id="tab-add" class="panel" role="tabpanel" aria-labelledby="tabbtn-add">
       <div class="segment" role="tablist" aria-label="How to add">
-        <button class="is-active" data-mode="manual" role="tab">By hand</button>
-        <button data-mode="paste" role="tab">Paste text</button>
-        <button data-mode="file" role="tab">From a file</button>
+        <button class="is-active" data-mode="manual" role="tab" id="modebtn-manual" aria-controls="mode-manual" aria-selected="true">By hand</button>
+        <button data-mode="paste" role="tab" id="modebtn-paste" aria-controls="mode-paste" aria-selected="false" tabindex="-1">Paste text</button>
+        <button data-mode="file" role="tab" id="modebtn-file" aria-controls="mode-file" aria-selected="false" tabindex="-1">From a file</button>
       </div>
 
-      <div id="mode-manual" class="mode is-active">
+      <div id="mode-manual" class="mode is-active" role="tabpanel" aria-labelledby="modebtn-manual">
         <form id="manualForm" class="form" autocomplete="off">
           <div class="grid2">
             <label>Date <input type="date" id="mDate" required></label>
@@ -510,13 +513,13 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
         <div id="recentAdds" class="section recent" hidden></div>
       </div>
 
-      <div id="mode-paste" class="mode">
+      <div id="mode-paste" class="mode" role="tabpanel" aria-labelledby="modebtn-paste">
         <p class="hint">Copy transactions from your bank's website, a statement PDF, or a spreadsheet and paste them here. One transaction per line works best: a date, a description, and an amount. Column-style pastes (tab-separated) and OFX/QIF text are recognized too.</p>
         <textarea id="pasteBox" placeholder="05/02/2026  CORNER CAFE EXAMPLETOWN  4.50&#10;05/03/2026  ACME PAYROLL  1,200.00&#10;…&#10;&#10;Or paste a screenshot here and PFAT will read it." spellcheck="false"></textarea>
         <div class="actions"><button class="btn primary" id="pasteGo">Read what I pasted</button><button class="btn" id="pasteClear">Clear</button></div>
       </div>
 
-      <div id="mode-file" class="mode">
+      <div id="mode-file" class="mode" role="tabpanel" aria-labelledby="modebtn-file">
         <label class="drop" id="drop">
           <input type="file" id="fileInput" multiple accept=".csv,.tsv,.txt,.ofx,.qfx,.qif,.pdf,.json,.png,.jpg,.jpeg,.webp,.gif,.bmp,.heic,text/csv,text/plain,application/pdf,application/json,image/*">
           <strong>Choose files</strong> or drop them here
@@ -530,14 +533,14 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
       <div id="preview" class="preview" hidden></div>
     </section>
 
-    <section id="tab-more" class="panel" role="tabpanel">
+    <section id="tab-more" class="panel" role="tabpanel" aria-labelledby="tabbtn-more">
       <div id="moreBar"></div>
       <div id="guideBody" class="morebody"></div>
       <div id="rulesBody" class="morebody" hidden></div>
       <div id="dataBody" class="morebody" hidden></div>
     </section>
   </main>
-  <footer>PFAT, the Personal Finance Advisor Tool, runs entirely in your browser, without accounts, servers, or tracking.</footer>
+  <footer>PFAT, the Personal Finance Advisor Tool, runs entirely in your browser, without accounts, a PFAT server, or tracking.</footer>
 </div>
 <datalist id="accountList"></datalist>
 <datalist id="whoList"></datalist>
@@ -706,11 +709,17 @@ const SL_DEFAULT_RULES = [
   ['navy federal credit card','Credit card payment'],['usaa credit card','Credit card payment'],['card services','Credit card payment'],['cardmember serv','Credit card payment'],
   ['visa payment','Credit card payment'],['mastercard payment','Credit card payment'],['epayment','Credit card payment'],['e-payment','Credit card payment'],['bk of amer visa','Credit card payment'],
   ['bofa card','Credit card payment'],['payment to crd','Credit card payment'],['payment to card','Credit card payment'],['pmt to crd','Credit card payment'],['payment from chk','Credit card payment'],['online pymt','Credit card payment'],['ach pymt','Credit card payment'],['ecp','Credit card payment'],['epay','Credit card payment'],['e-pay','Credit card payment'],['card pymt','Credit card payment'],['applecard','Credit card payment'],['apple card','Credit card payment'],['payment to chase','Credit card payment'],['payment to capital one','Credit card payment'],
+  ['received - thank','Credit card payment'],['received thank you','Credit card payment'],['payment - thank','Credit card payment'],['automatic payment thank','Credit card payment'],
+  ['credit crd','Credit card payment'],['crd autopay','Credit card payment'],['crd epay','Credit card payment'],['capital one mobile pmt','Credit card payment'],['capital one online pmt','Credit card payment'],
+  ['ccpymt','Credit card payment'],['cc pymt','Credit card payment'],['cc payment','Credit card payment'],['card srvc','Credit card payment'],['card autopay','Credit card payment'],['credit card autopay','Credit card payment'],
+  ['wf credit card','Credit card payment'],['wells fargo card','Credit card payment'],['barclaycard','Credit card payment'],['bank of america credit card','Credit card payment'],['discover card','Credit card payment'],
   // Income (only applied to positive amounts)
   ['dfas','Income'],['dfas-cleveland','Income'],['dfas-in','Income'],['payroll','Income'],['direct dep','Income'],['direct deposit','Income'],['salary','Income'],['paycheck','Income'],
   ['pay roll','Income'],['va benefit','Income'],['ssa treas','Income'],['irs treas','Income'],['tax ref','Income'],['tax refund','Income'],['deposit','Income'],['interest paid','Income'],
   ['interest earned','Income'],['interest credit','Income'],['dividend','Income'],['cashback','Income'],['cash back','Income'],['reward','Income'],['refund','Refunds (unsorted)'],['return','Refunds (unsorted)'],['reimburse','Income'],
-  ['rebate','Income'],['mobile deposit','Income'],['check deposit','Income'],['bonus','Income']
+  ['rebate','Income'],['mobile deposit','Income'],['check deposit','Income'],['bonus','Income'],
+  ['payout','Income'],['earnings','Income'],['dasher pay','Income'],['shopper pay','Income'],['driver pay','Income'],['stripe transfer','Income'],
+  ['cashout','Transfer'],['cash out','Transfer'],['cash app cash out','Transfer'],['instant pay','Income'],['express pay','Income'],['fast pay','Income'],['maplebear','Income'],['spark driver','Income'],['amazon flex','Income']
 ];
 
 /* ---------- Rule matching ---------- */
@@ -725,6 +734,9 @@ function slMakeRule(kw, cat) {
 }
 const SL_DEFAULT_RULES_C = SL_DEFAULT_RULES.map(([k, c]) => slMakeRule(k, c));
 
+// Money in with a pay word (payout, payroll, direct deposit…) is pay, whatever merchant name sits beside it: a gig app's
+// payout reads "UBER … PAYOUT" or "DOORDASH DES:PAYOUT". Money in from a merchant without one stays a refund.
+const SL_PAY_KWS = new Set(['payout', 'payroll', 'pay roll', 'direct dep', 'direct deposit', 'salary', 'paycheck', 'earnings', 'dfas', 'dfas-cleveland', 'dfas-in', 'instant pay', 'express pay', 'fast pay', 'dasher pay', 'shopper pay', 'driver pay', 'stripe transfer']);
 function slCategorize(desc, merchant, amount, userRules) {
   const d = (desc || '') + '';
   const m = (merchant || '') + '';
@@ -732,6 +744,7 @@ function slCategorize(desc, merchant, amount, userRules) {
     const hits = [];
     for (const r of list) if (r.re.test(d) || (m && r.re.test(m))) hits.push(r);
     hits.sort((a, b) => (a.processor - b.processor) || ((b.words > 1) - (a.words > 1)) || (b.len - a.len));
+    if (amount > 0 && hits.some(h => h.cat === 'Income' && SL_PAY_KWS.has(h.kw))) return 'Income';
     for (const h of hits) {
       if (h.cat === 'Income' && !(amount > 0)) continue;
       return h.cat;
@@ -2737,7 +2750,7 @@ function slParseStatementText(text, opts) {
   if (kind === 'card' && txns.length && !txns.some(t => t.amount < 0)) warnings.push({ code: 'card-no-charges', text: 'This card statement shows no charges, so the signs may be reversed.' });
   const posInDebit = txns.filter(t => sections[t.sec].sign < 0 && t.amount > 0 && !flipSec[t.sec] && t.signBy !== 'printed +');
   if (posInDebit.length && kind !== 'card') warnings.push({ code: 'positive-in-debit-section', text: posInDebit.length + ' row' + (posInDebit.length > 1 ? 's' : '') + ' under a money-out heading came in as money in.' });
-  if (txns.length && txns.every(t => t.signBy === 'keyword' || t.signBy === 'default')) warnings.push({ code: 'fallback-signs', text: 'Signs were decided only from words in the descriptions, not from headings, columns or balances.' });
+  if (txns.length && txns.every(t => t.signBy === 'keyword' || t.signBy === 'default')) warnings.push({ code: 'fallback-signs', text: 'Signs were decided only from words in the descriptions, without headings, columns, or balances to go by.' });
   const convention = { kind, printed, evidence: evidence.filter(Boolean), sections: secOut, chain: chainOk };
   candidates.forEach(cd => {
     const y = cd.dateTok.hasYear ? cd.dateTok.y : slResolveYear(cd.dateTok.m, cd.dateTok.d, ctx);
@@ -4437,7 +4450,7 @@ function slParseJSON(text) {
 }
 
 /* ---------- Analysis ---------- */
-function slCatMap(categories) { const m = {}; for (const c of categories) m[c.name] = c; return m; }
+function slCatMap(categories) { const m = Object.create(null); for (const c of categories) m[c.name] = c; return m; }
 function slCounted(t, catMap) { if (t.excluded) return false; const c = catMap[t.category]; return !(c && c.excluded); }
 function slFilter(txns, f) {
   const q = (f.q || '').trim().toLowerCase();
@@ -4562,10 +4575,12 @@ function slFreshness(txns, todayISO) {
 
 /* ---------- Export ---------- */
 function slCsvEscape(v) { const s = String(v == null ? '' : v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+// a text cell a spreadsheet would run as a formula (=, +, -, @, tab, return first) starts with an apostrophe
+function slCsvText(v) { const s = String(v == null ? '' : v); return /^[=+\-@\t\r]/.test(s) ? "'" + s : s; }
 function slToCSV(txns) {
   const head = ['Date', 'Description', 'Amount', 'Category', 'Account', 'Note', 'Excluded'];
   const lines = [head.join(',')];
-  for (const t of txns) lines.push([t.date, t.desc, t.amount.toFixed(2), t.category, t.account || '', t.note || '', t.excluded ? 'yes' : ''].map(slCsvEscape).join(','));
+  for (const t of txns) lines.push([t.date, slCsvText(t.desc), t.amount.toFixed(2), slCsvText(t.category), slCsvText(t.account || ''), slCsvText(t.note || ''), t.excluded ? 'yes' : ''].map(slCsvEscape).join(','));
   return lines.join('\r\n');
 }
 
@@ -4679,6 +4694,8 @@ if (typeof module !== 'undefined') Object.assign(module.exports, { SL_DEFAULT_BI
 /* ---------- Plan: rules of thumb ---------- */
 const SL_RULES = { rentPctGross: 0.30, carPctGross: 0.10, dtiPctGross: 0.36, retirePctGross: 0.15, efMonthsMin: 3, efMonthsMax: 6, needsPct: 0.50, wantsPct: 0.30, savePct: 0.20, retireAge: 67, realReturn: 0.05 };
 const SL_RETIRE_MULTIPLES = [[30, 1], [35, 2], [40, 3], [45, 4], [50, 6], [55, 7], [60, 8], [67, 10]];
+// card payments counted as spending (the card's own statements stay out of PFAT): purchases PFAT can't split
+const SL_CARD_PURCHASES = 'Card purchases';
 const SL_NEEDS = ['Housing', 'Utilities', 'Groceries', 'Transportation', 'Insurance', 'Health', 'Kids & education', 'Taxes', 'Fees & interest'];
 const SL_SAVE_CATS = ['Savings & investments'];
 function slRetireMultiple(age) {
@@ -4697,17 +4714,26 @@ function slFutureValue(balance, annual, years, r) { if (years <= 0) return balan
 function slRecentMonths(txns, n, todayISO) {
   const today = todayISO || slTodayISO(); const cur = today.slice(0, 7);
   const months = [...new Set(txns.map(t => t.date.slice(0, 7)))].sort();
+  const first = txns.reduce((m, t) => !m || t.date < m ? t.date : m, '');
   let done = months.filter(m => m < cur);
+  // a first month the records only partly cover (they begin after its 1st) drops out while a fully covered month remains
+  if (done.length > 1 && first > done[0] + '-01') done = done.slice(1);
   let pick = done.slice(-n);
   if (!pick.length) pick = months.slice(-n);
   return pick;
 }
 function slPlanActuals(txns, bills, catMap, n, todayISO) {
-  const months = slRecentMonths(txns, n || 3, todayISO);
+  let months = slRecentMonths(txns, n || 3, todayISO);
   if (!months.length) return null;
+  // "partial": the months include the one under way, or begin before the records do; the figures then cover "days" days
+  const today = todayISO || slTodayISO(), first = txns.reduce((m, t) => !m || t.date < m ? t.date : m, '');
+  const partial = months.includes(today.slice(0, 7)) || first > months[0] + '-01';
+  const lastDay = slMonthEnd(months[months.length - 1] + '-01'), from = first > months[0] + '-01' ? first : months[0] + '-01', to = lastDay < today ? lastDay : today;
+  let days = partial ? Math.max(1, slDaysFromISO(to) - slDaysFromISO(from) + 1) : null;
+  if (partial) { const all = [...new Set(txns.map(t => t.date.slice(0, 7)))].filter(m => m <= today.slice(0, 7)).sort(); if (all.length) { months = all.slice(-2); days = Math.max(1, slDaysFromISO(today) - slDaysFromISO(first > months[0] + '-01' ? first : months[0] + '-01') + 1); } }
   const set = new Set(months);
-  const inRange = txns.filter(t => set.has(t.date.slice(0, 7)));
-  const k = months.length;
+  const inRange = txns.filter(t => set.has(t.date.slice(0, 7)) && t.date <= today);
+  const k = partial ? 1 : months.length;
   const byCat = {}; let income = 0, cardPay = 0, saveOut = 0, unsortedIn = 0;
   for (const t of inRange) {
     if (t.excluded) continue;
@@ -4724,19 +4750,20 @@ function slPlanActuals(txns, bills, catMap, n, todayISO) {
   }
   const assigned = slAssignBills(bills, inRange);
   const billAvg = {}; for (const b of bills) billAvg[b.id] = slRound2((assigned[b.id] || []).reduce((a, t) => a - t.amount, 0) / k);
-  let needs = 0, wants = 0, unsorted = 0, spend = 0;
-  for (const [c, v] of Object.entries(byCat)) { const vv = Math.max(0, v); spend += vv; if (SL_NEEDS.includes(c)) needs += vv; else if (c === 'Uncategorized') unsorted += vv; else wants += vv; }
+  let needs = 0, wants = 0, unsorted = 0, spend = 0, cardBuys = 0;
+  for (const [c, v] of Object.entries(byCat)) { const vv = Math.max(0, v); spend += vv; if (SL_NEEDS.includes(c)) needs += vv; else if (c === 'Uncategorized') unsorted += vv; else if (c === SL_CARD_PURCHASES) cardBuys += vv; else wants += vv; }
   const essentials = needs;
-  return { months, k, income: slRound2(income / k), spend: slRound2(spend / k), needs: slRound2(needs / k), wants: slRound2(wants / k), unsorted: slRound2(unsorted / k), cardPay: slRound2(cardPay / k), saveOut: slRound2(saveOut / k), unsortedIn: slRound2(unsortedIn / k), essentials: slRound2(essentials / k), billAvg, byCat: Object.fromEntries(Object.entries(byCat).map(([c, v]) => [c, slRound2(Math.max(0, v) / k)])) };
+  return { months, k, partial, days, cardBuys: slRound2(cardBuys / k), income: slRound2(income / k), spend: slRound2(spend / k), needs: slRound2(needs / k), wants: slRound2(wants / k), unsorted: slRound2(unsorted / k), cardPay: slRound2(cardPay / k), saveOut: slRound2(saveOut / k), unsortedIn: slRound2(unsortedIn / k), essentials: slRound2(essentials / k), billAvg, byCat: Object.fromEntries(Object.entries(byCat).map(([c, v]) => [c, slRound2(Math.max(0, v) / k)])) };
 }
-if (typeof module !== 'undefined') Object.assign(module.exports, { SL_RULES, SL_RETIRE_MULTIPLES, SL_NEEDS, slRetireMultiple, slChecksPerMonth, slStatusCap, slStatusFloor, slFutureValue, slRecentMonths, slPlanActuals });
+if (typeof module !== 'undefined') Object.assign(module.exports, { SL_RULES, SL_RETIRE_MULTIPLES, SL_NEEDS, SL_CARD_PURCHASES, SL_PAY_KWS, slRetireMultiple, slChecksPerMonth, slStatusCap, slStatusFloor, slFutureValue, slRecentMonths, slPlanActuals });
 
 /* ---------- Ahead: debt payoff ---------- */
 /* debts: [{id,name,balance,apr(%),min}] ; extra: extra $/month ; method: 'avalanche' | 'snowball' | 'minimum' */
 function slDebtPlan(debts, extra, method) {
   const ds = debts.filter(d => d.balance > 0).map(d => ({ id: d.id, name: d.name, bal: +d.balance, apr: Math.max(0, +d.apr || 0), min: Math.max(0, +d.min || 0), interest: 0, payoff: null }));
   if (!ds.length) return { months: 0, interest: 0, order: [], feasible: true };
-  for (const d of ds) if (!d.min) d.min = Math.max(25, slRound2(d.bal * 0.02));
+  // a blank minimum is set the way most card issuers do: 1% of the balance plus the month's interest, at least $35
+  for (const d of ds) if (!d.min) d.min = Math.max(35, slRound2(d.bal * 0.01 + d.bal * d.apr / 1200));
   const budget = ds.reduce((a, d) => a + d.min, 0) + (method === 'minimum' ? 0 : Math.max(0, +extra || 0));
   const maxInterest = Math.max(...ds.map(d => d.bal * d.apr / 1200));
   if (budget <= maxInterest * 0.999 && method !== 'minimum') { /* still try; may never finish */ }
@@ -4813,7 +4840,8 @@ function slProject(events, startBalance, from, to, buffer) {
 function slPacing(txns, catMap, budgets, avgByCat, todayISO) {
   const today = todayISO || slTodayISO(); const ym = today.slice(0, 7);
   const dim = +slMonthEnd(today).slice(8, 10), elapsed = +today.slice(8, 10);
-  const spend = {}; for (const t of txns) { if (t.date.slice(0, 7) !== ym || !(t.amount < 0) || !slCounted(t, catMap)) continue; spend[t.category] = (spend[t.category] || 0) + (-t.amount); }
+  const spend = {}, count = {}, big = {};
+  for (const t of txns) { if (t.date.slice(0, 7) !== ym || !(t.amount < 0) || !slCounted(t, catMap)) continue; const c = t.category; spend[c] = (spend[c] || 0) + (-t.amount); count[c] = (count[c] || 0) + 1; big[c] = Math.max(big[c] || 0, -t.amount); }
   const out = [];
   const cats = new Set([...Object.keys(spend), ...Object.keys(budgets || {})]);
   const fixed = ['Housing', 'Utilities', 'Insurance', 'Subscriptions', 'Kids & education', 'Taxes', 'Fees & interest'];
@@ -4821,7 +4849,8 @@ function slPacing(txns, catMap, budgets, avgByCat, todayISO) {
     const so = slRound2(spend[c] || 0); const ref = (budgets && budgets[c] > 0) ? +budgets[c] : (avgByCat && avgByCat[c] > 0 ? avgByCat[c] : null);
     if (!ref) continue;
     const isFixed = fixed.includes(c);
-    const projected = !isFixed && elapsed >= 3 ? slRound2(so * dim / elapsed) : null;
+    // a projection needs a week of the month and three charges; the largest counts once, as a one-off, and the rest set the pace
+    const projected = !isFixed && elapsed >= 7 && (count[c] || 0) >= 3 ? slRound2(big[c] + (so - big[c]) * dim / elapsed) : null;
     const status = so > ref * (isFixed ? 1.1 : 1.0) + 0.5 ? 'bad' : (projected != null && projected > ref * 1.05) ? 'warn' : 'good';
     out.push({ category: c, spent: so, ref, isBudget: !!(budgets && budgets[c] > 0), projected, status, pct: Math.round(so / ref * 100) });
   }
@@ -4919,6 +4948,9 @@ const PDFJS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
 const PFAT_OFFLINE = true;
 // The offline edition's built-in files, by SHA-256 (build.py --offline writes them from vendor.json).
 const VENDOR_SHA = {"tesseract":"a8e29918d098b2b06e1012bdaeffb4aec0445c5d5654709023e0bd1f442a80e8","worker":"aca1229639fc9907d86f96e825955a2b7c5716d17f3bc3acd71f9c7ab66181fc","core":"ce20eda9533cbed1e6c2b4276fbae1e0adc61b6754b5513084be601787b457cf","eng":"45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91","pdf":"5b5799e6f8c680663207ac5b42ee14eed2a406fa7af48f50c154f0c0b1566946","pdfworker":"feabdf309770ed24bba31a5467836cdc8cf639c705af27d52b585b041bb8527b"};
+// The three library files the online page runs from the CDNs, by SHA-256 (subresource integrity: the browser runs a file
+// only when its bytes match; build.py checks these against vendor.json)
+const CDN_SRI = { pdf: 'sha256-W1eZ5vjGgGYyB6xbQu4U7tKkBvp69I9QwVTwwLFWaUY=', pdfworker: 'sha256-/qvfMJdw7SS7oxpUZ4Ns3Iz2OccFryfVK1hbBBu4Uns=', tesseract: 'sha256-qOKZGNCYsrBuEBK9rv+0rsBEXF1WVHCQI+C9H0QqgOg=' };
 const PFAT_DOWNLOADS = 'https://freeapp4that.store/finance/'; // PFAT's hub card, with both downloads
 
 const state = {
@@ -4940,7 +4972,27 @@ function categories() {
   const custom = state.customCats.map(ov);
   return base.concat(custom, SL_CATEGORIES.filter(c => c.name === 'Uncategorized').map(ov));
 }
-function refreshCats() { catMap = slCatMap(categories()); }
+function refreshCats() { catMap = slCatMap(categories()); catMap[SL_CARD_PURCHASES] = { name: SL_CARD_PURCHASES, color: '#7A8CA5', excluded: false }; }
+// The transactions every figure counts. With "count card payments as spending" on, a card payment that no imported card
+// statement matches (unpaired) counts as card purchases, on every tab alike; payments matched to a card statement stay out.
+function moneyTxns() {
+  if (!state.settings.countCardPayments) return state.txns;
+  return state.txns.map(t => t.category === 'Credit card payment' && t.amount < 0 && !t.transferId && !t.excluded ? Object.assign({}, t, { category: SL_CARD_PURCHASES }) : t);
+}
+// Card payments with nothing on the card side (no card statement, no payment received on a card), over the last 90 days
+function unbackedCardPay() {
+  const today = slTodayISO(), since = slAddDays(today, -90);
+  const stmtCards = new Set(Object.entries((state.ui && state.ui.accountKinds) || {}).filter(([, v]) => v && v.type === 'card').map(([k]) => k));
+  const cardSide = state.txns.some(t => (t.category === 'Credit card payment' && t.amount > 0) || stmtCards.has(t.account));
+  if (cardSide) return 0;
+  return slRound2(state.txns.filter(t => t.category === 'Credit card payment' && t.amount < 0 && !t.transferId && !t.excluded && t.date >= since && t.date <= today).reduce((a, t) => a - t.amount, 0));
+}
+// The accounts that are cards: known from their statements, or receiving card payments
+function cardAccountNames() {
+  const out = new Set(Object.entries(accountKinds()).filter(([, v]) => v && v.type === 'card').map(([k]) => k));
+  for (const t of state.txns) if (t.category === 'Credit card payment' && t.amount > 0 && t.account) out.add(t.account);
+  return out;
+}
 function compileRules() { compiledRules = state.rules.map(r => slMakeRule(r.kw, r.cat)).filter(r => catMap[r.cat]); }
 const BANK_CAT_MAP = [['food', 'Dining'], ['dining', 'Dining'], ['restaurant', 'Dining'], ['coffee', 'Dining'], ['groceries', 'Groceries'], ['grocery', 'Groceries'], ['supermarket', 'Groceries'],
   ['gas', 'Transportation'], ['fuel', 'Transportation'], ['automotive', 'Transportation'], ['auto', 'Transportation'], ['transport', 'Transportation'], ['travel', 'Travel'], ['airfare', 'Travel'], ['hotel', 'Travel'],
@@ -4966,7 +5018,7 @@ function makeTxn(p, account, source) {
   let category = p.category && catMap[p.category] ? p.category : null;
   let lock = !!(category && p.lock);
   if (!category) { category = slCategorize(desc, merchant, amount, compiledRules); if (category === 'Uncategorized') category = mapBankCat(p.bankCat, amount) || category; }
-  return { id: slUid(), date: p.date, desc, merchant, amount, category, account: (p.account || account || '').trim(), note: String(p.note || '').trim(), source: source || '', excluded: !!p.excluded, lock };
+  return { id: slUid(), date: p.date, desc, merchant, amount, category, account: String(p.account || account || '').trim(), note: String(p.note || '').trim(), source: source || '', excluded: !!p.excluded, lock };
 }
 function recategorize(t, force) {
   if (t.lock && !force) return false;
@@ -4976,10 +5028,62 @@ function recategorize(t, force) {
 }
 
 /* ---------- persistence ---------- */
+/* ---------- what saved data and backups may hold ---------- */
+// A currency symbol: up to 4 characters, none of them markup; anything else reads as $
+function cleanCurrency(c) { const s = String(c == null ? '' : c).replace(/[<>&"'`\\\u0000-\u001f\u007f]/g, '').trim().slice(0, 4); return s || '$'; }
+// Settings from storage or a backup, each by its type. A backup leaves this device's privacy choices as they are
+// (keeping data in this browser, and the OK to load the picture reader).
+function cleanSettings(s, fromBackup) {
+  const out = {}; if (!isObj(s)) return out;
+  if ('currency' in s) out.currency = cleanCurrency(s.currency);
+  if (['auto', 'light', 'dark'].includes(s.theme)) out.theme = s.theme;
+  if (['HUD', 'Home'].includes(s.hudLabel)) out.hudLabel = s.hudLabel;
+  for (const k of ['dayFirst', 'countCardPayments', 'cardPayAsked'].concat(fromBackup ? [] : ['autosave', 'ocrOk'])) if (k in s) out[k] = !!s[k];
+  return out;
+}
+function isObj(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
+const SAFE_COLOR = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
+// Saved data or a backup, with every record of the wrong shape dropped, so one bad entry can't break every visit
+function cleanStore(d) {
+  const list = (x) => Array.isArray(x) ? x.filter(isObj) : null;
+  const name = (n) => typeof n === 'string' && !!n.trim() && !/^(__proto__|constructor|prototype)$/.test(n);
+  const color = (o) => { const c = Object.assign({}, o); if ('color' in c && !SAFE_COLOR.test(String(c.color))) delete c.color; return c; };
+  const objs = (x) => { const out = {}; if (isObj(x)) for (const [k, v] of Object.entries(x)) if (name(k) && isObj(v)) out[k] = v; return out; };
+  const overrides = objs(d.catOverrides); for (const k of Object.keys(overrides)) overrides[k] = color(overrides[k]);
+  const budgets = {}; if (isObj(d.budgets)) for (const [k, v] of Object.entries(d.budgets)) if (name(k) && isFinite(+v)) budgets[k] = v;
+  const bills = list(d.bills);
+  return {
+    txns: (Array.isArray(d.txns) ? d.txns : []).filter(t => isObj(t) && typeof t.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(t.date) && t.amount !== '' && t.amount != null && isFinite(+t.amount)),
+    imports: list(d.imports) || [],
+    rules: (list(d.rules) || []).filter(r => typeof r.kw === 'string' && r.kw.trim() && name(r.cat)),
+    customCats: (list(d.customCats) || []).filter(c => name(c.name)).map(c => Object.assign(color(c), { color: SAFE_COLOR.test(String(c.color)) ? c.color : '#8A94A3' })),
+    catOverrides: overrides, budgets,
+    bills: bills ? bills.filter(b => typeof b.id === 'string' && typeof b.name === 'string' && Array.isArray(b.kws)).map(b => Object.assign({}, b, { kws: b.kws.filter(k => typeof k === 'string') })) : null,
+    balances: objs(d.balances),
+    plan: isObj(d.plan) ? d.plan : null,
+    goals: list(d.goals), snapshots: list(d.snapshots), accounts: list(d.accounts),
+    cash: isObj(d.cash) ? d.cash : null, paycheck: isObj(d.paycheck) ? d.paycheck : null, insurance: isObj(d.insurance) ? d.insurance : null, limits: isObj(d.limits) ? d.limits : null,
+  };
+}
+// A saved transaction with its text fields as text
+function cleanTxn(t) {
+  const desc = String(t.desc == null ? '' : t.desc);
+  return Object.assign({ excluded: false, lock: false }, t, { id: t.id ? String(t.id) : slUid(), desc, merchant: typeof t.merchant === 'string' ? t.merchant : slNormalizeMerchant(desc), amount: +t.amount,
+    category: typeof t.category === 'string' ? t.category : 'Uncategorized', account: String(t.account == null ? '' : t.account), note: String(t.note == null ? '' : t.note) });
+}
+// A save that fails (storage full or off) stays on screen until one succeeds: recent changes live only in this tab
+function saveWarn(on) {
+  let b = $('#saveWarn');
+  if (!on) { if (b) b.hidden = true; return; }
+  if (!b) { b = document.createElement('div'); b.id = 'saveWarn'; b.className = 'notice'; b.setAttribute('role', 'alert'); const m = $('main'); if (!m) return; m.prepend(b); }
+  b.innerHTML = 'This browser has no room left to save PFAT\'s data, so recent changes live only in this tab. <button class="btn small" id="saveWarnGo">Download a backup</button>';
+  b.hidden = false;
+}
 function save() {
   if (!state.settings.autosave) return;
   try { localStorage.setItem(STORE_KEY, JSON.stringify({ v: 1, imports: state.imports || [], txns: state.txns, rules: state.rules, customCats: state.customCats, catOverrides: state.catOverrides, budgets: state.budgets, bills: state.bills, balances: state.balances, plan: state.plan, accounts: state.accounts, goals: state.goals, cash: state.cash, paycheck: state.paycheck, snapshots: state.snapshots, insurance: state.insurance, limits: state.limits, settings: state.settings, ui: { period: state.ui.period, from: state.ui.from, to: state.ui.to, lastAccount: state.ui.lastAccount, aheadSec: state.ui.aheadSec, checkSec: state.ui.checkSec, moreSec: state.ui.moreSec } })); }
-  catch (e) { console.warn('Could not save', e); }
+  catch (e) { console.warn('Could not save', e); saveWarn(true); return; }
+  saveWarn(false);
 }
 function load() {
   try {
@@ -4988,18 +5092,10 @@ function load() {
     if (!raw) return;
     const d = JSON.parse(raw);
     if (d && Array.isArray(d.txns)) {
-      state.txns = d.txns.filter(t => t && t.date && typeof t.amount === 'number').map(t => Object.assign({ merchant: slNormalizeMerchant(t.desc), note: '', account: '', excluded: false, lock: false }, t));
-      state.imports = Array.isArray(d.imports) ? d.imports : [];
-      state.rules = Array.isArray(d.rules) ? d.rules : [];
-      state.customCats = Array.isArray(d.customCats) ? d.customCats : [];
-      state.catOverrides = d.catOverrides || {};
-      state.budgets = d.budgets || {};
-      state.bills = Array.isArray(d.bills) ? d.bills : null;
-      state.balances = d.balances && typeof d.balances === 'object' ? d.balances : {};
-      state.plan = d.plan && typeof d.plan === 'object' ? d.plan : null;
-      for (const k of ['goals', 'snapshots', 'accounts']) state[k] = Array.isArray(d[k]) ? d[k] : null;
-      for (const k of ['cash', 'paycheck', 'insurance', 'limits']) state[k] = d[k] && typeof d[k] === 'object' ? d[k] : null;
-      Object.assign(state.settings, d.settings || {});
+      const c = cleanStore(d);
+      state.txns = c.txns.map(cleanTxn);
+      for (const k of ['imports', 'rules', 'customCats', 'catOverrides', 'budgets', 'bills', 'balances', 'plan', 'goals', 'snapshots', 'accounts', 'cash', 'paycheck', 'insurance', 'limits']) state[k] = c[k];
+      Object.assign(state.settings, cleanSettings(d.settings, false));
       if (d.ui) Object.assign(state.ui, { period: d.ui.period || 'thisMonth', from: d.ui.from || '', to: d.ui.to || '', lastAccount: d.ui.lastAccount || '', aheadSec: d.ui.aheadSec || 'debts', checkSec: d.ui.checkSec || 'paycheck', moreSec: d.ui.moreSec || 'guide' });
     }
   } catch (e) { console.warn('Could not load saved data', e); }
@@ -5011,13 +5107,13 @@ function applyTheme() { const t = state.settings.theme; if (t === 'light' || t =
 /* ---------- formatting ---------- */
 function money(n, opts) {
   opts = opts || {};
-  const cur = state.settings.currency || '$';
+  const cur = cleanCurrency(state.settings.currency);
   const v = Math.abs(+n || 0);
   const s = v.toLocaleString(undefined, { minimumFractionDigits: opts.whole ? 0 : 2, maximumFractionDigits: opts.whole ? 0 : 2 });
   const neg = n < 0;
   return (opts.signed && n > 0 ? '+' : '') + (neg ? '\u2212' : '') + cur + s;
 }
-function moneyShort(n) { const cur = state.settings.currency || '$'; const v = Math.abs(n); if (v >= 1000000) return cur + (v / 1000000).toFixed(1) + 'm'; if (v >= 1000) return cur + (v / 1000).toFixed(v >= 10000 ? 0 : 1) + 'k'; return cur + Math.round(v); }
+function moneyShort(n) { const cur = cleanCurrency(state.settings.currency); const v = Math.abs(n); if (v >= 1000000) return cur + (v / 1000000).toFixed(1) + 'm'; if (v >= 1000) return cur + (v / 1000).toFixed(v >= 10000 ? 0 : 1) + 'k'; return cur + Math.round(v); }
 function pct(part, whole) { return whole ? Math.round(part / whole * 100) + '%' : '0%'; }
 function deltaText(cur, prev, lowerIsGood, span) {
   if (prev == null) return '';
@@ -5048,9 +5144,10 @@ function freshNote(fresh, r) {
   if (!parts.length) return '';
   return '<p class="hud-note fresh">' + parts.join(' ') + ' <button class="btn link small" data-go="add:file">Import a recent statement</button></p>';
 }
+// Two taps confirm; the second counts only after half a second, so a double-click can't delete anything by accident
 function armConfirm(btn, label, fn) {
-  if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = btn.dataset.orig || btn.textContent; fn(); return; }
-  btn.dataset.orig = btn.textContent; btn.dataset.armed = '1'; btn.textContent = label;
+  if (btn.dataset.armed) { if (performance.now() - +btn.dataset.armed < 500) return; delete btn.dataset.armed; btn.textContent = btn.dataset.orig || btn.textContent; fn(); return; }
+  btn.dataset.orig = btn.textContent; btn.dataset.armed = String(performance.now() || 1); btn.textContent = label;
   setTimeout(() => { if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = btn.dataset.orig; } }, 3500);
 }
 
@@ -5075,6 +5172,23 @@ function rerender(fn) {
   }, 0);
 }
 function keepOpen(e) { const d = e.target.closest && e.target.closest('details.setup'); if (d) openSetups.add(d.dataset.setup); }
+// A message beside the field it is about, read out with it (aria-describedby), until the field changes
+function fieldErr(input, msg) {
+  if (!input) return toast(msg, true);
+  let p = input.parentElement.querySelector('.field-err');
+  if (!p) { p = document.createElement('span'); p.className = 'field-err'; p.id = input.id + 'Err'; input.insertAdjacentElement('afterend', p); }
+  input.setAttribute('aria-describedby', p.id); p.textContent = msg; input.setAttribute('aria-invalid', 'true'); input.focus();
+  input.addEventListener('input', () => { p.textContent = ''; input.removeAttribute('aria-invalid'); }, { once: true });
+}
+// Each input in an account or bill row is named with its row ("Balance for Kona card"), not just "Balance"
+function nameRowInputs(root) {
+  for (const i of $$('.acct input[aria-label], .bill input[aria-label]', root)) {
+    if (i.dataset.named) continue;
+    const n = i.closest('.acct, .bill').querySelector('.name'); if (!n) continue;
+    const who = (n.firstChild && n.firstChild.nodeType === 3 ? n.firstChild.textContent : n.textContent).trim();
+    if (who) { i.setAttribute('aria-label', i.getAttribute('aria-label') + ' for ' + who); i.dataset.named = '1'; }
+  }
+}
 function toast(msg, isErr) {
   const el = $('#toast'); el.textContent = msg; el.classList.toggle('err', !!isErr); el.hidden = false;
   clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, isErr ? 6000 : 3000);
@@ -5118,9 +5232,9 @@ function renderOverview() {
   if (!state.txns.length) { el.innerHTML = emptyState(); return; }
   const r = currentRange();
   const scopeF = { from: r.from, to: r.through, account: state.ui.account };
-  const cur = slFilter(state.txns, scopeF);
+  const cur = slFilter(moneyTxns(), scopeF);
   const s = slSummarize(cur, catMap, r);
-  const prev = r.prevFrom ? slSummarize(slFilter(state.txns, { from: r.prevFrom, to: r.prevThrough, account: state.ui.account }), catMap, { from: r.prevFrom, to: r.prevThrough }) : null;
+  const prev = r.prevFrom ? slSummarize(slFilter(moneyTxns(), { from: r.prevFrom, to: r.prevThrough, account: state.ui.account }), catMap, { from: r.prevFrom, to: r.prevThrough }) : null;
   const span = prevSpan(r);
   let h = '';
   if (!cur.length) {
@@ -5223,8 +5337,9 @@ function insights(s, prev, cur, rec, r, span) {
     for (const c of s.cats) { const p = prev.byCat[c.name]; const pv = p ? p.spend - p.refunds : 0; if (pv < 20 && c.net < 20) continue; const d = c.net - pv; if (!best || Math.abs(d) > Math.abs(best.d)) best = { name: c.name, d, pv }; }
     if (best && Math.abs(best.d) >= 25) out.push('<b>' + esc(best.name) + '</b> moved the most: ' + (best.d > 0 ? 'up ' : 'down ') + money(Math.abs(best.d)) + (best.pv ? ' (' + Math.round(Math.abs(best.d) / best.pv * 100) + '%)' : '') + ' compared with ' + esc(span || 'the previous period') + '.');
   }
-  const active = rec.filter(x => x.active);
-  if (active.length >= 2) { const m = active.reduce((a, x) => a + x.monthly, 0); out.push(active.length + ' recurring charges cost about <b>' + money(m) + ' a month</b>, or ' + money(m * 12, { whole: true }) + ' a year. Worth checking which ones you still use.'); }
+  const FIXED_NEEDS = ['Housing', 'Utilities', 'Insurance', 'Taxes', 'Kids & education', 'Fees & interest', 'Transfer', 'Savings & investments', 'Credit card payment', 'Income'];
+  const active = rec.filter(x => x.active && !FIXED_NEEDS.includes(x.category));
+  if (active.length >= 2) { const m = active.reduce((a, x) => a + x.monthly, 0); out.push(active.length + ' recurring charges outside rent, utilities, and insurance cost about <b>' + money(m) + ' a month</b>, or ' + money(m * 12, { whole: true }) + ' a year. Worth checking which ones you still use.'); }
   if (s.merchants.length) { const byCount = [...s.merchants].sort((a, b) => b.count - a.count)[0]; if (byCount.count >= 4) out.push('You went to <b>' + esc(titleCase(byCount.name)) + '</b> ' + byCount.count + ' times for ' + money(byCount.spend) + ' in total.'); }
   const wk = s.byWeekday[0] + s.byWeekday[6]; const allw = s.byWeekday.reduce((a, b) => a + b, 0);
   if (allw > 0 && s.days >= 14) out.push('Weekends account for <b>' + pct(wk, allw) + '</b> of spending.');
@@ -5241,7 +5356,8 @@ function barChart(items) {
   const max = Math.max(1, ...items.map(i => Math.max(i.a, i.b)));
   const slot = (W - padL - padR) / n; const bw = Math.max(4, Math.min(18, slot * 0.36));
   const plotH = H - padT - padB;
-  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Money out and money in by period">';
+  const said = items.map(it => it.label + ': ' + money(it.a, { whole: true }) + ' out, ' + money(it.b, { whole: true }) + ' in').join('; ');
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc('Money out and money in by period. ' + said) + '">';
   for (const frac of [0.5, 1]) { const y = padT + plotH * (1 - frac); svg += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="currentColor" stroke-opacity=".14"/><text x="' + padL + '" y="' + (y - 3).toFixed(1) + '" font-size="9" fill="currentColor" opacity=".6">' + esc(moneyShort(max * frac)) + '</text>'; }
   svg += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + (H - padB) + '" y2="' + (H - padB) + '" stroke="currentColor" stroke-opacity=".3"/>';
   items.forEach((it, i) => {
@@ -5301,7 +5417,7 @@ function openEdit(id) {
   $('#eDelete').onclick = (ev) => armConfirm(ev.currentTarget, 'Tap again to delete', () => { state.txns = state.txns.filter(x => x.id !== id); save(); closeSheet(); renderAll(); toast('Deleted'); });
   $('#editForm').onsubmit = (ev) => {
     ev.preventDefault();
-    const a = slParseAmountToken($('#eAmount').value); if (!a) { toast('Enter an amount like -45.67', true); return; }
+    const a = slParseAmountToken($('#eAmount').value); if (!a) { fieldErr($('#eAmount'), 'Enter an amount like -45.67'); return; }
     const d = $('#eDate').value; if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) { toast('Pick a date', true); return; }
     const newCat = $('#eCat').value;
     const changedCat = newCat !== t.category;
@@ -5353,15 +5469,15 @@ async function readTextFile(file) {
   return text.replace(/^\uFEFF/, '');
 }
 let pdfjsPromise = null;
-function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => rej(new Error('The browser stopped loading ' + src)); document.head.appendChild(s); }); }
+function loadScript(src, sri) { return new Promise((res, rej) => { const s = document.createElement('script'); if (sri) { s.integrity = sri; s.crossOrigin = 'anonymous'; } s.src = src; s.async = true; s.onload = res; s.onerror = () => rej(new Error('The browser stopped loading ' + src)); document.head.appendChild(s); }); }
 function loadPdfJs() {
   if (window.pdfjsLib && window.pdfjsWorker) return Promise.resolve();
   if (!pdfjsPromise) {
     let workerSrc = '';
     pdfjsPromise = Promise.resolve().then(() => PFAT_OFFLINE ? vendorVerify(['pdfworker', 'pdf']) : null).then(() => {
       workerSrc = PFAT_OFFLINE ? vendorURL(['pdfworker']) : PDFJS_BASE + 'pdf.worker.min.js';
-      return loadScript(workerSrc);
-    }).then(() => loadScript(PFAT_OFFLINE ? vendorURL(['pdf']) : PDFJS_BASE + 'pdf.min.js')).then(() => {
+      return loadScript(workerSrc, PFAT_OFFLINE ? '' : CDN_SRI.pdfworker);
+    }).then(() => loadScript(PFAT_OFFLINE ? vendorURL(['pdf']) : PDFJS_BASE + 'pdf.min.js', PFAT_OFFLINE ? '' : CDN_SRI.pdf)).then(() => {
       if (!window.pdfjsLib) throw new Error('PDF engine unavailable');
       try { window.pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc; } catch (e) { /* ignore */ }
     }).catch(e => {
@@ -5464,6 +5580,7 @@ function startPreview(kind, name, payload) {
   showTab('add');
   renderPreview();
   const pv = $('#preview'); if (pv && pv.scrollIntoView) pv.scrollIntoView({ block: 'start' });
+  if (pv) { pv.tabIndex = -1; pv.setAttribute('aria-label', 'Import preview'); pv.focus({ preventScroll: true }); }
 }
 function reparse(first) {
   const p = pending; let res;
@@ -5650,7 +5767,7 @@ function renderPreview() {
     const limit = 300;
     (p.kind === 'text' && !p.showPrinted ? slSortRows(res.txns, 'date') : res.txns).slice(0, limit).forEach(t => {
       const amt = p.flipRow[t._i] ? -t.amount : t.amount;
-      h += '<div class="pv-row' + (t._dupe ? ' dupe' : '') + '"><input type="checkbox" data-inc="' + t._i + '"' + (p.include[t._i] ? ' checked' : '') + ' aria-label="Include"><span class="date">' + esc(slFmtDateShort(t.date, true)) + '</span><span class="desc" title="' + esc(t.raw || '') + '"><span class="d">' + esc(t.desc) + '</span><span class="tags">' + (t._dupe ? ' <span class="tag">already saved</span>' : t._twice ? ' <span class="tag">appears twice</span>' : t._maybe ? ' <span class="tag warn" title="A saved row looks like this one; check it isn\'t imported twice">possible duplicate</span>' : '') + (t.pairNote ? ' <span class="tag" title="' + esc(t.pairNote) + '">transfer</span>' : '') + rowTags(t) + (t.note === 'pending' ? ' <span class="tag">pending</span>' : '') + (t.account && p.kind === 'json' ? ' <span class="tag">' + esc(t.account) + '</span>' : '') + '</span>' + rowSugLine(t) + '</span><button type="button" class="amt ' + (amt < 0 ? 'out' : 'in') + '" data-flip="' + t._i + '" title="Flip sign">' + money(amt, { signed: true }) + '</button></div>';
+      h += '<div class="pv-row' + (t._dupe ? ' dupe' : '') + '"><input type="checkbox" data-inc="' + t._i + '"' + (p.include[t._i] ? ' checked' : '') + ' aria-label="' + esc('Include ' + slFmtDateShort(t.date) + ', ' + t.desc + ', ' + money(t.amount, { signed: true })) + '"><span class="date">' + esc(slFmtDateShort(t.date, true)) + '</span><span class="desc" title="' + esc(t.raw || '') + '"><span class="d">' + esc(t.desc) + '</span><span class="tags">' + (t._dupe ? ' <span class="tag">already saved</span>' : t._twice ? ' <span class="tag">appears twice</span>' : t._maybe ? ' <span class="tag warn" title="A saved row looks like this one; check it isn\'t imported twice">possible duplicate</span>' : '') + (t.pairNote ? ' <span class="tag" title="' + esc(t.pairNote) + '">transfer</span>' : '') + rowTags(t) + (t.note === 'pending' ? ' <span class="tag">pending</span>' : '') + (t.account && p.kind === 'json' ? ' <span class="tag">' + esc(t.account) + '</span>' : '') + '</span>' + rowSugLine(t) + '</span><button type="button" class="amt ' + (amt < 0 ? 'out' : 'in') + '" data-flip="' + t._i + '" title="Flip sign">' + money(amt, { signed: true }) + '</button></div>';
     });
     if (res.txns.length > limit) h += '<p class="muted small" style="padding:8px 0">… and ' + (res.txns.length - limit) + ' more (all will be imported as ticked)</p>';
     h += '</div>';
@@ -5675,16 +5792,21 @@ function doImport() {
   const p = pending; if (!p) return;
   const acct = ($('#pvAccount').value || '').trim() || 'Imported';
   if (p.result.backup && p.opts.replace) {
-    const b = p.result.backup;
-    state.rules = Array.isArray(b.rules) ? b.rules : []; state.customCats = Array.isArray(b.customCats) ? b.customCats : []; state.catOverrides = b.catOverrides || {}; state.budgets = b.budgets || {};
-    state.bills = Array.isArray(b.bills) ? b.bills : null; ensureBills(); state.balances = b.balances && typeof b.balances === 'object' ? b.balances : {};
-    state.plan = b.plan && typeof b.plan === 'object' ? b.plan : null; ensurePlan();
-    for (const k of ['goals', 'snapshots', 'accounts']) state[k] = Array.isArray(b[k]) ? b[k] : null;
-    for (const k of ['cash', 'paycheck', 'insurance', 'limits']) state[k] = b[k] && typeof b[k] === 'object' ? b[k] : null;
-    ensureAhead(); ensureCheckup();
-    if (b.settings) Object.assign(state.settings, b.settings);
-    refreshCats(); compileRules();
-    state.txns = b.txns.map(t => { const x = makeTxn(Object.assign({}, t, { lock: t.lock !== undefined ? !!t.lock : true }), t.account || acct, 'backup'); if (t.extId) x.extId = String(t.extId); return x; });
+    // checked whole first: records of the wrong shape are dropped, and anything that fails leaves the current data as it was
+    const KEYS = ['rules', 'customCats', 'catOverrides', 'budgets', 'bills', 'balances', 'plan', 'goals', 'snapshots', 'accounts', 'cash', 'paycheck', 'insurance', 'limits', 'txns'];
+    const before = {}; for (const k of KEYS) before[k] = state[k];
+    const settingsBefore = Object.assign({}, state.settings);
+    try {
+      const b = cleanStore(p.result.backup);
+      for (const k of KEYS) if (k !== 'txns') state[k] = b[k];
+      ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup();
+      Object.assign(state.settings, cleanSettings(p.result.backup.settings, true));
+      refreshCats(); compileRules();
+      state.txns = b.txns.map(t => { const x = makeTxn(Object.assign({}, t, { lock: t.lock !== undefined ? !!t.lock : true }), t.account || acct, 'backup'); if (t.extId) x.extId = String(t.extId); return x; });
+    } catch (e) {
+      for (const k of KEYS) state[k] = before[k]; state.settings = settingsBefore; refreshCats(); compileRules();
+      toast('This backup could not be restored, so your data stays as it was (' + e.message + ')', true); return;
+    }
     pending = null; save(); applyTheme(); renderAll(); toast('Backup restored: ' + state.txns.length + ' transactions');
     nextInQueue(); return;
   }
@@ -5720,8 +5842,8 @@ function doImport() {
   if (added.length) { const r0 = currentRange(); if (!slFilter(state.txns, { from: r0.from, to: r0.to, account: state.ui.account }).length) state.ui.period = 'all'; }
   save(); renderAll();
   const leftN = p.result.txns.filter(t => !p.include[t._i]).length;
-  toast((added.length ? 'Imported ' + added.length + ' transactions into ' + acct + (savedTo ? '; details saved to ' + savedTo : '') : savedTo ? acct + ' saved to ' + savedTo : 'Nothing imported') + (leftN ? '; ' + leftN + ' row' + (leftN === 1 ? '' : 's') + ' left out (listed under Data, Imports)' : ''));
-  if (fileQueue.length) nextInQueue(); else { renderPreview(); showTab('hud'); }
+  toast((added.length ? 'Imported ' + added.length + ' transactions into ' + acct + (savedTo ? '; details saved to ' + savedTo : '') : savedTo ? acct + ' saved to ' + savedTo : 'Nothing imported') + (leftN ? '; ' + leftN + ' row' + (leftN === 1 ? '' : 's') + ' left out, as you chose' : ''));
+  if (fileQueue.length) nextInQueue(); else { renderPreview(); showTab('hud'); const hp = $('#tab-hud'); if (hp) { hp.tabIndex = -1; hp.focus({ preventScroll: true }); } }
 }
 
 /* ---------- rules ---------- */
@@ -5758,11 +5880,11 @@ function renderData() {
   let h = '<section class="section" style="margin-top:4px"><h2>Your data</h2><dl class="kv"><dt>Transactions</dt><dd>' + state.txns.length + (b.min ? ' (' + esc(slFmtDate(b.min)) + ' – ' + esc(slFmtDate(b.max)) + ')' : '') + '</dd><dt>Accounts</dt><dd>' + (esc(accounts().join(', ')) || '—') + '</dd><dt>Saved in this browser</dt><dd>' + (bytes ? (bytes / 1024).toFixed(1) + ' KB' : 'nothing yet') + '</dd></dl>' +
     '<label class="check" style="margin-top:10px"><input type="checkbox" id="autosave"' + (state.settings.autosave ? ' checked' : '') + '> Keep my data in this browser between visits</label>' +
     '<div class="actions"><button class="btn" id="saveNow">Save now</button><button class="btn danger" id="clearAll">Delete everything</button></div></section>';
-  h += '<section class="section"><h2>Export</h2><p class="sub">A CSV opens in any spreadsheet. The backup file restores transactions, rules, categories, and budgets on another device, via Add → From a file.</p><div class="actions"><button class="btn primary" id="expCsv">Download CSV</button><button class="btn" id="expJson">Download backup</button><button class="btn" id="copyCsv">Copy CSV to clipboard</button></div></section>';
+  h += '<section class="section"><h2>Export</h2><p class="sub">A CSV opens in any spreadsheet. The backup file restores transactions, rules, categories, budgets, and display settings on another device, via Add → From a file. It holds your data as plain text, so keep it somewhere private.</p><div class="actions"><button class="btn primary" id="expCsv">Download CSV</button><button class="btn" id="expJson">Download backup</button><button class="btn" id="copyCsv">Copy CSV to clipboard</button></div></section>';
   h += '<section class="section"><h2>Print a report</h2><p class="sub">Prints the tab you choose, without the controls. Pick HUD or Overview and a period, then print; save as PDF from the print dialog to share.</p><div class="actions"><button class="btn" id="printHud">Print the HUD</button><button class="btn" id="printOverview">Print the Overview</button></div></section>';
   h += '<section class="section"><h2>Sample data</h2><p class="sub">Four months of made-up transactions for trying things out.</p><div class="actions">' + (hasSample ? '<button class="btn" data-act="removeSample">Remove sample data</button>' : '<button class="btn" data-act="sample">Load sample data</button>') + '</div></section>';
   h += '<section class="section"><h2>Appearance</h2><div class="grid2"><label>Theme <select id="theme"><option value="auto"' + (state.settings.theme === 'auto' ? ' selected' : '') + '>Match device</option><option value="light"' + (state.settings.theme === 'light' ? ' selected' : '') + '>Light</option><option value="dark"' + (state.settings.theme === 'dark' ? ' selected' : '') + '>Dark</option></select></label><label>Currency symbol <input type="text" id="currency" maxlength="4" value="' + esc(state.settings.currency) + '"></label><label>Call the first tab <select id="hudLabel"><option value="HUD"' + (state.settings.hudLabel !== 'Home' ? ' selected' : '') + '>HUD</option><option value="Home"' + (state.settings.hudLabel === 'Home' ? ' selected' : '') + '>Home</option></select></label></div><label class="check"><input type="checkbox" id="dayFirst"' + (state.settings.dayFirst ? ' checked' : '') + '> My bank writes dates day-first (DD/MM/YYYY)</label></section>';
-  h += '<section class="section"><h2>Privacy</h2><div class="privacy"><p>Everything you add is parsed and analyzed in this browser tab and stays on this device.' + (PFAT_OFFLINE ? ' This file works completely offline.' : '') + '</p><p>If you keep data between visits, it lives in this browser\'s local storage on this device only. Clearing site data or using a private window removes it.</p>' +
+  h += '<section class="section"><h2>Privacy</h2><div class="privacy"><p>Everything you add is parsed and analyzed in this browser tab and stays on this device.' + (PFAT_OFFLINE ? ' This file works completely offline.' : '') + '</p><p>If you keep data between visits, it lives in this browser\'s local storage on this device only. Data saved in a private window disappears when that window closes, and clearing site data removes it.</p>' +
     (PFAT_OFFLINE ? '<p>Two open-source libraries are built into this file and run on this device: pdf.js 3.11.174 (Apache-2.0) reads PDFs, and Tesseract (tesseract.js and tesseract.js-core 5.1.1, Apache-2.0, with the English model from @tesseract.js-data/eng 1.0.0, MIT) reads screenshots and scanned statements. Their license notices, with those of the libraries built into them, sit at the end of this file; open it in a text editor to read them.</p>'
       : '<p>Two open-source libraries can be fetched when you need them: pdf.js from cdnjs to read PDFs, and Tesseract (Apache 2.0) from jsDelivr to read screenshots and scanned statements. Only the libraries and the English model download; your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in and reads PDFs and pictures completely offline.</p>') + (!PFAT_OFFLINE && state.settings.ocrOk ? '<p>You agreed to read pictures with Tesseract. <button class="btn small" id="ocrWithdraw">Stop reading pictures</button> (PFAT asks again next time).</p>' : '') + (PFAT_OFFLINE ? '' : feedPrivacyNote()) + '</div></section>';
   el.innerHTML = h;
@@ -5829,24 +5951,32 @@ function renderHud() {
   if (!state.txns.length) { el.innerHTML = emptyState(); return; }
   ensureBills();
   const r = currentRange();
-  const scoped = slFilter(state.txns, { from: r.from, to: r.through, account: state.ui.account });
+  const scoped = slFilter(moneyTxns(), { from: r.from, to: r.through, account: state.ui.account });
   if (!scoped.length) { el.innerHTML = '<div class="empty"><h2>No transactions in this period (' + esc(r.label) + ')</h2><p>Your records run from ' + esc(slFmtDate(dataBounds().min)) + ' to ' + esc(slFmtDate(dataBounds().max)) + '. ' + (runsThroughToday(r) ? '<button class="btn link" data-go="add:file">Import a recent statement</button> or pick another period above.' : 'Pick another period above.') + '</p></div>'; return; }
   const s = slSummarize(scoped, catMap, r);
-  const history = slFilter(state.txns, { account: state.ui.account });
+  const history = slFilter(moneyTxns(), { account: state.ui.account });
   const fresh = slFreshness(history);
   const assigned = slAssignBills(state.bills, history);
   const pa = history.length ? slPlanActuals(history, state.bills, catMap, 3) : null;
-  const cardPay = slRound2(scoped.filter(t => t.category === 'Credit card payment' && t.amount < 0 && !t.excluded).reduce((a, t) => a - t.amount, 0));
   const subtract = !!state.settings.countCardPayments;
-  const left = slRound2(s.income - s.spend - (subtract ? cardPay : 0));
+  const cardPay = slRound2(scoped.filter(t => (t.category === 'Credit card payment' || t.category === SL_CARD_PURCHASES) && t.amount < 0 && !t.excluded).reduce((a, t) => a - t.amount, 0));
+  const counted = slRound2(scoped.filter(t => t.category === SL_CARD_PURCHASES && t.amount < 0).reduce((a, t) => a - t.amount, 0));
+  const left = slRound2(s.income - s.spend);
   const single = !!(r.from && r.to && r.from.slice(0, 7) === r.to.slice(0, 7) && r.from.slice(8) === '01');
   const months = Math.max(1, Math.round(s.days / 30.4));
   let h = '<div class="figures hud">' +
     '<div class="figure"><div class="label">Money in</div><div class="value in">' + money(s.income) + '</div><div class="delta">' + (months > 1 ? money(s.income / months) + ' per month' : '') + '</div></div>' +
     '<div class="figure"><div class="label">Money out</div><div class="value out">' + money(s.spend) + '</div><div class="delta">' + (months > 1 ? money(s.spend / months) + ' per month' : '') + '</div></div>' +
     '<div class="figure"><div class="label">Left over</div><div class="value ' + (left < 0 ? 'out' : '') + '">' + money(left) + '</div><div class="delta">' + (s.income ? (left < 0 ? 'more out than in' : pct(left, s.income) + ' of money in') : '') + '</div></div></div>';
-  h += '<p class="figline">' + esc(r.label) + ' · ' + s.count + (s.count === 1 ? ' transaction' : ' transactions') + (cardPay ? ' · card payments made ' + money(cardPay) + (subtract ? ', subtracted' : ', not subtracted') : '') + (r.partial && fresh.latest ? ' · records through ' + esc(slFmtDateShort(fresh.latest)) : '') + '</p>';
+  h += '<p class="figline">' + esc(r.label) + ' · ' + s.count + (s.count === 1 ? ' transaction' : ' transactions') + (counted ? ' · card payments counted as spending: ' + money(counted) : cardPay ? ' · card payments ' + money(cardPay) + ' (the purchases come from the card statements)' : '') + (r.partial && fresh.latest ? ' · records through ' + esc(slFmtDateShort(fresh.latest)) : '') + '</p>';
   h += freshNote(fresh, r);
+  // asked once: card payments with no card statement behind them leave the purchases out of spending
+  const unbacked = !subtract && !state.settings.cardPayAsked ? unbackedCardPay() : 0;
+  if (unbacked > 0) h += '<div class="notice cardask"><p>Card payments of <b>' + money(unbacked) + '</b> left your accounts in the last 3 months, and PFAT holds none of those cards\' statements, so the purchases behind them are missing from your spending.</p><div class="actions"><button class="btn small primary" id="cardAskYes">Count card payments as spending</button><button class="btn small" id="cardAskNo">I\'ll import the card statements</button></div></div>';
+  // money in from accounts outside PFAT (a partner's account, a payment app) reads as a transfer; a tap counts it as income
+  const ins = {}; for (const t of scoped) if (t.amount > 0 && t.category === 'Transfer' && !t.transferId && !t.excluded) { const k = t.merchant || t.desc; (ins[k] || (ins[k] = { name: k, sum: 0 })).sum += t.amount; }
+  const inTop = Object.values(ins).filter(x => x.sum >= 50).sort((a, b) => b.sum - a.sum).slice(0, 3);
+  if (inTop.length) h += '<div class="notice"><p>Transfers in from accounts outside PFAT sit outside money in: ' + inTop.map(x => '<b>' + esc(titleCase(x.name)) + '</b> ' + money(x.sum)).join(', ') + '. If one is pay or a partner\'s share, count it as income; later ones follow.</p><div class="actions">' + inTop.map(x => '<button class="btn small" data-income-kw="' + esc(String(x.name).toLowerCase()) + '">Count ' + esc(titleCase(x.name)) + ' as income</button>').join('') + '</div></div>';
 
   // Routine bills
   const rows = []; const unseen = []; let expTotal = 0, actTotal = 0, actCounted = 0;
@@ -5876,7 +6006,7 @@ function renderHud() {
 
   // Cards & loans
   const cards = {};
-  for (const t of history) if (t.category === 'Credit card payment' && t.amount < 0 && !t.excluded) { const c = cards[t.merchant] || (cards[t.merchant] = { paid: 0, count: 0, last: null }); if ((!r.from || t.date >= r.from) && (!r.through || t.date <= r.through)) { c.paid += -t.amount; c.count++; } if (!c.last || t.date > c.last) c.last = t.date; }
+  for (const t of history) if ((t.category === 'Credit card payment' || t.category === SL_CARD_PURCHASES) && t.amount < 0 && !t.excluded) { const c = cards[t.merchant] || (cards[t.merchant] = { paid: 0, count: 0, last: null }); if ((!r.from || t.date >= r.from) && (!r.through || t.date <= r.through)) { c.paid += -t.amount; c.count++; } if (!c.last || t.date > c.last) c.last = t.date; }
   const manual = Object.entries(state.balances || {}).filter(([k]) => k.startsWith('manual:') || k.startsWith('stmt:'));
   const loans = state.bills.filter(b => b.kind === 'loan').map(b => ({ b, st: slBillStats(b, assigned[b.id] || [], r) })).filter(x => x.st.everMatched || x.b.expected > 0 || (state.balances['loan:' + x.b.id] && state.balances['loan:' + x.b.id].balance));
   let cardDebt = 0, loanDebt = 0;
@@ -5894,8 +6024,8 @@ function renderHud() {
   } else h += '<p class="muted small">No card payments or loans found yet. Card payments are recognized from descriptions like "Payment - thank you" or "CRCARDPMT"; loans come from the Car payment and Student loan bills above.</p>';
   h += '<div class="actions"><button class="btn" data-hud="addAccount">Add a card or loan by hand</button></div></section>';
 
-  h += '<section class="section"><h2>How "left over" is counted</h2><label class="check"><input type="checkbox" id="countCardPay"' + (subtract ? ' checked' : '') + '> Subtract card payments too. Tick this if the card only shows up here as payments from checking (you don\'t import the card\'s own statements). Leave it off when card purchases are already imported, or they would count twice.</label></section>';
-  el.innerHTML = h;
+  h += '<section class="section"><h2>How "left over" is counted</h2><label class="check"><input type="checkbox" id="countCardPay"' + (subtract ? ' checked' : '') + '> Count card payments as spending, on every tab. Tick this if a card shows up here only as payments from checking (its own statements stay out of PFAT). A payment matched to an imported card statement stays out either way, so nothing counts twice.</label></section>';
+  el.innerHTML = h; nameRowInputs(el);
 }
 function openBillEdit(id) {
   ensureBills();
@@ -5942,10 +6072,10 @@ function bindHud() {
     const rm = e.target.closest('[data-rmbal]'); if (rm) { delete state.balances[rm.dataset.rmbal]; save(); renderHud(); return; }
     const row = e.target.closest('.bill[data-bill]'); if (row) { openBillEdit(row.dataset.bill); return; }
   });
-  hb.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('.bill[data-bill]')) { e.preventDefault(); e.target.click(); } });
+  hb.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.bill[data-bill]')) { e.preventDefault(); e.target.click(); } });
   hb.addEventListener('change', e => {
     const t = e.target;
-    if (t.id === 'countCardPay') { state.settings.countCardPayments = t.checked; save(); renderHud(); return; }
+    if (t.id === 'countCardPay') { state.settings.countCardPayments = t.checked; state.settings.cardPayAsked = true; save(); renderAll(); return; }
     if (t.dataset.bal) { const a = slParseAmountToken(t.value); const prev = state.balances[t.dataset.bal] || {}; state.balances[t.dataset.bal] = Object.assign({}, prev, { name: prev.name || t.dataset.name || '', kind: prev.kind || t.dataset.kind || 'card', balance: a ? Math.abs(a.value) : 0 }); save(); rerender(renderHud); }
   });
 }
@@ -5962,7 +6092,7 @@ function planModel() {
   ensurePlan(); ensureBills();
   const p = state.plan;
   const cpm = slChecksPerMonth(p.freq);
-  const history = state.txns;
+  const history = moneyTxns();
   const act = history.length ? slPlanActuals(history, state.bills, catMap, 3) : null;
   const grossCheck = num(p.gross), grossM = grossCheck * cpm, grossY = grossM * 12;
   const netCheckIn = num(p.net);
@@ -5993,39 +6123,47 @@ function renderPlan() {
     '<label>Emergency fund balance <input type="text" inputmode="decimal" id="pEfBal" value="' + esc(p.efBal) + '" placeholder="' + (m.efFromAccounts ? esc(money(m.efBal, { whole: true })) + ' (accounts)' : '0.00') + '"' + (m.efFromAccounts ? ' disabled' : '') + '></label>' +
     '</div><div class="actions" style="margin-top:0;padding-bottom:12px"><button type="submit" class="btn small">Save</button></div></form>') + '</section>';
   h += renderAccountsSection(m);
-  if (!m.grossM) { h += renderYearForecast(m); h += '<div class="empty"><h2>Enter your gross pay to see the plan</h2><p>The guidelines are percentages of gross and take-home pay, so the plan starts once that is in. Your actual spending comes from the transactions you have imported' + (m.act ? ' (last ' + m.act.k + (m.act.k === 1 ? ' month' : ' months') + ' on record)' : '') + '.</p></div>'; el.innerHTML = h; return; }
+  if (!m.grossM) { h += renderYearForecast(m); h += '<div class="empty"><h2>Enter your gross pay to see the plan</h2><p>The guidelines are percentages of gross and take-home pay, so the plan starts once that is in. Your actual spending comes from the transactions you have imported' + (m.act ? ' (last ' + m.act.k + (m.act.k === 1 ? ' month' : ' months') + ' on record)' : '') + '.</p></div>'; el.innerHTML = h; nameRowInputs(el); return; }
   const a = m.act;
-  const note = a ? 'Actuals are monthly averages of your last ' + a.k + (a.k === 1 ? ' month' : ' months') + ' on record (' + a.months.map(slFmtMonth).join(', ') + ').' : 'No transactions yet, so the actual column stays empty.';
+  // with less than a full month of records, the figures show what is known, and the ratings wait for a full month
+  const capR = (x, y) => a && a.partial ? 'none' : slStatusCap(x, y), floorR = (x, y) => a && a.partial ? 'none' : slStatusFloor(x, y);
+  const holdSplit = !!(a && (a.partial || a.cardBuys > 0)), capS = (x, y) => holdSplit ? 'none' : slStatusCap(x, y), floorS = (x, y) => holdSplit ? 'none' : slStatusFloor(x, y);
+  const heldWhy = a && a.partial ? 'a full month of records' : 'the card statements, to split card purchases into needs and wants';
+  const note = !a ? 'No transactions yet, so the actual column stays empty.' : a.partial ? 'Your records cover ' + a.days + (a.days === 1 ? ' day' : ' days') + ' so far, so the actual column shows what they hold, and the ratings appear once a full month is in.' : 'Actuals are monthly averages of your last ' + a.k + (a.k === 1 ? ' month' : ' months') + ' on record (' + a.months.map(slFmtMonth).join(', ') + ').';
 
   // Ideal paycheck (50/30/20)
   const base = m.netM + m.retireM; // after-tax pay plus pre-tax retirement, so the three buckets add up
   const needsCap = base * R.needsPct, wantsCap = base * R.wantsPct, saveFloor = base * R.savePct;
   h += '<section class="section"><h2>Ideal paycheck</h2><p class="sub">The 50/30/20 split: needs, wants, and savings or debt payoff, on take-home pay' + (m.netFromData ? ' (using the income seen in your transactions, ' + money(m.netM) + ' a month)' : '') + (m.retireM ? ' plus what you already put into retirement before tax' : '') + '. Paid ' + FREQ_LABEL[p.freq] + ', that is:</p>';
   h += '<div class="ribbon" aria-hidden="true"><span style="width:50%;background:var(--accent)"></span><span style="width:30%;background:#D6A32A"></span><span style="width:20%;background:var(--in)"></span></div>';
-  const buckets = [['Needs', 'up to', needsCap, a ? a.needs : null, slStatusCap, 'rent, utilities, groceries, transport, insurance, minimum payments', sword], ['Wants', 'up to', wantsCap, a ? a.wants : null, slStatusCap, 'dining, shopping, subscriptions, travel, fun', sword], ['Savings & debt payoff', 'at least', saveFloor, a ? a.saveOut + m.retireM : null, slStatusFloor, 'retirement, emergency fund, and extra on loans and cards', fword]];
+  const buckets = [['Needs', 'up to', needsCap, a ? a.needs : null, capS, 'rent, utilities, groceries, transport, insurance, minimum payments', sword], ['Wants', 'up to', wantsCap, a ? a.wants : null, capS, 'dining, shopping, subscriptions, travel, fun', sword], ['Savings & debt payoff', 'at least', saveFloor, a ? a.saveOut + m.retireM : null, floorR, 'retirement, emergency fund, and extra on loans and cards', fword]];
   h += '<div class="hud-table">';
   for (const [name, dir, target, actual, fn, what, wf] of buckets) {
     const st = actual == null ? 'none' : fn(actual, target);
     h += '<div class="bill plan"><span class="name">' + name + '<span class="pm">' + what + '</span></span><span class="num">' + dir + '<br>' + money(target / m.cpm) + '<span class="pm">' + money(target) + '/mo · ' + Math.round(target / base * 100) + '%</span></span><span class="num actual">' + (actual == null ? '—' : sdot(st) + money(actual) + '<span class="pm">' + Math.round(actual / base * 100) + '% of pay · ' + wf(st) + '</span>') + '</span></div>';
   }
-  if (a && a.unsorted > 0) h += '<p class="hud-note">' + money(a.unsorted) + ' a month is uncategorized and not counted in needs or wants. Sorting it will sharpen this.</p>';
+  if (a && a.unsorted > 0) h += '<p class="hud-note">' + money(a.unsorted) + ' a month is uncategorized and sits outside needs and wants. Sorting it will sharpen this.</p>';
+  if (a && a.cardBuys > 0) h += '<p class="hud-note">' + money(a.cardBuys) + ' a month of card purchases counts as spending; importing the card\'s statements splits it into needs and wants.</p>';
   h += '</div></section>';
 
   // Guideline table
   const rent = a ? a.billAvg.rent || 0 : null;
   const car = a ? (a.billAvg['car-payment'] || 0) + (a.billAvg['car-insurance'] || 0) : null;
   const loans = a ? state.bills.filter(b => b.kind === 'loan').reduce((s, b) => s + (a.billAvg[b.id] || 0), 0) : 0;
-  const dti = a ? rent + loans + a.cardPay : null;
+  const cards = Object.values(state.balances || {}).filter(v => v && v.kind === 'card');
+  const cardMins = cards.reduce((s0, v) => s0 + (+v.min > 0 ? +v.min : 0), 0);
+  const cardDebt = cards.filter(v => +v.balance > 0 && +v.apr > 0).reduce((s0, v) => s0 + +v.balance, 0);
+  const dti = a ? rent + loans + cardMins : null;
   const retirePct = m.contrib + m.match;
   const efTargetLo = a ? a.essentials * R.efMonthsMin : 0, efTargetHi = a ? a.essentials * R.efMonthsMax : 0;
   const efMonths = a && a.essentials ? m.efBal / a.essentials : null;
   h += '<section class="section"><h2>Guidelines against your numbers</h2><p class="sub">' + note + '</p><div class="hud-table"><div class="bill head"><span class="name">Rule of thumb</span><span class="num">Guideline</span><span class="num">Yours</span></div>';
   const line = (name, rule, target, actualText, status, detail) => '<div class="bill plan"><span class="name">' + name + '<span class="pm">' + rule + '</span></span><span class="num">' + target + '</span><span class="num actual">' + (actualText == null ? '—' : sdot(status) + actualText) + '</span>' + (detail ? '<span class="status">' + detail + '</span>' : '') + '</div>';
-  h += line('Rent or mortgage', 'no more than 30% of gross pay', money(m.grossM * R.rentPctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.rentPctGross) + ' per check</span>', rent == null ? null : money(rent) + '<span class="pm">' + Math.round(rent / m.grossM * 100) + '% of gross</span>', rent == null ? 'none' : slStatusCap(rent, m.grossM * R.rentPctGross), 'Lenders use 28%; above 30% is what HUD calls cost-burdened. ' + cap(sword(rent == null ? 'none' : slStatusCap(rent, m.grossM * R.rentPctGross))));
-  h += line('Car payment + insurance', 'no more than 10% of gross pay (20/4/10 rule)', money(m.grossM * R.carPctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.carPctGross) + ' per check</span>', car == null ? null : money(car) + '<span class="pm">' + Math.round(car / m.grossM * 100) + '% of gross</span>', car == null ? 'none' : slStatusCap(car, m.grossM * R.carPctGross), '20% down, 4-year loan at most, all car costs under 10% of gross. Fuel is counted under needs instead. ' + cap(sword(car == null ? 'none' : slStatusCap(car, m.grossM * R.carPctGross))));
-  h += line('Housing + loans + card payments', 'no more than 36% of gross pay (28/36 rule)', money(m.grossM * R.dtiPctGross) + '<span class="pm">/mo</span>', dti == null ? null : money(dti) + '<span class="pm">' + Math.round(dti / m.grossM * 100) + '% of gross</span>', dti == null ? 'none' : slStatusCap(dti, m.grossM * R.dtiPctGross), 'What mortgage lenders call debt-to-income. ' + cap(sword(dti == null ? 'none' : slStatusCap(dti, m.grossM * R.dtiPctGross))));
+  h += line('Rent or mortgage', 'no more than 30% of gross pay', money(m.grossM * R.rentPctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.rentPctGross) + ' per check</span>', rent == null ? null : money(rent) + '<span class="pm">' + Math.round(rent / m.grossM * 100) + '% of gross</span>', rent == null ? 'none' : capR(rent, m.grossM * R.rentPctGross), 'Lenders use 28%; above 30% is what HUD calls cost-burdened. ' + cap(sword(rent == null ? 'none' : capR(rent, m.grossM * R.rentPctGross))));
+  h += line('Car payment + insurance', 'no more than 10% of gross pay (20/4/10 rule)', money(m.grossM * R.carPctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.carPctGross) + ' per check</span>', car == null ? null : money(car) + '<span class="pm">' + Math.round(car / m.grossM * 100) + '% of gross</span>', car == null ? 'none' : capR(car, m.grossM * R.carPctGross), '20% down, 4-year loan at most, all car costs under 10% of gross. Fuel is counted under needs instead. ' + cap(sword(car == null ? 'none' : capR(car, m.grossM * R.carPctGross))));
+  h += line('Housing + loans + card minimums', 'no more than 36% of gross pay (28/36 rule)', money(m.grossM * R.dtiPctGross) + '<span class="pm">/mo</span>', dti == null ? null : money(dti) + '<span class="pm">' + Math.round(dti / m.grossM * 100) + '% of gross</span>', dti == null ? 'none' : capR(dti, m.grossM * R.dtiPctGross), 'What mortgage lenders call debt-to-income' + (a && a.cardPay > 0 && !cardMins ? '; add each card\'s minimum payment on the HUD to count cards here' : '') + '. ' + cap(sword(dti == null ? 'none' : capR(dti, m.grossM * R.dtiPctGross))));
   h += line('Retirement contributions', 'at least 15% of gross, counting what your employer adds', money(m.grossM * R.retirePctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.retirePctGross) + ' per check, all in</span>', (p.contrib === '' && p.match === '' && !m.retireFromAccounts) ? null : Math.round(retirePct * 100) + '%<span class="pm">' + money(m.retireM + m.matchM) + '/mo ' + (m.retireFromAccounts ? '(from your 401k/TSP account, match included)' : '(you ' + Math.round(m.contrib * 100) + '% + employer ' + Math.round(m.match * 100) + '%)') + '</span>', (p.contrib === '' && p.match === '' && !m.retireFromAccounts) ? 'none' : slStatusFloor(retirePct, R.retirePctGross), (p.contrib !== '' || p.match !== '' || m.retireFromAccounts) ? (retirePct >= R.retirePctGross ? 'On track. ' : 'Raising your share to ' + Math.max(0, Math.round((R.retirePctGross - m.match) * 100)) + '% would get you there: about ' + money(Math.max(0, (R.retirePctGross - m.match - m.contrib)) * m.grossCheck) + ' more per check. ') + cap(fword(slStatusFloor(retirePct, R.retirePctGross))) : 'Enter your contribution above.');
-  h += line('Emergency fund', '3 to 6 months of essential expenses', a && a.essentials ? money(efTargetLo, { whole: true }) + ' – ' + money(efTargetHi, { whole: true }) + '<span class="pm">essentials run ' + money(a.essentials) + '/mo</span>' : '—', (p.efBal === '' && !m.efFromAccounts) ? null : money(m.efBal) + (efMonths != null ? '<span class="pm">' + efMonths.toFixed(1) + ' months covered</span>' : ''), (p.efBal === '' && !m.efFromAccounts) || efMonths == null ? 'none' : slStatusFloor(efMonths, R.efMonthsMin), (p.efBal !== '' || m.efFromAccounts) && a && a.essentials ? (m.efBal >= efTargetLo ? (m.efBal >= efTargetHi ? 'Fully funded; extra can go to retirement or goals. ' : 'Floor reached; 6 months gives more room. ') : 'To reach 3 months in a year: about ' + money((efTargetLo - m.efBal) / 12 / m.cpm) + ' per check. ') + cap(fword(slStatusFloor(efMonths, R.efMonthsMin))) : 'Enter your balance above.');
+  h += line('Emergency fund', '3 to 6 months of essential expenses', a && a.essentials ? money(efTargetLo, { whole: true }) + ' – ' + money(efTargetHi, { whole: true }) + '<span class="pm">essentials run ' + money(a.essentials) + '/mo</span>' : '—', (p.efBal === '' && !m.efFromAccounts) ? null : money(m.efBal) + (efMonths != null ? '<span class="pm">' + efMonths.toFixed(1) + ' months covered</span>' : ''), (p.efBal === '' && !m.efFromAccounts) || efMonths == null ? 'none' : floorS(efMonths, R.efMonthsMin), holdSplit ? 'This waits for ' + heldWhy + '. ' : (p.efBal !== '' || m.efFromAccounts) && a && a.essentials ? (m.efBal >= efTargetLo ? (m.efBal >= efTargetHi ? 'Fully funded; extra can go to retirement or goals. ' : 'Floor reached; 6 months gives more room. ') : 'To reach 3 months in a year: about ' + money((efTargetLo - m.efBal) / 12 / m.cpm) + ' per check. ') + cap(fword(floorS(efMonths, R.efMonthsMin))) : 'Enter your balance above.');
   h += '</div></section>';
 
   // Retirement check
@@ -6045,15 +6183,15 @@ function renderPlan() {
   const steps = [];
   if (m.match > 0) steps.push('Contribute enough to get the full employer match' + (m.contrib < m.match ? ' — you are at ' + Math.round(m.contrib * 100) + '%, the match needs ' + Math.round(m.match * 100) + '% (' + money((m.match - m.contrib) * m.grossCheck) + ' more per check)' : ' — done') + '.');
   else steps.push('If your employer matches retirement contributions, contribute enough to get all of it: it is an immediate 100% return.');
-  steps.push('Starter emergency fund: one month of essentials' + (a && a.essentials ? ' (' + money(a.essentials, { whole: true }) + ')' : '') + ((p.efBal !== '' || m.efFromAccounts) && a && a.essentials ? (m.efBal >= a.essentials ? ' — done' : ' — ' + money(a.essentials - m.efBal, { whole: true }) + ' to go') : '') + '.');
-  steps.push('Pay down high-interest debt (cards first)' + (a && a.cardPay ? ' — you are sending about ' + money(a.cardPay) + ' a month to cards' : '') + '.');
-  steps.push('Grow the emergency fund to 3 months' + (a && a.essentials ? ' (' + money(efTargetLo, { whole: true }) + ')' : '') + ((p.efBal !== '' || m.efFromAccounts) && a && a.essentials ? (m.efBal >= efTargetLo ? ' — done' : ' — ' + money(Math.max(0, efTargetLo - m.efBal), { whole: true }) + ' to go') : '') + ', then 6 months if your income is less steady.');
+  steps.push('Starter emergency fund: one month of essentials' + (a && a.essentials ? ' (' + money(a.essentials, { whole: true }) + ')' : '') + ((p.efBal !== '' || m.efFromAccounts) && a && a.essentials && !holdSplit ? (m.efBal >= a.essentials ? ' — done' : ' — ' + money(a.essentials - m.efBal, { whole: true }) + ' to go') : '') + '.');
+  steps.push('Pay down high-interest debt, cards first' + (cardDebt > 0 ? ' — ' + money(cardDebt, { whole: true }) + ' on cards that charge interest' : ', when a balance carries over from month to month') + '.');
+  steps.push('Grow the emergency fund to 3 months' + (a && a.essentials ? ' (' + money(efTargetLo, { whole: true }) + ')' : '') + ((p.efBal !== '' || m.efFromAccounts) && a && a.essentials && !holdSplit ? (m.efBal >= efTargetLo ? ' — done' : ' — ' + money(Math.max(0, efTargetLo - m.efBal), { whole: true }) + ' to go') : '') + ', then 6 months if your income is less steady.');
   steps.push('Raise retirement to 15% of gross including the match' + ((p.contrib !== '' || p.match !== '') ? (retirePct >= R.retirePctGross ? ' — done' : ' — ' + Math.round((R.retirePctGross - retirePct) * 100) + ' points to go') : '') + '.');
   steps.push('Then goals: house down payment, car replacement fund, college, travel — ideally as named savings transfers so they show up here.');
   h += '<section class="section"><h2>What to do with each check, in order</h2><p class="sub">A common order of operations; each step builds on the one before.</p><ol class="steps">' + steps.map(s => '<li>' + s + '</li>').join('') + '</ol></section>';
 
   h += '<section class="section"><h2>Where these numbers come from</h2><div class="privacy"><p>50/30/20 (needs, wants, savings) popularized by Elizabeth Warren\'s <i>All Your Worth</i>. Rent under 30% of gross is the HUD threshold for being cost-burdened; 28/36 are the housing and total-debt ratios mortgage lenders use. 20/4/10 is a common car-buying rule. 15% retirement savings and the age multiples (1× by 30, 3× by 40, 6× by 50, 8× by 60, 10× by 67) are Fidelity\'s guidelines. 3 to 6 months of essentials is the usual emergency-fund range.</p><p>These are general rules of thumb, not personalized financial advice. High cost-of-living areas, tax-free allowances, a pension, or expensive debt can all justify different targets.</p></div></section>';
-  el.innerHTML = h;
+  el.innerHTML = h; nameRowInputs(el);
 }
 function bindPlan() {
   const pb = $('#planBody');
@@ -6108,7 +6246,7 @@ function renderAhead() {
   else if (sec === 'goals') h += renderGoals();
   else if (sec === 'cash') h += renderCash();
   else h += renderAlerts();
-  el.innerHTML = h;
+  el.innerHTML = h; nameRowInputs(el);
 }
 
 /* Debt payoff */
@@ -6118,7 +6256,8 @@ function renderDebts() {
   if (!debts.length) return h + '<div class="empty"><h2>No balances entered</h2><p>Add each card and loan with what you owe, or type balances on the HUD under Cards & loans.</p><div class="actions"><button class="btn primary" data-ahead="addAccount">Add a card or loan</button><button class="btn" data-go="hud">Go to HUD</button></div></div></section>';
   h += '<div class="hud-table"><div class="acct head debt"><span class="name">Debt</span><span class="num">Balance</span><span class="num">APR %</span><span class="num">Min / mo</span></div>';
   for (const d of debts) h += '<div class="acct debt"><span class="name">' + esc(d.name) + '<span class="pm">' + (d.kind === 'card' ? 'card' : 'loan') + '</span></span><span class="num">' + money(d.balance, { whole: true }) + '</span><input type="text" inputmode="decimal" data-debt="' + esc(d.id) + '" data-field="apr" value="' + (d.apr ? esc(d.apr) : '') + '" placeholder="24.9" aria-label="APR"><input type="text" inputmode="decimal" data-debt="' + esc(d.id) + '" data-field="min" value="' + (d.min ? esc(d.min) : '') + '" placeholder="' + esc(Math.max(25, slRound2(d.balance * 0.02)).toFixed(0)) + '" aria-label="Minimum payment"></div>';
-  h += '</div><p class="hint">Blank minimum = 2% of the balance (at least $25), which is a typical card minimum.</p><div class="actions" style="margin-top:0"><button class="btn small" data-ahead="addAccount">Add a card or loan</button></div>';
+  const noApr = debts.filter(d => d.balance > 0 && !(+d.apr > 0));
+  h += '</div><p class="hint">Blank minimum = 1% of the balance plus a month\'s interest (at least $35), the way most card issuers set it.' + (noApr.length ? ' Interest needs each rate: ' + noApr.map(d => esc(d.name)).join(', ') + (noApr.length === 1 ? ' counts' : ' count') + ' as 0% until you add one.' : '') + '</p><div class="actions" style="margin-top:0"><button class="btn small" data-ahead="addAccount">Add a card or loan</button></div>';
   h += '<div class="grid2"><label class="flabel">Extra per month, on top of minimums <input type="text" inputmode="decimal" id="debtExtra" value="' + esc(c.extra) + '" placeholder="0"></label><label class="flabel">Order <select id="debtMethod"><option value="avalanche"' + (c.method !== 'snowball' ? ' selected' : '') + '>Avalanche: highest rate first</option><option value="snowball"' + (c.method === 'snowball' ? ' selected' : '') + '>Snowball: smallest balance first</option></select></label></div>';
   const extra = num(c.extra);
   const minOnly = slDebtPlan(debts, 0, 'minimum'), ava = slDebtPlan(debts, extra, 'avalanche'), snow = slDebtPlan(debts, extra, 'snowball');
@@ -6127,11 +6266,11 @@ function renderDebts() {
   const total = debts.reduce((a, d) => a + d.balance, 0);
   h += '<section class="section"><h2>Three ways to pay ' + money(total, { whole: true }) + '</h2><div class="hud-table"><div class="bill head"><span class="name">Approach</span><span class="num">Debt-free</span><span class="num">Interest paid</span></div>';
   for (const [name, r, note] of [['Minimums only', minOnly, 'what happens if nothing changes'], ['Avalanche', ava, 'highest rate first; least interest'], ['Snowball', snow, 'smallest balance first; quickest wins']]) {
-    h += '<div class="bill plan' + (name.toLowerCase() === method ? ' chosen' : '') + '"><span class="name">' + name + '<span class="pm">' + note + '</span></span><span class="num">' + (r.months ? r.months + ' mo<span class="pm">' + when(r.months) + '</span>' : '—<span class="pm">payments never catch the interest</span>') + '</span><span class="num actual">' + money(r.interest, { whole: true }) + '</span></div>';
+    h += '<div class="bill plan' + (name.toLowerCase() === method ? ' chosen' : '') + '"><span class="name">' + name + '<span class="pm">' + note + '</span></span><span class="num">' + (r.months ? r.months + ' mo<span class="pm">' + when(r.months) + '</span>' : '—<span class="pm">payments never catch the interest</span>') + '</span><span class="num actual">' + (r.months ? money(r.interest, { whole: true }) : 'keeps growing') + '</span></div>';
   }
   h += '</div>';
-  if (minOnly.months && chosen.months && (minOnly.months > chosen.months || minOnly.interest > chosen.interest)) h += '<p class="hud-note">' + (extra ? money(extra, { whole: true }) + ' extra a month in ' : 'The ') + method + ' order saves about ' + money(minOnly.interest - chosen.interest, { whole: true }) + ' in interest and finishes ' + (minOnly.months - chosen.months) + ' months sooner than minimums only.</p>';
-  else if (!minOnly.months) h += '<p class="hud-note">At minimum payments alone this never clears. The extra amount above is what changes that.</p>';
+  if (minOnly.months && chosen.months && (minOnly.months > chosen.months || minOnly.interest - chosen.interest >= 1)) h += '<p class="hud-note">' + (extra ? money(extra, { whole: true }) + ' extra a month in ' : 'The ') + method + ' order saves about ' + money(minOnly.interest - chosen.interest, { whole: true }) + ' in interest and finishes ' + (minOnly.months - chosen.months) + ' months sooner than minimums only.</p>';
+  else if (!minOnly.months) h += '<p class="hud-note">At minimum payments alone this never clears. The extra amount above is what changes that, and a nonprofit credit counselor can often lower the rates: see <button class="btn link" data-go="check:human">When to see a human</button>.</p>';
   if (chosen.order.length) h += '<h3 style="margin-top:14px">Order (' + method + ')</h3><ol class="steps">' + chosen.order.map(o => '<li>' + esc(o.name) + ' — paid off in ' + o.month + (o.month === 1 ? ' month' : ' months') + ' (' + when(o.month) + '), ' + money(o.interest, { whole: true }) + ' interest</li>').join('') + '</ol>';
   const steps = [50, 100, 200, 400].map(x => [x, slDebtPlan(debts, extra + x, method)]);
   h += '<h3 style="margin-top:14px">What more would do</h3><div class="hud-table"><div class="bill head"><span class="name">Extra per month</span><span class="num">Debt-free</span><span class="num">Interest paid</span></div>' + steps.map(([x, r]) => '<div class="bill plan"><span class="name">+' + money(x, { whole: true }) + '<span class="pm">' + money(extra + x, { whole: true }) + ' total extra</span></span><span class="num">' + (r.months ? r.months + ' mo<span class="pm">' + when(r.months) + '</span>' : '—') + '</span><span class="num actual">' + money(r.interest, { whole: true }) + '</span></div>').join('') + '</div>';
@@ -6176,7 +6315,7 @@ function renderGoals() {
     if (totalNeed) h += '<p class="hud-note">All dated goals together need about ' + money(totalNeed) + ' a month, ' + money(totalNeed / cpm) + ' per check.</p>';
   }
   const m = planModel();
-  h += '<div class="actions"><button class="btn primary" data-ahead="addGoal">Add a goal</button>' + (!goals.some(g => /emergency/i.test(g.name)) && m.act && m.act.essentials ? '<button class="btn" data-ahead="addEf">Add emergency fund goal (' + money(m.act.essentials * SL_RULES.efMonthsMin, { whole: true }) + ')</button>' : '') + '</div>';
+  h += '<div class="actions"><button class="btn primary" data-ahead="addGoal">Add a goal</button>' + (!goals.some(g => /emergency/i.test(g.name)) && m.act && m.act.essentials && !m.act.partial && !(m.act.cardBuys > 0) ? '<button class="btn" data-ahead="addEf">Add emergency fund goal (' + money(m.act.essentials * SL_RULES.efMonthsMin, { whole: true }) + ')</button>' : '') + '</div>';
   h += '<details class="why"><summary>Sinking funds, briefly</summary><p class="hint">A sinking fund is money set aside a little at a time for a cost you can see coming: the yearly insurance premium, tires, a trip. Dividing the amount by the months left turns a surprise into a line item. Keeping it in a named savings transfer lets the tool track it here.</p></details></section>';
   return h;
 }
@@ -6207,7 +6346,10 @@ function openGoalEdit(id, preset) {
 /* Next 30 days */
 function cashEvents(today, to) {
   const c = state.cash; const events = [];
-  const history = state.txns;
+  // the forecast follows the paying accounts: purchases on a card reach them through the card payment, so rows in card
+  // accounts stay out (they would count twice)
+  const cardAccts = cardAccountNames(), paying = state.txns.filter(t => !cardAccts.has(t.account));
+  const history = paying.length ? paying : state.txns;
   const pay = slPaydayPattern(history);
   const payAmt = num(c.payNet) || (pay ? pay.typical : 0) || (planModel().netCheck || 0);
   let paydays = [];
@@ -6273,7 +6415,7 @@ function renderCash() {
     '<label>Take-home per check <input type="text" inputmode="decimal" id="cPay" value="' + esc(c.payNet) + '" placeholder="' + (pay ? 'seen: ' + money(pay.typical, { whole: true }) : '0.00') + '"></label>' +
     '<label>Next payday <input type="date" id="cNext" value="' + esc(c.nextPay) + '"></label>' +
     '</div><p class="hint">' + (pay ? 'Paydays look ' + esc(pay.cadence === 'biweekly' ? 'every two weeks' : pay.cadence) + ' at about ' + money(pay.typical) + ', last on ' + esc(slFmtDate(pay.last)) + '. Leave the payday fields blank to use that.' : 'No regular deposits found yet, so enter the take-home amount and next payday.') + '</p><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button></div></form>');
-  if (c.balance === '') return h + '<div class="empty"><h2>Enter today\'s balance to project</h2><p>Bills, card payments and recurring charges come from your transactions; paydays are detected from deposits.</p></div></section>';
+  if (c.balance === '') return h + '<div class="empty"><h2>Enter today\'s balance to project</h2><p>Bills, card payments, and recurring charges come from your transactions; paydays are detected from deposits.</p></div></section>';
   const { events } = cashEvents(today, to);
   const buffer = num(c.buffer);
   const pr = slProject(events, num(c.balance), today, to, buffer);
@@ -6294,8 +6436,8 @@ function renderCash() {
 /* Alerts */
 function renderAlerts() {
   const today = slTodayISO();
-  const pa = slPlanActuals(state.txns, state.bills, catMap, 3);
-  const pacing = slPacing(state.txns, catMap, state.budgets, pa ? pa.byCat : null);
+  const pa = slPlanActuals(moneyTxns(), state.bills, catMap, 3);
+  const pacing = slPacing(moneyTxns(), catMap, state.budgets, pa ? pa.byCat : null);
   const price = slPriceChanges(state.txns, catMap);
   const rec = slDetectRecurring(state.txns, catMap);
   const dueSoon = rec.filter(r => r.active && (r.cadence === 'yearly' || r.cadence === 'quarterly') && r.next <= slAddDays(today, 45));
@@ -6312,14 +6454,14 @@ function renderAlerts() {
   if (fresh.latest && fresh.ageDays >= 10) behind.push('<li>' + sdot('warn') + 'Newest transaction: <b>' + esc(slFmtDate(fresh.latest)) + '</b>, ' + fresh.ageDays + ' days ago. <button class="btn link" data-go="add:file">Import a recent statement</button></li>');
   for (const a of fresh.accounts.filter(a => a.lagging).slice(0, 3)) behind.push('<li>' + sdot('warn') + '<b>' + esc(a.account) + '</b> runs through ' + esc(slFmtDate(a.latest)) + ', ' + a.behind + ' days behind your other accounts.</li>');
   h += block('Records to bring up to date', 'The alerts below cover what has been imported so far.', behind);
-  h += block('Pace this month', 'Spent so far, with where that lands by month end at the current rate.', pacing.filter(p => p.status !== 'good').slice(0, 8).map(p => '<li>' + sdot(p.status) + '<b>' + esc(p.category) + '</b>: ' + money(p.spent) + ' of ' + money(p.ref, { whole: true }) + (p.isBudget ? ' budget' : ' (your usual)') + (p.projected ? ' · on pace for ' + money(p.projected, { whole: true }) : '') + '</li>'));
+  h += block('Pace this month', 'Spent so far, with where that lands by month end at the current rate.', pacing.filter(p => p.status !== 'good').slice(0, 8).map(p => '<li>' + sdot(p.status) + '<span class="stword">' + (p.status === 'bad' ? 'Over' : 'Watch') + '</span> · <b>' + esc(p.category) + '</b>: ' + money(p.spent) + ' of ' + money(p.ref, { whole: true }) + (p.isBudget ? ' budget' : ' (your usual)') + (p.projected ? ' · on pace for ' + money(p.projected, { whole: true }) : '') + '</li>'));
   h += block('Price went up', 'Fixed bills and subscriptions charging more than they used to.', price.map(x => '<li>' + sdot('warn') + '<b>' + esc(titleCase(x.merchant)) + '</b> went from ' + money(x.from) + ' to ' + money(x.to) + ' (+' + x.pct + '%) on ' + esc(slFmtDate(x.date)) + '</li>'));
   h += block('Big charges coming', 'Quarterly or yearly charges expected within 45 days.', dueSoon.map(x => '<li>' + sdot('warn') + '<b>' + esc(titleCase(x.merchant)) + '</b> about ' + money(x.amount) + (x.next >= today ? ' around ' : ', expected since ') + esc(slFmtDate(x.next)) + ' (' + esc(x.cadence) + ')</li>'));
   h += block('Bills not seen yet', 'Usually paid by now this month.', late.map(x => '<li>' + sdot('warn') + '<b>' + esc(x.b.name) + '</b> usually around the ' + ordinal(x.st.dueDay) + (x.st.expected ? ', about ' + money(x.st.expected) : '') + '</li>'));
   h += block('Unusual charges', 'Out of line with your history at the same place, last 30 days.', unusual.map(u => '<li>' + sdot('bad') + '<b>' + esc(u.t.desc) + '</b> ' + money(-u.t.amount) + ' on ' + esc(slFmtDate(u.t.date)) + ' — ' + esc(u.reason) + '</li>'));
   const dueSoon2 = Object.values(state.balances || {}).filter(v => v && v.kind !== 'loan' && v.due && +v.balance > 0 && v.due >= today && v.due <= slAddDays(today, 10));
   h += block('Card payments due', 'From your statements: due within 10 days.', dueSoon2.map(v => '<li>' + sdot('warn') + '<b>' + esc(v.name || 'Card') + '</b> ' + money(+v.balance) + (v.min ? ' (minimum ' + money(+v.min) + ')' : '') + ' due ' + esc(slFmtDate(v.due)) + '</li>'));
-  h += block('Possible duplicates', 'Same day, place and amount in the last 60 days.', dups.slice(0, 8).map(g => '<li>' + sdot('warn') + '<b>' + esc(g[0].desc) + '</b> ' + money(-g[0].amount) + ' × ' + g.length + ' on ' + esc(slFmtDate(g[0].date)) + '</li>'));
+  h += block('Possible duplicates', 'Same day, place, and amount in the last 60 days.', dups.slice(0, 8).map(g => '<li>' + sdot('warn') + '<b>' + esc(g[0].desc) + '</b> ' + money(-g[0].amount) + ' × ' + g.length + ' on ' + esc(slFmtDate(g[0].date)) + '</li>'));
   if (!any) h += '<div class="empty"><h2>All clear</h2><p>Spending is on pace, prices are steady, bills are on schedule, and the last 30 days look ordinary.</p></div>';
   return h + '</section>';
 }
@@ -6341,7 +6483,7 @@ function bindAhead() {
     if (act) { if (act.dataset.ahead === 'addAccount') openAccountAdd(); if (act.dataset.ahead === 'addGoal') openGoalEdit(null); if (act.dataset.ahead === 'addEf') { const m = planModel(); openGoalEdit(null, { name: 'Emergency fund', target: m.act ? String(Math.round(m.act.essentials * SL_RULES.efMonthsMin)) : '', saved: state.plan.efBal || '', kw: 'savings' }); } return; }
     const row = e.target.closest('.bill[data-goal]'); if (row) openGoalEdit(row.dataset.goal);
   });
-  ab.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('.bill[data-goal]')) { e.preventDefault(); e.target.click(); } });
+  ab.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.bill[data-goal]')) { e.preventDefault(); e.target.click(); } });
 }
 
 /* ---------- Checkup (Tier 2: what bank data can't show) ---------- */
@@ -6359,7 +6501,7 @@ function renderCheckup() {
   const el = $('#checkBody'); const sec = state.ui.checkSec || 'paycheck';
   let h = sectionSelect('checkSec', CHECK_SECTIONS, sec);
   if (sec === 'paycheck') h += renderPaycheck(); else if (sec === 'networth') h += renderNetWorth(); else if (sec === 'credit') h += renderCredit(); else if (sec === 'insurance') h += renderInsurance(); else if (sec === 'retire') h += renderRetireExtras(); else h += renderHuman();
-  el.innerHTML = h;
+  el.innerHTML = h; nameRowInputs(el);
 }
 
 /* Paycheck */
@@ -6418,7 +6560,7 @@ function lineChart(points) {
   const W = 360, H = 150, padL = 8, padR = 8, padT = 12, padB = 24; const n = points.length; if (n < 2) return '';
   const vals = points.map(p => p.v); let min = Math.min(0, ...vals), max = Math.max(...vals); if (max === min) max = min + 1;
   const x = (i) => padL + (W - padL - padR) * i / (n - 1), y = (v) => padT + (H - padT - padB) * (1 - (v - min) / (max - min));
-  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Net worth over time">';
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc('Net worth over time. ' + points.map(p => p.label + ': ' + money(p.v, { whole: true })).join('; ')) + '">';
   const y0 = y(0); svg += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + y0.toFixed(1) + '" y2="' + y0.toFixed(1) + '" stroke="currentColor" stroke-opacity=".25"/>';
   svg += '<polyline fill="none" stroke="var(--accent)" stroke-width="2" points="' + points.map((p, i) => x(i).toFixed(1) + ',' + y(p.v).toFixed(1)).join(' ') + '"/>';
   points.forEach((p, i) => { svg += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(p.v).toFixed(1) + '" r="3" fill="var(--accent)"><title>' + esc(p.label + ': ' + money(p.v, { whole: true })) + '</title></circle>'; if (n <= 8 || i === 0 || i === n - 1 || i % Math.ceil(n / 6) === 0) svg += '<text x="' + x(i).toFixed(1) + '" y="' + (H - 6) + '" font-size="9" text-anchor="' + (i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle') + '" fill="currentColor" opacity=".7">' + esc(p.label) + '</text>'; });
@@ -6451,10 +6593,12 @@ function renderCredit() {
 function renderInsurance() {
   const i = state.insurance; const m = planModel(); const incomeY = m.grossY;
   const yn = (id, label) => '<label>' + label + ' <select id="' + id + '"><option value=""' + (!i[id.slice(2)] ? ' selected' : '') + '>—</option><option value="yes"' + (i[id.slice(2)] === 'yes' ? ' selected' : '') + '>Yes</option><option value="no"' + (i[id.slice(2)] === 'no' ? ' selected' : '') + '>No</option></select></label>';
-  const answered = ['dependents', 'life', 'disability', 'renters', 'liab', 'umbrella'].filter(k => i[k]).length;
+  const answered = ['health', 'dependents', 'life', 'disability', 'renters', 'liab', 'umbrella'].filter(k => i[k]).length;
   let h = '<section class="section" style="margin-top:4px"><h2>Insurance checklist</h2><p class="sub">The coverage an advisor checks before anything else. Answer what applies; the flags use common rules of thumb.</p>' +
-    setupBlock('insurance', 'Your coverage', answered ? answered + ' of 6 answered' : 'Six quick questions', answered > 0, '<form id="insForm" class="form" style="margin-top:10px"><div class="grid3">' + yn('independents', 'Anyone depends on your income?') + '<label>Life insurance in place <input type="text" inputmode="decimal" id="inlife" value="' + esc(i.life) + '" placeholder="0"></label>' + yn('indisability', 'Disability income coverage?') + yn('inrenters', 'Renters or homeowners policy?') + '<label>Auto liability limits <input type="text" id="inliab" value="' + esc(i.liab) + '" placeholder="e.g. 100/300/100"></label>' + yn('inumbrella', 'Umbrella policy?') + '</div><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button></div></form>');
+    setupBlock('insurance', 'Your coverage', answered ? answered + ' of 7 answered' : 'Seven quick questions', answered > 0, '<form id="insForm" class="form" style="margin-top:10px"><div class="grid3">' + yn('inhealth', 'Health coverage for everyone in your household?') + yn('independents', 'Anyone depends on your income?') + '<label>Life insurance in place <input type="text" inputmode="decimal" id="inlife" value="' + esc(i.life) + '" placeholder="0"></label>' + yn('indisability', 'Disability income coverage?') + yn('inrenters', 'Renters or homeowners policy?') + '<label>Auto liability limits <input type="text" id="inliab" value="' + esc(i.liab) + '" placeholder="e.g. 100/300/100"></label>' + yn('inumbrella', 'Umbrella policy?') + '</div><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button></div></form>');
   const rows = [];
+  if (i.health === 'no') rows.push(['bad', 'Health coverage', 'A medical bill without coverage is the biggest financial risk most households face. HealthCare.gov (the Marketplace, often with subsidies) and your state\'s Medicaid program are the places to check; losing a job or other coverage opens a special enrollment window.']);
+  else if (i.health === 'yes') rows.push(['good', 'Health coverage', 'Covered. Check the out-of-pocket maximum: the emergency fund should be able to cover it.']);
   const lifeTarget = incomeY * 10;
   if (i.dependents === 'yes') { const life = num(i.life); const st = incomeY ? slStatusFloor(life, lifeTarget) : 'none'; rows.push([st, 'Life insurance', incomeY ? 'about ' + money(lifeTarget, { whole: true }) + ' (10× income) with people depending on you; you listed ' + money(life, { whole: true }) + '. Cheap term coverage fills the gap; SGLI tops out at $500,000 and ends when service does.' : 'about 10× income with people depending on you. Enter gross pay on the Plan tab to size it.']); }
   else if (i.dependents === 'no') rows.push(['good', 'Life insurance', 'With no one depending on your income, enough to cover final costs is plenty.']);
@@ -6513,11 +6657,18 @@ function renderHuman() {
     '<li><b>Estate basics</b> — a will, beneficiaries on every account (they override the will), powers of attorney, guardianship for children.</li>' +
     '<li><b>Debt that is not shrinking</b> — if the Debt payoff section says payments never catch the interest, a nonprofit credit counselor can negotiate rates; that is different from debt-settlement companies.</li>' +
     '<li><b>Investing beyond index funds</b> — anything with a sales pitch, a guarantee, or a fee you cannot explain.</li>' +
+    '<li><b>High-cost borrowing</b> — payday, title, and rent-to-own loans, refund advances, or several buy-now-pay-later plans at once. A credit union\'s small-dollar loan or a nonprofit credit counselor usually costs far less.</li>' +
+    '<li><b>Collections, garnishment, or bankruptcy</b> — a debt collector calling, wages being garnished, or bankruptcy on the table: a nonprofit credit counselor first, and a consumer or bankruptcy attorney (legal aid if money is tight).</li>' +
+    '<li><b>Student loans</b> — choosing a repayment plan, forgiveness programs, or loans in default: start with the free help at studentaid.gov before paying anyone.</li>' +
+    '<li><b>Medical bills and insurance denials</b> — ask the hospital for an itemized bill and its financial-assistance policy, and appeal a denied claim; a patient advocate can help.</li>' +
+    '<li><b>Retirement decisions</b> — rolling over a 401(k), a pension lump sum or monthly payments, and when to claim Social Security.</li>' +
+    '<li><b>A letter from the IRS</b> — read it the day it arrives; the deadlines are short. Free help: VITA and the Taxpayer Advocate Service.</li>' +
     '</ul>' +
     '<section class="section"><h2>Where to find one</h2><ul class="insights">' +
     '<li><b>Military and families</b> — free personal financial counselors through the installation Military & Family Readiness Center, and Military OneSource (financial counseling and free tax filing).</li>' +
     '<li><b>Everyone</b> — a fee-only fiduciary planner (paid by you, not by commissions); for debt, a nonprofit credit counseling agency.</li>' +
     '<li><b>Free tools</b> — the Consumer Financial Protection Bureau\'s guides, your bank or credit union\'s financial coaching, and Social Security\'s benefit estimates at ssa.gov.</li>' +
+    '<li><b>Free tax filing help</b> — IRS VITA and TCE sites, for most households earning under the VITA income limit, and for people 60 and older.</li>' +
     '</ul></section>' +
     '<section class="section"><h2>Short glossary</h2><ul class="insights">' +
     '<li><b>Emergency fund</b> — cash for income loss or a surprise bill, kept separate from spending money. Three to six months of essentials.</li>' +
@@ -6542,7 +6693,7 @@ function bindCheckup() {
   });
   function applyCheckForm(id, quiet) {
     if (id === 'payForm') { for (const k of ['gross', 'fed', 'st', 'fica', 'retire', 'roth', 'ins', 'other', 'net']) state.paycheck[k] = $('#pc' + k).value.trim(); }
-    if (id === 'insForm') { for (const k of ['dependents', 'life', 'disability', 'renters', 'liab', 'umbrella']) state.insurance[k] = $('#in' + k).value.trim(); }
+    if (id === 'insForm') { for (const k of ['health', 'dependents', 'life', 'disability', 'renters', 'liab', 'umbrella']) state.insurance[k] = $('#in' + k).value.trim(); }
     if (id === 'retForm') { state.plan.pension = $('#rPension').value.trim(); state.plan.ss = $('#rSS').value.trim(); state.plan.spend = $('#rSpend').value.trim(); }
     if (id === 'limForm') { Object.assign(state.limits, { year: $('#lYear').value.trim(), deferral: $('#lDeferral').value.trim(), catchup: $('#lCatchup').value.trim(), superCatchup: $('#lSuper').value.trim(), ira: $('#lIra').value.trim(), iraCatchup: $('#lIraCatchup').value.trim() }); }
     save(); if (quiet) rerender(renderCheckup); else { renderCheckup(); toast('Updated'); }
@@ -6639,11 +6790,11 @@ function renderGuide() {
   h += step(2, 'Fix the categories once', '<p>Most transactions are sorted automatically. Open <b>Transactions</b>, search for anything marked Uncategorized or wrong, tap it, pick the category, and tick "use this category for every … transaction" so it stays fixed in future imports. Card payments and transfers to savings are left out of spending totals on purpose, so nothing counts twice.</p>', 'transactions', 'Go to Transactions');
   h += step(3, 'Read the HUD', '<p>Money in, money out, what is left, for this month or any period. Routine bills show expected against actual with "paid on the 5th" or "not seen yet". During the month, totals run through today and compare with the same days last month; a yellow note says when your newest records are over ten days old or an account runs behind the rest. Type card and loan balances at the bottom; they power the debt planner later. Tap any bill to rename it or change the keywords it looks for.</p>', 'hud', 'Go to HUD');
   h += step(4, 'Enter your numbers on Plan', '<p>Age, how often you are paid, gross pay per check, what you and your employer put into retirement. Then list each <b>account</b>: TSP or 401k, IRA, high-yield savings, investing apps such as Fidelity, Robinhood, Stash, or Acorns, with today\'s balance and what goes in monthly. From that the Plan tab shows:</p><ul class="insights"><li>the ideal paycheck split (50/30/20) against your actual spending;</li><li>rent, car, debt, retirement, and emergency-fund guidelines with green / amber / red;</li><li>a retirement check for your age, the room left under this year\'s IRS limits, where each account lands by December 31, and what the investing accounts reach by 67 in today\'s dollars.</li></ul>', 'plan', 'Go to Plan');
-  h += step(5, 'Look ahead', '<p><b>Ahead</b> has four sections in its dropdown: Debt payoff (add APR and minimum per debt, compare avalanche and snowball, see what extra money does), Goals (anything you are saving for, turned into a per-check amount), Next 30 days (enter today\'s checking balance for safe-to-spend until payday), and Alerts (pace, price increases, bills not seen, unusual charges).</p>', 'ahead', 'Go to Ahead');
+  h += step(5, 'Look ahead', '<p><b>Ahead</b> has four sections, picked from the row of buttons at its top: Debt payoff (add APR and minimum per debt, compare avalanche and snowball, see what extra money does), Goals (anything you are saving for, turned into a per-check amount), Next 30 days (enter today\'s checking balance for safe-to-spend until payday), and Alerts (pace, price increases, bills not seen, unusual charges).</p>', 'ahead', 'Go to Ahead');
   h += step(6, 'Run the checkup', '<p><b>Checkup</b> covers what bank data cannot show: a pay-stub breakdown (effective tax rate and true savings rate), net-worth snapshots over time, card utilization, an insurance checklist, pension and Social Security against the nest egg you actually need, and a plain list of when a professional is the right call.</p>', 'check', 'Go to Checkup');
   h += step(7, 'Monthly routine', '<ul class="insights"><li>Import last month\'s statements (duplicates are caught automatically).</li><li>Glance at the HUD and Alerts.</li><li>Update balances on the HUD and Plan; take a net-worth snapshot.</li><li>Download a backup from Data.</li></ul>', 'data', 'Go to Data');
-  h += '<section class="section"><h2>Five-minute demo path</h2><p class="sub">If you are showing someone the tool with no data on hand.</p><ol class="steps"><li>Data → Load sample data.</li><li>HUD: switch the period to Last month; point out expected vs actual and the card balance field.</li><li>Plan: enter an age, pay and a couple of accounts; watch the guideline colors and the year-end / 67 forecast appear.</li><li>Ahead → Debt payoff: type an APR and an extra $100; show the months and interest change.</li><li>Ahead → Next 30 days: enter a balance; show safe-to-spend.</li><li>Data → Remove sample data, then Add their own file.</li></ol></section>';
-  h += '<section class="section"><h2>Good to know</h2><ul class="insights"><li>' + (PFAT_OFFLINE ? 'This file works completely offline. pdf.js reads PDFs and the Tesseract engine reads pictures, both built into this file and running on this device. Your files stay on this device.' : 'The app works offline once loaded. Two outside requests can happen, only when you need them: pdf.js from cdnjs the first time you open a PDF, and, after you agree, the Tesseract engine and its English model from jsDelivr the first time you read a picture.' + feedGuideNote() + ' Your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in, for reading PDFs and pictures completely offline.') + '</li><li>Data lives in this browser only. Clearing site data or switching devices starts fresh; restore a backup to bring your data back (Add → From a file → the backup JSON).</li><li>Guidelines are general rules of thumb, separate from personal advice. Checkup → When to see a human says where the line is.</li></ul></section>';
+  h += '<section class="section"><h2>Five-minute demo path</h2><p class="sub">If you are showing someone the tool with no data on hand.</p><ol class="steps"><li>Data → Load sample data.</li><li>HUD: switch the period to Last month; point out expected vs actual and the card balance field.</li><li>Plan: enter an age, pay, and a couple of accounts; watch the guideline colors and the year-end / 67 forecast appear.</li><li>Ahead → Debt payoff: type an APR and an extra $100; show the months and interest change.</li><li>Ahead → Next 30 days: enter a balance; show safe-to-spend.</li><li>Data → Remove sample data, then Add their own file.</li></ol></section>';
+  h += '<section class="section"><h2>Good to know</h2><ul class="insights"><li>' + (PFAT_OFFLINE ? 'This file works completely offline. pdf.js reads PDFs and the Tesseract engine reads pictures, both built into this file and running on this device. Your files stay on this device.' : 'The app works offline once loaded. Two libraries can download, only when you need them: pdf.js from cdnjs when you open a PDF, and, after you agree, the Tesseract engine and its English model from jsDelivr when you read a picture. The browser runs each library file only when its bytes match the pinned version.' + feedGuideNote() + ' Your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in, for reading PDFs and pictures completely offline.') + '</li><li>Data lives in this browser only. Clearing site data or switching devices starts fresh; restore a backup to bring your data back (Add → From a file → the backup JSON).</li><li>Guidelines are general rules of thumb, separate from personal advice. Checkup → When to see a human says where the line is.</li></ul></section>';
   el.innerHTML = h;
 }
 
@@ -6705,7 +6856,7 @@ function getOcrWorker() {
     const p = (window.Tesseract ? Promise.resolve() : PFAT_OFFLINE ? Promise.resolve().then(() => {
       if (!wasmSimd()) throw new Error('This browser lacks WebAssembly SIMD, which the built-in text reader uses.');
       return vendorVerify(['tesseract', 'core', 'worker', 'eng']).then(() => loadScript(vendorURL(['tesseract'])));
-    }) : loadScript(OCR_BASE + 'tesseract.min.js').catch(() => { throw new Error('The text reader loads from jsDelivr the first time.'); }))
+    }) : loadScript(OCR_BASE + 'tesseract.min.js', CDN_SRI.tesseract).catch(() => { throw new Error('The text reader loads from jsDelivr the first time.'); }))
       .then(() => {
         const T = window.Tesseract;
         if (!T || typeof T.createWorker !== 'function') throw new Error('The text reader stopped while loading.');
@@ -6914,7 +7065,7 @@ function pageGaps(p) {
   const missing = [...Array(total)].map((_, i) => i + 1).filter(n => !seen.has(n));
   return missing.length ? 'The statement has ' + total + ' pages, but page' + (missing.length > 1 ? 's ' : ' ') + missing.join(', ') + (missing.length > 1 ? ' are' : ' is') + ' not in this file, so some rows may be missing.' : '';
 }
-// For statements: say which kind it is, and flip a whole section; the global flip stays for CSV, OFX, QIF and JSON
+// For statements: say which kind it is, and flip a whole section; the global flip stays for CSV, OFX, QIF, and JSON
 function signControls(p) {
   const res = p.result || {}, c = res.convention || {};
   let h = '<div class="form" style="margin-top:10px"><label>This is a <select id="pvKind"><option value=""' + (!p.opts.kind ? ' selected' : '') + '>' + esc(c.kind && !p.opts.kind ? { card: 'card statement', bank: 'bank statement', investment: 'investment statement' }[c.kind] + ' (as read)' : 'statement (kind not clear)') + '</option>' +
@@ -7102,7 +7253,7 @@ function applyStatementDetails(p, name) {
 function showTab(name) {
   if (name === 'rules' || name === 'data' || name === 'guide') { state.ui.moreSec = name; name = 'more'; }
   state.ui.tab = name;
-  $$('.tab').forEach(b => b.classList.toggle('is-active', b.dataset.tab === name));
+  $$('.tab').forEach(b => { const on = b.dataset.tab === name; b.classList.toggle('is-active', on); b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
   $$('.panel').forEach(p => p.classList.toggle('is-active', p.id === 'tab-' + name));
   document.body.dataset.tab = name; openSetups.clear();
   const tb = $('.tab.is-active'); if (tb && tb.scrollIntoView) tb.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -7116,7 +7267,7 @@ function showTab(name) {
 }
 function setMode(mode, quiet) {
   state.ui.mode = mode;
-  $$('.segment button').forEach(b => b.classList.toggle('is-active', b.dataset.mode === mode));
+  $$('.segment button').forEach(b => { const on = b.dataset.mode === mode; b.classList.toggle('is-active', on); b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
   $$('.mode').forEach(m => m.classList.toggle('is-active', m.id === 'mode-' + mode));
   if (!quiet && mode === 'manual') $('#mDesc').focus();
   if (mode === 'feed' && !PFAT_OFFLINE) feedShow();
@@ -7137,17 +7288,30 @@ function bind() {
   // Overview delegations
   document.body.addEventListener('click', e => {
     const chip = e.target.closest('[data-secfor]');
-    if (chip) { const f = chip.dataset.secfor; openSetups.clear(); if (f === 'ahead') { state.ui.aheadSec = chip.dataset.sec; renderAhead(); } else if (f === 'check') { state.ui.checkSec = chip.dataset.sec; renderCheckup(); } else if (f === 'more') { state.ui.moreSec = chip.dataset.sec; renderMore(); } save(); window.scrollTo({ top: 0 }); return; }
+    if (chip) { const f = chip.dataset.secfor, sec = chip.dataset.sec; openSetups.clear(); if (f === 'ahead') { state.ui.aheadSec = sec; renderAhead(); } else if (f === 'check') { state.ui.checkSec = sec; renderCheckup(); } else if (f === 'more') { state.ui.moreSec = sec; renderMore(); } save(); window.scrollTo({ top: 0 }); const again = $('[data-secfor="' + f + '"][data-sec="' + sec + '"]'); if (again) again.focus({ preventScroll: true }); return; }
     const go = e.target.closest('[data-go]'); if (go) { const [tab, mode] = go.dataset.go.split(':'); if (tab === 'ahead' && mode) { state.ui.aheadSec = mode; showTab('ahead'); return; } if (tab === 'check' && mode) { state.ui.checkSec = mode; showTab('check'); return; } showTab(tab); if (mode) setMode(mode); return; }
     const act = e.target.closest('[data-act]'); if (act) { if (act.dataset.act === 'toggleCats') { state.ui.allCats = !state.ui.allCats; renderOverview(); return; } if (act.dataset.act === 'sample') loadSample(); if (act.dataset.act === 'removeSample') { state.txns = state.txns.filter(t => t.source !== 'sample'); save(); renderAll(); toast('Sample data removed'); } return; }
     const crow = e.target.closest('[data-cat]'); if (crow && !crow.closest('.catrow')) { state.ui.cat = crow.dataset.cat; state.ui.q = ''; state.ui.shown = 150; showTab('transactions'); renderTransactions(); return; }
     const row = e.target.closest('.ledger .row[data-id]'); if (row) { openEdit(row.dataset.id); return; }
   });
-  document.body.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('.row[data-id], .crow[data-cat]')) { e.preventDefault(); e.target.click(); } if (e.key === 'Escape' && !$('#sheet').hidden) closeSheet(); });
+  document.body.addEventListener('keydown', e => {
+    // arrow keys move between tabs in any tab list (sections, ways to add, section chips); Home and End jump to the ends
+    const tabEl = e.target.closest && e.target.closest('[role="tab"]');
+    if (tabEl && ['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) {
+      const list = tabEl.closest('[role="tablist"]'), btns = list ? $$('[role="tab"]', list).filter(b => b.offsetParent !== null) : [], i = btns.indexOf(tabEl);
+      if (i >= 0) { const j = e.key === 'ArrowRight' ? (i + 1) % btns.length : e.key === 'ArrowLeft' ? (i - 1 + btns.length) % btns.length : e.key === 'Home' ? 0 : btns.length - 1; e.preventDefault(); const sel = btns[j].dataset.sec ? '[data-secfor="' + btns[j].dataset.secfor + '"][data-sec="' + btns[j].dataset.sec + '"]' : btns[j].id ? '#' + btns[j].id : null; btns[j].click(); const again = sel && $(sel); (again || btns[j]).focus(); }
+      return;
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.row[data-id], .crow[data-cat]')) { e.preventDefault(); e.target.click(); } if (e.key === 'Escape' && !$('#sheet').hidden) closeSheet(); });
   $('#sheet').addEventListener('click', e => { if (e.target === $('#sheet')) closeSheet(); });
   $('#sheet').addEventListener('keydown', sheetKeydown);
   document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.setup')) { if (d.open) openSetups.add(d.dataset.setup); else openSetups.delete(d.dataset.setup); const lbl = d.querySelector('.st-edit'); if (lbl && lbl.textContent) lbl.textContent = d.open ? 'Done' : 'Edit'; } }, true);
   $('#fab').addEventListener('click', () => { showTab('add'); setMode(state.ui.mode || 'manual', true); });
+  document.body.addEventListener('click', e => {
+    if (e.target.id === 'saveWarnGo') saveFile('pfat-backup.json', backupJSON(), 'application/json');
+    if (e.target.id === 'cardAskYes' || e.target.id === 'cardAskNo') { state.settings.countCardPayments = e.target.id === 'cardAskYes'; state.settings.cardPayAsked = true; save(); renderAll(); toast(state.settings.countCardPayments ? 'Card payments now count as spending' : 'Card payments stay out; their purchases come from the card statements'); }
+    if (e.target.dataset && e.target.dataset.incomeKw) { const kw = e.target.dataset.incomeKw; state.rules = state.rules.filter(r => r.kw !== kw); state.rules.push({ kw, cat: 'Income' }); compileRules(); let n = 0; for (const t of state.txns) if (t.amount > 0 && recategorize(t, false)) n++; save(); renderAll(); toast('Counted as income' + (n ? ': ' + n + ' transactions' : '')); }
+  });
 
   // Transactions
   let qTimer = null;
@@ -7171,7 +7335,7 @@ function bind() {
   ['#mDesc', '#mAmount', '#mType'].forEach(s => $(s).addEventListener('input', suggestCat));
   $('#manualForm').addEventListener('submit', e => {
     e.preventDefault();
-    const a = slParseAmountToken($('#mAmount').value); if (!a || a.value === 0) { toast('Enter an amount like 45.67', true); $('#mAmount').focus(); return; }
+    const a = slParseAmountToken($('#mAmount').value); if (!a || a.value === 0) { fieldErr($('#mAmount'), 'Enter an amount like 45.67'); return; }
     const d = $('#mDate').value; if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) { toast('Pick a date', true); return; }
     const sign = $('#mType').value === 'income' ? 1 : -1;
     const cat = $('#mCat').value;
@@ -7217,7 +7381,7 @@ function bind() {
     if (t.id === 'pvReread') { const acct = pending.account, nt = $('#pvOcrText').value; if (nt !== pending.text) pending.applyFixes = false; pending.text = nt; pending.ocrDraft = null; pending.ocrOpen = true; reparse(); pending.account = acct; renderPreview(); toast('Read again'); return; }
     if (t.id === 'pvCancel') { pending = null; renderPreview(); if (fileQueue.length) nextInQueue(); return; }
     if (t.id === 'pvAll' || t.id === 'pvNone') { pending.include = pending.include.map(() => t.id === 'pvAll'); renderPreview(); return; }
-    const flip = t.closest('[data-flip]'); if (flip) { const i = +flip.dataset.flip; pending.flipRow[i] = !pending.flipRow[i]; renderPreview(); return; }
+    const flip = t.closest('[data-flip]'); if (flip) { const i = +flip.dataset.flip; pending.flipRow[i] = !pending.flipRow[i]; renderPreview(); const again = $('[data-flip="' + i + '"]'); if (again) again.focus({ preventScroll: true }); return; }
     const fs = t.closest('[data-flipsec]'); if (fs) { const k = +fs.dataset.flipsec; const f = pending.opts.flipSections = pending.opts.flipSections || {}; f[k] = !f[k]; reparse(); renderPreview(); return; }
   });
   pv.addEventListener('toggle', e => { if (pending && e.target.tagName === 'DETAILS') { if (e.target.classList.contains('ocrtext')) pending.ocrOpen = e.target.open; else if (e.target.classList.contains('holds')) pending.holdOpen = e.target.open; else pending.mapOpen = e.target.open; } }, true);
@@ -7278,7 +7442,7 @@ function bind() {
     const id = e.target.id;
     if (id === 'saveNow') { const was = state.settings.autosave; state.settings.autosave = true; save(); state.settings.autosave = was; renderData(); toast('Saved'); }
     if (id === 'ocrWithdraw') { state.settings.ocrOk = false; save(); renderData(); toast('PFAT will ask before reading pictures again'); return; }
-    if (id === 'clearAll') armConfirm(e.target, 'Tap again to delete everything', () => { state.imports = []; state.settings.ocrOk = false; state.txns = []; state.rules = []; state.customCats = []; state.catOverrides = {}; state.budgets = {}; recentAdds = []; state.bills = null; state.balances = {}; state.plan = null; state.goals = null; state.accounts = null; state.cash = null; state.paycheck = null; state.snapshots = null; state.insurance = null; state.limits = null; ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup(); try { localStorage.removeItem(STORE_KEY); localStorage.removeItem('pfat.feed'); } catch (e2) { /* ignore */ } if (!PFAT_OFFLINE) feedForget(); save(); renderAll(); renderData(); toast('Everything deleted'); });
+    if (id === 'clearAll') armConfirm(e.target, 'Tap again to delete everything', () => { state.imports = []; state.settings.ocrOk = false; state.txns = []; state.rules = []; state.customCats = []; state.catOverrides = {}; state.budgets = {}; recentAdds = []; state.bills = null; state.balances = {}; state.plan = null; state.goals = null; state.accounts = null; state.cash = null; state.paycheck = null; state.snapshots = null; state.insurance = null; state.limits = null; state.ui.lastAccount = ''; state.ui.accountKinds = {}; ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup(); try { localStorage.removeItem(STORE_KEY); localStorage.removeItem(OLD_STORE_KEY); localStorage.removeItem('pfat.feed'); } catch (e2) { /* ignore */ } if (!PFAT_OFFLINE) feedForget(); saveWarn(false); renderAll(); renderData(); toast('Everything deleted'); });
     if (id === 'expCsv') saveFile('pfat-transactions.csv', slToCSV([...state.txns].sort((a, b) => a.date < b.date ? -1 : 1)), 'text/csv');
     if (id === 'expJson') saveFile('pfat-backup.json', backupJSON(), 'application/json');
     if (id === 'copyCsv') copyText(slToCSV(state.txns)).then(ok => toast(ok ? 'CSV copied' : 'Could not copy', !ok));
@@ -7289,7 +7453,7 @@ function bind() {
     if (t.id === 'autosave') { state.settings.autosave = t.checked; if (t.checked) save(); else { try { localStorage.removeItem(STORE_KEY); } catch (e2) { /* ignore */ } } if (!PFAT_OFFLINE) feedStore(feedMeta()); renderData(); }
     if (t.id === 'theme') { state.settings.theme = t.value; applyTheme(); save(); }
     if (t.id === 'hudLabel') { state.settings.hudLabel = t.value; applyHudLabel(); save(); }
-    if (t.id === 'currency') { state.settings.currency = t.value.trim() || '$'; save(); renderAll(); }
+    if (t.id === 'currency') { state.settings.currency = cleanCurrency(t.value); save(); renderAll(); }
     if (t.id === 'dayFirst') { state.settings.dayFirst = t.checked; save(); }
   });
 }
