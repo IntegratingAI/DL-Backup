@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Boynny49Zg1EbaX/qWFbjmhiiy6Le8HW9ETWsMR8My8=' 'sha256-EKoAT+Aj/7Lo8n//nDiSs39RY+h8nDVZTT4165OgSM0=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/ https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/ https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/; connect-src data: https://beta-bridge.simplefin.org/simplefin/ https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Boynny49Zg1EbaX/qWFbjmhiiy6Le8HW9ETWsMR8My8=' 'sha256-WZZUtpBmb8Kc9wUhnr0UL59tgjYJ9XuWdr1hzQq5iIg=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/ https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/ https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/; connect-src data: https://beta-bridge.simplefin.org/simplefin/ https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out HUD, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
 <link rel="canonical" href="https://freeapp4that.store/spend-lens/">
@@ -422,6 +422,10 @@ body[data-tab="add"] .fab { display: none; }
 .feedacct > div { min-width: 0; }
 .feedacct label { flex: 1 1 200px; max-width: 300px; font-size: 0.85rem; color: var(--ink-2); }
 .feedacct label > input { display: block; width: 100%; margin-top: 4px; }
+.feedagree { margin: 16px 0 8px; }
+.feedagree label { display: block; font-weight: 600; font-size: 0.95rem; color: var(--ink); }
+.feedphrase { margin: 6px 0 8px; padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--surface); font-size: 1rem; line-height: 1.5; }
+#feedAgree { display: block; width: 100%; box-sizing: border-box; font: inherit; font-size: 1rem; line-height: 1.5; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); resize: vertical; }
 /* /feed */
 .recent .row { cursor: default; }
 footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
@@ -7149,6 +7153,24 @@ const FEED_BASE = 'https://beta-bridge.simplefin.org/simplefin/';
 const FEED_HOST = new URL(FEED_BASE).hostname, FEED_KEY = 'pfat.feed', FEED_ITER = 600000, FEED_WAIT_MIN = 60, FEED_DAYS = 44, FEED_KEEP_DAYS = 120;
 const FEED_INIT = { credentials: 'omit', referrerPolicy: 'no-referrer', cache: 'no-store', redirect: 'error' };
 const FEED_AWAY = 'SimpleFIN Bridge is out of reach right now. Check the connection and try again.';
+// The member types this sentence to open the connect steps (a deliberate pause, in place of a click). Typing or dictation
+// counts; case, punctuation, apostrophes, and spacing are ignored; pasting and dropping text are turned away.
+const FEED_PHRASE = 'I agree to connect to the internet and pay for access to a third-party platform whose terms of service are more intrusive than PFAT\'s';
+const feedWords = (s) => String(s || '').toLowerCase().replace(/['‘’ʼ`]/g, '').replace(/[^a-z0-9]+/g, ' ').trim().split(' ').filter(Boolean);
+// How far the typed sentence matches: every word, or the count of matching words and the first one that differs
+function feedAgreed(typed) {
+  const want = feedWords(FEED_PHRASE), got = feedWords(typed), ends = /[a-z0-9]$/i.test(String(typed || '').trim()) && !/\s$/.test(String(typed || ''));
+  let i = 0; while (i < got.length && i < want.length && got[i] === want[i]) i++;
+  // (a last word still being typed counts as on track while it begins the expected word)
+  const typing = i === got.length - 1 && ends && want[i] && want[i].startsWith(got[i]);
+  return { done: i === want.length && got.length === want.length, n: i, of: want.length, wrong: i < got.length && !typing ? { at: i + 1, typed: got[i], want: want[i] || '' } : null };
+}
+function feedAgreeHint() {
+  const box = $('#feedAgree'), hint = $('#feedAgreeHint'), setup = $('#feedSetup'); if (!box || !hint || !setup) return;
+  const a = feedAgreed(box.value), w = a.wrong;
+  hint.textContent = a.done ? 'The sentence matches. The connect steps are open below.' : w ? (w.want ? 'Word ' + w.at + ' reads “' + w.typed + '”; the sentence has “' + w.want + '”.' : 'The sentence ends at “' + feedWords(FEED_PHRASE).slice(-1)[0] + '”.') : a.n + ' of ' + a.of + ' words match.';
+  setup.hidden = !a.done;
+}
 let feedAccess = null, feedMem = null, feedMemSaved = false, feedShowOnce = null, feedNote = '', feedBusy = false, feedGen = 0, feedLastReq = 0, feedHeld = null, feedAbort = null;
 // While "Keep my data" is on, read fresh each time (another tab may have synced or forgotten); otherwise this tab's copy
 function feedMeta() {
@@ -7433,7 +7455,7 @@ function feedRisks() {
     '<li><b>You choose where the link lives.</b> Lock it on this device with a passphrase (PFAT keeps no copy of the passphrase), or keep it in your password manager and paste it when you sync; PFAT then holds it only until you close the tab. Either way, it stays out of PFAT\'s backups and exports.</li>' +
     '<li><b>Daily, rather than live.</b> SimpleFIN refreshes about once a day, and banks can take a day or two to post a purchase. The first sync brings in the last ' + FEED_DAYS + ' days (less if your bank keeps less); import statements for older months.</li>' +
     '<li><b>Your bank sign-in stays with MX.</b> SimpleFIN says your bank credentials stay with MX, away from its own servers, and PFAT asks only for the setup token.</li>' +
-    '<li><b>Stopping takes two steps.</b> Forget the connection here, then disable PFAT\'s access at SimpleFIN Bridge. Transactions already added stay in PFAT.</li></ul>' +
+    '<li><b>Stopping takes three steps.</b> Forget the connection here, disable PFAT\'s access at SimpleFIN Bridge, and end your SimpleFIN subscription there, which otherwise renews and bills you. Transactions already added stay in PFAT.</li></ul>' +
     '<p class="muted small">SimpleFIN Bridge is an independent service, unaffiliated with Tool4That. Read its own ' + a('/info/security', 'security') + ', ' + a('/info/privacy', 'privacy') + ', and ' + a('/info/terms', 'terms') + ' pages first.</p>';
 }
 function renderFeed() {
@@ -7444,7 +7466,9 @@ function renderFeed() {
     const canLock = feedCanLock();
     el.innerHTML = '<section class="section feed"><h2>Bank feed (optional)</h2><p class="sub">Bring in transactions from your bank about once a day through <b>SimpleFIN Bridge</b>, a paid service you sign up for. Everything else in PFAT works without it.</p>' + note +
       '<h3>Before you connect</h3>' + feedRisks() +
-      '<label class="check"><input type="checkbox" id="feedOk"> I understand: this page will contact SimpleFIN Bridge when I sync, SimpleFIN charges me for its service, and the access link works like a password.</label>' +
+      '<div class="feedagree"><label for="feedAgree">To open the connect steps, type this sentence (or dictate it):</label><p class="feedphrase" id="feedPhrase">' + esc(FEED_PHRASE) + '</p>' +
+      '<textarea id="feedAgree" rows="3" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-describedby="feedPhrase feedAgreeHint"></textarea>' +
+      '<p class="muted small" id="feedAgreeHint" aria-live="polite">0 of ' + feedWords(FEED_PHRASE).length + ' words match. Capitals and punctuation are optional; this box takes typing and dictation.</p></div>' +
       '<div id="feedSetup" hidden><h3>Connect</h3><ol class="feedsteps"><li>Sign up at <a href="https://' + FEED_HOST + '/" target="_blank" rel="noopener noreferrer">SimpleFIN Bridge</a> and connect your banks there.</li><li>In SimpleFIN Bridge, create a setup token for a new app, and copy it.</li><li>Paste it here, and choose where PFAT keeps the access link.</li></ol>' +
       '<form id="feedForm" class="form" autocomplete="off"><label>Setup token <input type="text" id="feedToken" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="aHR0cHM6Ly9…"></label>' +
       '<div class="radios" role="radiogroup" aria-label="Where PFAT keeps the access link">' +
@@ -7470,14 +7494,18 @@ function renderFeed() {
 // "last synced" line when nothing is typed
 function feedShow() {
   const el = $('#feedBody'); if (!el) return;
-  const typed = $$('input', el).some(i => i.type !== 'radio' && i.type !== 'checkbox' && !i.readOnly && i.value);
+  const typed = $$('input, textarea', el).some(i => i.type !== 'radio' && i.type !== 'checkbox' && !i.readOnly && i.value);
   const now = feedMeta() ? 'on' : 'off';
   if (el.dataset.state !== now || (now === 'on' && !feedBusy && !typed)) renderFeed();
 }
 function bindFeed() {
   const el = $('#feedBody'); if (!el) return;
   el.addEventListener('submit', e => { e.preventDefault(); if (feedBusy) return; if (e.target.id === 'feedForm') feedConnect(); else if (e.target.id === 'feedSyncForm') feedSyncNow(); });
-  el.addEventListener('change', e => { if (e.target.id === 'feedOk') $('#feedSetup').hidden = !e.target.checked; if (e.target.name === 'feedKeep' && $('#feedPassBox')) $('#feedPassBox').hidden = e.target.value !== 'lock'; });
+  el.addEventListener('change', e => { if (e.target.name === 'feedKeep' && $('#feedPassBox')) $('#feedPassBox').hidden = e.target.value !== 'lock'; });
+  el.addEventListener('input', e => { if (e.target.id === 'feedAgree') feedAgreeHint(); });
+  // the sentence is typed (or dictated): pasted or dropped text is turned away, with a word on why
+  const typeOnly = (e) => { if (e.target.id !== 'feedAgree') return; if (e.type === 'beforeinput' && !/^insertFrom(Paste|Drop)/.test(e.inputType || '')) return; e.preventDefault(); const h = $('#feedAgreeHint'); if (h) h.textContent = 'This box takes typing and dictation, so pasted text stays out: type the sentence above.'; };
+  for (const t of ['paste', 'drop', 'beforeinput']) el.addEventListener(t, typeOnly);
   el.addEventListener('click', e => {
     const id = e.target.id;
     if (id === 'feedForget') armConfirm(e.target, 'Tap again to forget', () => { feedForget(); feedNote = 'Forgotten on this device. To end the connection for good, disable PFAT\'s access at SimpleFIN Bridge.'; renderFeed(); });
