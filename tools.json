@@ -123,7 +123,7 @@
       "icon": "path",
       "category": "cyber",
       "section": "learning",
-      "sha256": "1ab3ae1a5dfeb5a35bde040002c8627919689eaeed1db99a71e76c1e7a586221",
+      "sha256": "b53dd2af93a1b171d88476b9aa7ab712879a2829b0cb8537d928551e74eba8ce",
       "updated": "2026-11-02"
     },
     {
@@ -225,7 +225,7 @@
           "download_as": "windows-11-lockdown-reference.txt"
         }
       ],
-      "sha256": "dffc23734ec14cf261b5c9a187be7b9b8ff2b561551e5a0494afdfe04c1553a1",
+      "sha256": "a76bae40f2f1f73aeeed905e66727433878c2f5182716ce316595dcd46cd239b",
       "updated": "2026-11-02"
     },
     {
@@ -251,7 +251,7 @@
           "download_as": "windows-server-lockdown-reference.txt"
         }
       ],
-      "sha256": "b9f8108a4ac123f354293c1d1d97e6d02f0cc3ab5ccf694d4c6bc6c374796922",
+      "sha256": "e4fac4679541ddd6440f6a3ef0731962d43e6da392c6b06ba5d37e81ce22d609",
       "updated": "2026-11-02"
     },
     {
@@ -277,7 +277,7 @@
           "download_as": "linux-mint-lockdown-reference.txt"
         }
       ],
-      "sha256": "fd8be032c74524490c12ee474916f0242ff4febb42268a6418f6d7370f73b428",
+      "sha256": "72ebf3248ff0a9bc8f57853aa50a764a14657efd638ec78041445fd0d096864b",
       "updated": "2026-11-02"
     },
     {
@@ -303,7 +303,7 @@
           "download_as": "ubuntu-lockdown-reference.txt"
         }
       ],
-      "sha256": "70bb12c9eedf812e780a3777b16e3bf1f7839e8eb11269c90d8a33d1442aab78",
+      "sha256": "2f7729479bf8376447c299edda163d27416a928300ab920a01e8fa9ea69eed9a",
       "updated": "2026-11-02"
     },
     {
@@ -329,7 +329,7 @@
           "download_as": "freebsd-lockdown-reference.txt"
         }
       ],
-      "sha256": "31de8f6abe518c29c5eb6b7e978872ea70aa872a5114b195ff14e8217b7337cc",
+      "sha256": "345aa4ddb40cb70a724a1324325a04009ed2562b8ac8ba3003dc38bba46befd8",
       "updated": "2026-11-02"
     },
     {
@@ -348,7 +348,7 @@
       "icon": "lock",
       "category": "cyber",
       "series": "lockdown-drills",
-      "sha256": "276713e5c35a1987689f9184b6169b67bfc8fdbdbfcd2421509daea22029c1a8",
+      "sha256": "ee53dbd2cc327132ff8829d6da450492226dad93372e66913240bc00e97b64d4",
       "updated": "2026-11-02",
       "extras": [
         {
@@ -452,7 +452,7 @@
       "icon": "map",
       "category": "cyber",
       "section": "learning",
-      "sha256": "3e3ebabff5fe523db8376e3637f6ca3e4c39304b4b4029a6892b987d24b80f0a",
+      "sha256": "35096b4f0ca7f47a19a84c51daf0be6f470ae42a620346e5311f27b7654d4efd",
       "updated": "2026-11-02"
     }
   ]

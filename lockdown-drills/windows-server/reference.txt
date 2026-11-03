@@ -3,8 +3,9 @@
      Windows Server 2025 (member server or domain controller)
  Training reference for virtual machines you own or are authorized to change.
  Three levels: L1 Doorman, L2 Watchman, L3 Hunter. Every item = COMMAND, WHY,
- NOTE, and the hardening AREA it belongs to. No scripts by design: type it,
- read it, explain it. Item IDs match the Lockdown Drills trainer for this OS.
+ NOTE, and the hardening AREA it belongs to; ALSO adds a second caution when
+ an item needs one. No scripts by design: type it, read it, explain it. Item
+ IDs match the Lockdown Drills trainer for this OS.
  Unofficial practice; not affiliated with or endorsed by Microsoft.
 
  COMMAND LEGEND: PS> runs in an elevated PowerShell and CMD> in an elevated
@@ -37,12 +38,13 @@
       0-1 standalone or member workstation, 2-3 standalone or member server, 4-5 domain controller
   PS> Get-WindowsFeature AD-Domain-Services,DNS,DHCP,Web-Server,Web-Ftp-Server | Select-Object Name,Installed
   WHY: Read the brief: removing a user, role, or service it requires is an
-       availability failure. Evidence first: answer the investigation questions
-       before any change (Defense Ladder f1). Member servers use local accounts
-       and secpol; domain controllers use Active Directory and Group Policy.
-  NOTE: Unfamiliar is distinct from unauthorized: find what starts it, who owns
-        it, and what it does, then ask the owner before removing an agent
+       availability failure. Evidence first: answer the investigation
+       questions before any change (Defense Ladder f1).
+  NOTE: Unfamiliar is distinct from unauthorized. Before removing an agent,
+        find what starts it, who owns it, and what it does, then ask the owner
         (Defense Ladder s1).
+  ALSO: Member servers use local accounts and secpol; domain controllers use
+        Active Directory and Group Policy.
 
 [B-01] List users: local and domain
   AREA: Account management (CIS Control 5)
@@ -64,12 +66,13 @@
   PS> Remove-ADUser -Identity baduser -Confirm:$false
   PS> Remove-LocalUser -Name "baduser"
   CMD> net user baduser /delete
-  WHY: Disable first if the brief is unclear, delete when it is not: a disabled
-       account keeps its SID and group memberships for the investigation
-       question.
-  NOTE: Answer every investigation question that names the account first, then
-        handle each task or service the first two lines show running as it.
-        Deletion leaves the profile under C:\Users: search it for evidence and
+  WHY: Disable first if the brief is unclear; delete when it is clear. A
+       disabled account keeps its SID and group memberships for the
+       investigation question.
+  NOTE: First, answer every investigation question that names the account.
+        Then handle each scheduled task or service running as that account;
+        the first two commands find them.
+  ALSO: Deletion leaves the profile under C:\Users: search it for evidence and
         prohibited files, then remove it.
 
 [B-03] Audit the privileged groups
@@ -96,10 +99,10 @@
        enabled only when the brief uses it, with a strong password. Match SID
        -500 (Administrator) and -501 (Guest) to catch renames.
   NOTE: Keep the account the brief tells you to log in with enabled; whoami
-        /user shows your SID, and -500 marks the built-in Administrator. Rename
-        both as a last step, only when the brief or policy asks
-        (Rename-LocalUser on a member server); the SID stays, so disabling and a
-        strong password carry the protection.
+        /user shows your SID, and -500 marks the built-in Administrator.
+  ALSO: Rename Administrator and Guest last, only when the brief or policy
+        asks (Rename-LocalUser on a member server). The SID stays, so
+        disabling and a strong password carry the protection.
 
 [B-05] Strong passwords and forced change
   AREA: Account management (CIS Control 5)
@@ -111,16 +114,16 @@
   PS> Get-ADUser -Filter 'Enabled -eq $true' | Where-Object SamAccountName -ne $env:USERNAME | Set-ADUser -PasswordNeverExpires $false
   CMD> net user alice *
   CMD> net user alice /logonpasswordchg:yes
-  WHY: Weak, shared, or blank passwords are the way in. PasswordNotRequired
-       allows a blank password despite policy; PasswordNeverExpires defeats
-       aging. Clear both flags with Set-ADUser, then force a change, and
-       pwdLastSet 0 confirms it at next sign-in.
-  NOTE: Set the domain password policy first (B-06, B-07), so every new password
-        meets it. Read-Host and net user * prompt for the password, which keeps
-        it out of the command history. The bulk line also reaches service
-        accounts: handle those in A-10, where the service gets its new password
-        at the same time, or filter them out by name. Record every changed
-        password somewhere safe (on paper, in a lab).
+  WHY: Weak, shared, or blank passwords let attackers in. PasswordNotRequired
+       allows blank ones despite policy; PasswordNeverExpires defeats aging.
+       Clear both, force a change at next sign-in, and confirm pwdLastSet is
+       0.
+  NOTE: Apply B-06 and B-07 first so new passwords meet domain policy.
+        Read-Host and net user * prompt, hiding passwords from command
+        history; record them safely (on paper, in a lab).
+  ALSO: The bulk line clears service accounts' PasswordNeverExpires, so their
+        passwords expire. Exclude them by name, or handle them in A-10,
+        updating each service's Log On tab at the same time.
 
 [B-06] Password policy where it actually lives
   AREA: Account management (CIS Control 5)
@@ -143,15 +146,16 @@
   CMD> net accounts /lockoutthreshold:5 /lockoutduration:30 /lockoutwindow:30   (member server)
   PS> Search-ADAccount -LockedOut | Select-Object Name
   PS> Unlock-ADAccount -Identity alice
-  WHY: Turns an online brute force from thousands of guesses a minute into five
-       per half hour. Search-ADAccount shows who is locked out right now, which
-       is also an investigation clue.
-  NOTE: The brief sets the numbers; CIS Benchmark: threshold 5 or fewer (above
-        0), duration and reset window 15 minutes or more. The local built-in
-        Administrator of a member server locks only when Allow Administrator
-        account lockout is Enabled (AllowAdministratorLockout = 1, Hunter A-01),
-        and only for network sign-ins such as Remote Desktop; console sign-in
-        stays available.
+  WHY: Turns an online brute force from thousands of guesses a minute into
+       five per half hour. Search-ADAccount shows who is locked out right now,
+       which is also an investigation clue.
+  NOTE: The brief sets the numbers. The CIS Benchmark asks for a threshold of
+        5 or fewer and above 0, and a duration and reset window of 15 minutes
+        or more.
+  ALSO: A member server's local built-in Administrator locks only with Allow
+        Administrator account lockout Enabled (AllowAdministratorLockout = 1,
+        Hunter A-01), only for network sign-ins like Remote Desktop. Console
+        sign-in stays available.
 
 [B-08] Firewall on for all profiles
   AREA: Secure configuration (CIS Control 4)
@@ -179,7 +183,7 @@
        reverting setting is GPO-owned: NoAutoUpdate 1 disables automatic
        updates; UseWUServer 1 sends checks to WUServer, which the brief must
        name.
-  NOTE: Start updates early and recheck after each restart until Windows Update
+  NOTE: Start updates early; recheck after each restart until Windows Update
         reports up to date. wuauserv ships as Manual (starts on demand);
         Disabled is the finding. Save work before any reboot.
 
@@ -194,15 +198,16 @@
   PS> Start-MpScan -ScanType CustomScan -ScanPath C:\Users
   PS> Get-MpThreatDetection | Select-Object InitialDetectionTime,ProcessName,Resources
   GUI: Windows Security, Virus and threat protection, Manage settings
-  WHY: Windows Server ships with Defender, but someone can remove the feature or
-       disable it by policy. Real-time protection and current signatures both
-       matter.
-  NOTE: An error from Get-MpComputerStatus means the feature is missing: install
-        it, restart when RestartNeeded says Yes, then configure. AMRunningMode
-        Normal means active; Passive means another antivirus leads, and the
-        brief picks the product. Answer the investigation questions before any
-        scan, and record each detection's Resources path before removing the
-        program that dropped it.
+  WHY: Windows Server ships with Defender, but someone can remove the feature
+       or disable it by policy. Real-time protection and current signatures
+       both matter, and Get-MpComputerStatus shows each.
+  NOTE: Answer the investigation questions before any scan, because a scan can
+        quarantine the file a question asks about. Record each detection's
+        Resources path before removing the program that dropped it.
+  ALSO: If Get-MpComputerStatus errors, the feature is missing: install it,
+        restart when RestartNeeded says Yes, then configure. AMRunningMode
+        Normal means active; Passive means another antivirus leads. The brief
+        picks the product.
 
 [B-11] Remove unapproved software
   AREA: Secure configuration: software (CIS Controls 2 and 4)
@@ -210,13 +215,12 @@
   GUI: Settings, Apps, Installed apps (or appwiz.cpl)
   WHY: Hacking tools, games, torrent clients, and remote-access tools are
        acceptable-use violations and attack surface.
-  NOTE: Software the brief requires stays. The registry listing is instant;
-        Win32_Product is slow and can trigger repairs. HKEY_USERS adds apps
-        installed for one signed-in user only. Capture tools install Npcap as a
-        program of its own: remove it too when the brief leaves out packet
-        capture. After removing a remote-access tool, look for its leftover
-        service (I-04) and firewall rule (I-12). Portable tools appear only in a
-        file search (B-12, A-06).
+  NOTE: Software the brief requires stays. Portable tools appear only in a
+        file search (B-12, A-06). After removing a remote-access tool, check
+        for its leftover service (I-04) and firewall rule (I-12).
+  ALSO: The registry listing is instant; Win32_Product is slow and can trigger
+        repairs. HKEY_USERS adds signed-in users' own apps. Remove capture
+        tools' separate Npcap install when the brief omits packet capture.
 
 [B-12] Find unapproved media and loose executables
   AREA: Data protection (CIS Control 3)
@@ -224,14 +228,14 @@
   PS> Get-ChildItem -Path C:\Users,C:\inetpub -Recurse -Force -File -Include *.exe,*.bat,*.cmd,*.ps1,*.vbs,*.hta,*.aspx,*.py,*.jar,*.zip,*.7z,*.rar -ErrorAction SilentlyContinue | Where-Object FullName -notmatch '\\AppData\\Local\\(Microsoft|Packages)\\|^C:\\Users\\(All Users|Default User)\\' | Select-Object FullName,LastWriteTime
   CMD> tar -tf "C:\Users\<user>\Downloads\<archive>.zip"
   WHY: Media in user profiles and web roots is the usual acceptable-use
-       violation; a stray .aspx or .ps1 under inetpub is a webshell.
-  NOTE: Confirm against the brief before deleting, and search C:\ too, beyond
-        C:\Users. -Force shows hidden files; the filters skip app caches under
-        AppData and the All Users and Default User links. Answer every
-        investigation question that names a file first and record its hash
-        (B-14); then delete it and log the path. tar -tf lists what a .zip holds
-        before you delete it. Python and other runtimes stay when the brief
-        needs them.
+       violation; a stray .aspx or .ps1 under inetpub is a webshell. Confirm
+       each file against the brief before deleting.
+  NOTE: First answer every investigation question naming a file and record its
+        hash (B-14); then delete it and log the path. tar -tf lists a .zip's
+        contents before you delete it.
+  ALSO: Search C:\ too, beyond C:\Users. -Force shows hidden files; the
+        filters skip AppData caches and the All Users and Default User links.
+        Keep Python and other runtimes the brief needs.
 
 [B-13] Stop obviously unsafe services
   AREA: Secure configuration (CIS Control 4)
@@ -254,8 +258,8 @@
         group (the @FirewallAPI name works in any display language).
         fDenyTSConnections 0 under the Terminal Services policy key forces
         Remote Desktop back on, so an error that the value is missing is the
-        good result. When the brief leaves Remote Assistance out, run Uninstall-
-        WindowsFeature Remote-Assistance. The last line returns empty once FTP
+        good result. When the brief leaves Remote Assistance out, run
+        Uninstall-WindowsFeature Remote-Assistance. The last line returns empty once FTP
         and Remote Desktop stop listening.
 
 [B-14] Hash a file for an investigation question
@@ -263,15 +267,15 @@
   PS> Get-FileHash -LiteralPath 'C:\Users\<user>\Desktop\<file>' -Algorithm SHA256 | Format-List
   CMD> certutil -hashfile "C:\Users\<user>\Desktop\<file>" SHA256
   PS> Get-MpThreatDetection | Select-Object InitialDetectionTime,Resources
-  WHY: The answer is the exact hex string for the named algorithm. Hash the
-       untouched file before any Defender scan, cleanup, or move: changed or
-       quarantined, it answers differently or vanishes.
-  NOTE: Hash lengths: MD5 32 hex characters, SHA1 40, SHA256 64, and the value
-        repeats on every run. -LiteralPath reads names with [ ] that -Path
-        skips, and quotes keep paths with spaces whole. certutil defaults to
-        SHA1, so name the algorithm. When opening the file reports a virus,
-        Defender has already quarantined it: Get-MpThreatDetection and Windows
-        Security, Protection history show the path and time to record.
+  WHY: Answer with the named algorithm's exact hex string, which repeats on
+       every run. Hash before any Defender scan, cleanup, or move: changed or
+       quarantined, the file answers differently or vanishes.
+  NOTE: Check each hash's length: MD5 32 hex characters, SHA1 40, SHA256 64.
+        certutil defaults to SHA1, so name the algorithm. -LiteralPath reads
+        names with [ ] that -Path skips.
+  ALSO: Quotes keep paths with spaces whole. If opening the file reports a
+        virus, Defender already quarantined it: Get-MpThreatDetection and
+        Windows Security, Protection history show the path and time to record.
 
 [B-15] Create the users and groups the brief lists
   AREA: Account management (CIS Control 5)
@@ -296,17 +300,16 @@
   PS> Get-ChildItem -Path C:\Users\*\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt -Force -ErrorAction SilentlyContinue | Select-String -Pattern 'net user|ConvertTo-SecureString|passw' | Select-Object Path,Line
   PS> Get-ChildItem -Path C:\Windows\Panther\Unattend.xml,C:\Windows\Panther\Unattend\Unattend.xml,C:\Windows\System32\Sysprep\unattend.xml -Force -ErrorAction SilentlyContinue | Select-String -Pattern '<Password>|AdministratorPassword' | Select-Object Path,LineNumber
   CMD> cmdkey /list
-  WHY: A password saved in a note, script, PowerShell history, or leftover
-       Windows Setup answer file hands the account to whoever reads it. Content
-       search finds one under any file name.
-  NOTE: Answer any investigation question that names the file first and record
-        its hash (B-14); then remove or move the file where the brief says and
-        log the path. Review each hit: license and app files match too. An
-        answer file's hidden password is only encoded; treat it as plain text.
-        cmdkey /list shows passwords Windows saved for the signed-in user, such
-        as TERMSRV/<host> for a Remote Desktop sign-in; cmdkey /delete:<target>
-        removes one the brief leaves out, and each user sees only their own
-        list.
+  WHY: Passwords in notes, scripts, PowerShell history, or Windows Setup
+       answer files expose accounts. Hidden answer-file passwords are only
+       encoded: treat them as plaintext. Content search finds them under any
+       name.
+  NOTE: First answer any investigation question that names the file and record
+        its hash (B-14). Then remove or move it where the brief says, and log
+        the path.
+  ALSO: Review each hit: license and app files match too. cmdkey /list shows
+        only the signed-in user's saved passwords, like TERMSRV/<host> for
+        Remote Desktop; cmdkey /delete:<target> removes one the brief omits.
 
 ------------------------------ WATCHMAN ----------------------------------------
  Check the windows. Roles and features, audit and policy through Group Policy,
@@ -351,14 +354,15 @@
       User Account Control: Run all administrators in Admin Approval Mode = Enabled
       Domain controller: LDAP server signing requirements = Require signing
       Domain member: Digitally encrypt or sign secure channel data (always) = Enabled
-  WHY: Classic CIS and STIG level-one settings; each blocks a named attack:
-       blank-password remote logon, username harvesting, LM and NTLMv1 cracking
-       or relay, SMB relay, pre-auth shutdown, and UAC bypass. NTLMv1 lingers
-       before Windows 11 24H2 and Windows Server 2025: check the level on older
-       releases and mixed domains.
+  WHY: Classic CIS and STIG level-one settings. Each blocks a named attack:
+       blank-password remote logon, username harvesting, LM and NTLMv1
+       cracking or relay, SMB relay, shutdown before sign-in, and UAC bypass.
   NOTE: The inactivity limit locks every idle session. A VM sends the required
         CTRL+ALT+DEL from its window menu or Ctrl+Alt+End (Hyper-V, Remote
         Desktop). Command line: Hunter A-02 (registry) or A-01 (secedit).
+  ALSO: Releases older than Windows 11 24H2 and Windows Server 2025 still
+        accept NTLMv1: check the LAN Manager authentication level there and in
+        mixed domains.
 
 [I-03] UAC to Always notify
   AREA: Secure configuration (CIS Control 4)
@@ -369,16 +373,17 @@
   PS> Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name ConsentPromptBehaviorUser -Value 0 -Type DWord
   GUI: Control Panel, User Accounts, Change User Account Control settings,
        slider to the top.
-  WHY: UAC off elevates every admin process silently; malware rides along.
-       ConsentPromptBehaviorAdmin 0 elevates silently, 2 (Always notify) prompts
-       on the secure desktop for every elevation, and the default 5 prompts only
-       for programs outside Windows; FilterAdministratorToken 1 puts the
-       built-in Administrator, the account most often used on a server, under
-       UAC too.
-  NOTE: EnableLUA needs a reboot. ConsentPromptBehaviorUser 0 refuses
-        standard-user elevation; admins elevate from their own sessions. A
-        Security Options policy overrides the slider at refresh; gpresult
-        /scope computer /v shows it.
+  WHY: ConsentPromptBehaviorAdmin 2 (Always notify) prompts on the secure
+       desktop for every elevation; default 5 prompts only for programs
+       outside Windows. UAC off silently elevates every admin process; malware
+       rides along.
+  NOTE: FilterAdministratorToken 1 puts the built-in Administrator, the
+        account most often used on a server, under UAC too.
+        ConsentPromptBehaviorAdmin 0 elevates silently. EnableLUA needs a
+        reboot.
+  ALSO: ConsentPromptBehaviorUser 0 refuses standard-user elevation; admins
+        elevate from their own sessions. A Security Options policy overrides
+        the slider at the next refresh; gpresult /scope computer /v shows it.
 
 [I-04] Service audit: what runs, from where
   AREA: Secure configuration (CIS Control 4)
@@ -388,14 +393,14 @@
   PS> Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\ValidCommunities' -ErrorAction SilentlyContinue
   PS> Stop-Service -Name <name>; Set-Service -Name <name> -StartupType Disabled
   WHY: Planted services: Telnet, FTP, SNMP, SSDP, UPnP, Remote Registry, Xbox,
-       odd names, and PathName under C:\Users or C:\Temp. StartName LocalSystem
-       runs as SYSTEM, the most powerful account on the machine; SNMP answers
-       161/udp to anyone who knows a community name, and public or private is a
-       guess away.
-  NOTE: Required services (IIS, DNS, DHCP, OpenSSH, MySQL, Apache) stay running;
-        harden their configs. Event log, firewall (mpssvc), and Defender
-        (WinDefend) read Running and Automatic; WinDefend may sit stopped when
-        the brief names another antivirus. When the brief leaves SNMP out:
+       odd names, and PathName under C:\Users or C:\Temp. StartName
+       LocalSystem runs as SYSTEM, the most powerful account on the machine.
+  NOTE: Required services (IIS, DNS, DHCP, OpenSSH, MySQL, Apache) stay
+        running; harden their configs. EventLog and mpssvc (firewall) read
+        Running and Automatic; WinDefend (Defender) too, unless the brief
+        names another antivirus.
+  ALSO: SNMP answers 161/udp to anyone who knows a community name; public or
+        private is a guess away. When the brief leaves SNMP out:
         Uninstall-WindowsFeature -Name SNMP-Service.
 
 [I-05] Roles and features: remove what the brief does not need
@@ -410,13 +415,13 @@
        (EternalBlue); Telnet and TFTP clients speak cleartext; Simple TCP/IP
        services (echo, daytime, chargen) reflect traffic; LPD takes print jobs
        on 515.
-  NOTE: Required roles (AD DS, DNS, DHCP, IIS, FTP) stay and get hardened in
-        I-15 and I-16. -Remove also deletes a feature's files from the component
-        store, so a reinstall needs install media: keep it for a final pass the
-        brief allows. Before removing FS-SMB1 from a server others use, run Set-
-        SmbServerConfiguration -AuditSmb1Access $true -Force and read event 3000
-        in Microsoft-Windows-SMBServer/Audit to see who still uses SMBv1. Read
-        RestartNeeded in the output and batch the restarts.
+  NOTE: I-15 and I-16 harden required roles (AD DS, DNS, DHCP, IIS, FTP).
+        -Remove also deletes the feature's component-store files: reinstalls
+        need install media. Use it last, if the brief allows.
+  ALSO: Before removing FS-SMB1 from a server others use, run
+        Set-SmbServerConfiguration -AuditSmb1Access $true -Force; event 3000
+        in Microsoft-Windows-SMBServer/Audit shows who still uses SMBv1. Read
+        RestartNeeded and batch the restarts.
 
 [I-06] Shares
   AREA: Access control (CIS Control 6)
@@ -429,15 +434,14 @@
   PS> Grant-SmbShareAccess -Name "Finance" -AccountName "CORP\Finance" -AccessRight Change -Force
   CMD> auditpol /set /subcategory:"File Share" /success:enable /failure:enable
   WHY: An unexpected share is a data exfiltration path. Check the ACLs on the
-       shares you must keep. Event 5142 names who added a share once File Share
-       auditing is on.
-  NOTE: ADMIN$, C$, IPC$ are defaults; on a DC, SYSVOL and NETLOGON are normal
-        too. Everyone with Full on a data share is the classic finding. The
-        filter line lists only added shares. A $ at the end of a name hides a
-        share from browsing and keeps it working: judge every $ share beyond
-        ADMIN$, IPC$, PRINT$, FAX$, and a drive letter that points at its own
-        drive root. A share on C:\Users or a profile folder exposes that user's
-        files.
+       shares you must keep. Event 5142 names who added a share once File
+       Share auditing is on.
+  NOTE: A trailing $ hides a share from browsing; it still works. Normal:
+        ADMIN$, IPC$, PRINT$, FAX$, a drive letter on its own root, and, on a
+        DC, SYSVOL and NETLOGON.
+  ALSO: Judge any other share; the filter line lists only added shares. The
+        classic finding: Everyone with Full on a data share. Sharing C:\Users
+        or a profile folder exposes user files.
 
 [I-07] Scheduled tasks
   AREA: Malware defenses (CIS Control 10)
@@ -484,11 +488,11 @@
   WHY: A port you cannot explain is a backdoor; nc.exe listeners are the
        classic. Map port to PID to binary path to the service or task that
        starts it.
-  NOTE: Normal DC ports: 53, 88, 135, 389, 445, 464, 636, 3268, 3269, and
-        dynamic RPC. PID 4 is System (445, HTTP.sys); netsh http show
-        servicestate names programs behind HTTP.sys ports. Find what starts a
-        listener (service, task, or Run key) before ending it, or it returns at
-        the next trigger.
+  NOTE: Expect DC ports 53, 88, 135, 389, 445, 464, 636, 3268, 3269, and
+        dynamic RPC. System (PID 4) owns 445; netsh http show servicestate
+        names programs behind its HTTP.sys ports.
+  ALSO: Before ending a listener, find what starts it (service, task, or Run
+        key) and disable that, or it returns at the next trigger.
 
 [I-11] Remote Desktop hardening when RDP is required
   AREA: Access control (CIS Control 6)
@@ -568,15 +572,15 @@
   PS> Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Location 'Default Web Site' -Filter 'system.webServer/security/access' -Name sslFlags
   GUI: IIS Manager, FTP site, FTP Authentication: Anonymous Disabled; FTP SSL Settings: Require SSL connections
   GUI: IIS Manager, server node, Request Filtering, File Name Extensions: deny .exe and .ps1 (blocks web requests for them); FTP Request Filtering, File Name Extensions: deny .exe and .ps1 (blocks uploading and downloading them)
-  WHY: A required web or FTP server is kept running and made safe: no directory
-       listing, no anonymous FTP, TLS on, and nothing executable in the upload
-       folder.
-  NOTE: Check the physical path for planted .aspx webshells (B-12). dontLog
-        False means IIS writes request logs, the evidence trail for webshell and
-        password-guessing questions; logging runs through W3SVC and the W3C
-        Logging Service (w3logsvc), so leave both at their defaults. Require SSL
-        (sslFlags Ssl) needs an https binding with a certificate first: on a
-        site with only an http binding, it takes the site offline.
+  WHY: A required web or FTP server stays running. Make it safe: directory
+       listing off, anonymous FTP off, TLS on, and the upload folder free of
+       executables.
+  NOTE: Require SSL (sslFlags Ssl) needs an https binding with a certificate
+        first; it takes an http-only site offline. Check the physical path for
+        planted .aspx webshells (B-12 file search).
+  ALSO: dontLog False means IIS writes request logs, the evidence for webshell
+        and password-guessing questions. Logging runs through W3SVC and the
+        W3C Logging Service (w3logsvc); leave both at their defaults.
 
 [I-16] DNS and DHCP hygiene when the server runs them
   AREA: Secure configuration (CIS Control 4)
@@ -619,18 +623,16 @@
   PS> Restart-Service -Name Apache2.4
   CMD> curl.exe -sI http://localhost/
   CMD> curl.exe -s -o NUL -w "%{http_code}" -X TRACE http://localhost/
-  WHY: A required Apache stays up and reveals less. ServerTokens Prod hides
-       the version in headers; ServerSignature Off, on error pages.
-       TraceEnable Off refuses TRACE, and removing Indexes ends directory
-       listings.
-  NOTE: httpd.exe -t must print Syntax OK before every restart, because a typo
-        stops the site. The curl lines read back a Server header of Apache alone
-        and 405 for TRACE. ServerSignature Off is already the default, so the
-        finding is an On or EMail line in httpd.conf or a virtual host. The
-        first line gives the service name (Apache2.4 is the installer default).
-        When the brief leaves Apache out, stop it and remove the service:
-        C:\Apache24\bin\httpd.exe -k uninstall -n "Apache2.4". The Linux pages
-        harden the same directives in I-12.
+  WHY: ServerTokens Prod hides Apache's version in headers; ServerSignature
+       Off, on error pages. TraceEnable Off refuses TRACE; removing Indexes
+       ends directory listings. curl shows Server: Apache alone and 405 for
+       TRACE.
+  NOTE: Restart only after httpd.exe -t prints Syntax OK; typos stop the site.
+        Restart-Service needs the name the first command shows (installer
+        default: Apache2.4). Linux pages harden the same directives (I-12).
+  ALSO: ServerSignature Off is the default; find On or EMail lines in
+        httpd.conf or a virtual host. If the brief omits Apache, stop it and
+        run C:\Apache24\bin\httpd.exe -k uninstall -n "Apache2.4".
 
 ------------------------------ HUNTER ------------------------------------------
  Hunt and harden. Security baselines, credential-theft hardening, Active
@@ -725,20 +727,16 @@
   CMD> secedit /export /cfg C:\Windows\Temp\ura.inf /areas USER_RIGHTS
   PS> Select-String -Path C:\Windows\Temp\ura.inf -Pattern 'SeDebugPrivilege|SeTcbPrivilege|SeNetworkLogonRight|SeBackupPrivilege|SeSecurityPrivilege'
   CMD> whoami /priv
-  WHY: Debug programs reads LSASS and dumps every password; Back up files and
-       directories reads the SAM hive, Restore and Take ownership rewrite any
-       file, and Manage auditing and security log can clear the Security log
-       (event 1102). Rights bypass ACLs, so attackers plant extra principals
-       here.
-  NOTE: The export lists holders as SIDs: *S-1-5-32-544 is Administrators,
-        *S-1-5-32-545 Users, and *S-1-5-11 Authenticated Users; a SID that
-        resolves to an unknown account belongs to a deleted or planted one. To
-        set a right from the command line, put a line such as SeDebugPrivilege =
-        *S-1-5-32-544 (an empty value empties the right) in a [Privilege Rights]
-        template and apply it as in A-01 with /areas USER_RIGHTS; it applies at
-        the holder's next sign-in. LOCAL SERVICE, NETWORK SERVICE, and SERVICE
-        keep their default rights: remove only user and group accounts. Rights
-        changes write events 4704 and 4705.
+  WHY: Rights bypass ACLs: Debug programs dumps LSASS passwords; Back up files
+       reads the SAM hive. Restore and Take ownership rewrite any file; Manage
+       auditing clears the Security log (event 1102).
+  NOTE: Export lists SIDs: *S-1-5-32-544 Administrators, *S-1-5-32-545 Users,
+        *S-1-5-11 Authenticated Users; unknown SIDs are deleted or planted
+        accounts. Remove extra user and group accounts; LOCAL SERVICE, NETWORK
+        SERVICE, and SERVICE stay.
+  ALSO: Set a right by applying SeDebugPrivilege = *S-1-5-32-544 (empty clears
+        it) under [Privilege Rights] as in A-01 with /areas USER_RIGHTS.
+        Changes apply at next sign-in and log 4704 and 4705.
 
 [A-06] Deep persistence and backdoor hunt
   AREA: Malware defenses (CIS Control 10)
@@ -752,15 +750,16 @@
   PS> Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree' -Recurse | Where-Object { -not $_.GetValue('SD') -and $_.GetValue('Id') } | Select-Object Name
   CMD> wevtutil sl Microsoft-Windows-TaskScheduler/Operational /e:true
   CMD> autorunsc.exe -accepteula -a * -c -nobanner   (Sysinternals, public)
-  WHY: WMI event subscriptions and PowerShell profiles are the persistence spots
-       checklists miss; Autoruns shows every auto-start location at once. A
-       renamed tool keeps its missing or broken signature, and a task with SD
-       deleted runs hidden from Get-ScheduledTask and schtasks.
-  NOTE: Get Sysinternals from learn.microsoft.com/sysinternals only, and only
-        where policy allows third-party tools. An unsigned program in Users,
-        ProgramData, or Temp is a lead to check against the brief and the
-        publisher, since legitimate tools ship unsigned too. The wevtutil line
-        turns on Task Scheduler history, which starts off.
+  WHY: WMI event subscriptions and PowerShell profiles are the persistence
+       spots checklists miss; Autoruns shows every auto-start location at
+       once. A task with SD deleted runs hidden from Get-ScheduledTask and
+       schtasks.
+  NOTE: A renamed tool keeps its missing or broken signature. Unsigned
+        programs in Users, ProgramData, or Temp are leads; legitimate tools
+        ship unsigned too, so check the brief and the publisher.
+  ALSO: Get Sysinternals from learn.microsoft.com/sysinternals only, and only
+        where policy allows third-party tools. The wevtutil line turns on Task
+        Scheduler history, which starts off.
 
 [A-07] NTFS permissions
   AREA: Access control (CIS Control 6)
@@ -769,14 +768,15 @@
   CMD> icacls "C:\CompanyData" /inheritance:r /grant:r "Administrators:(OI)(CI)F" "Users:(OI)(CI)RX" /t
   CMD> icacls "C:\CompanyData" /remove:g Everyone /t
   PS> Get-Acl "C:\CompanyData" | Format-List
-  WHY: Everyone with Full control on shares or Program Files lets anyone swap a
-       binary a service runs as SYSTEM. (OI) object inherit, (CI) container
+  WHY: Everyone with Full control on shares or Program Files lets anyone swap
+       a binary a service runs as SYSTEM. (OI) object inherit, (CI) container
        inherit, /t recurse, /inheritance:r stop inheriting.
   NOTE: Save ACLs first: icacls C:\ /restore C:\Windows\Temp\acl.txt puts them
         back (restore runs from the parent folder). SIDs work in any display
         language: /remove:g *S-1-1-0 for Everyone, *S-1-5-11 for Authenticated
-        Users. A folder made at the root of C: inherits Authenticated Users
-        Modify, so read it before you trust it.
+        Users.
+  ALSO: A folder made at the root of C: inherits Authenticated Users Modify,
+        so read it before you trust it.
 
 [A-08] Fine-grained auditing and PowerShell logging
   AREA: Audit logging (CIS Control 8)
@@ -977,8 +977,8 @@
   Call: FIX. Removes the AS-REP roast, and updating the service's stored logon
              password keeps SQL running.
 
-  Brief: The intranet site on this server must stay reachable, and Get-
-         WebBinding shows only an http binding on port 80.
+  Brief: The intranet site on this server must stay reachable, and
+         Get-WebBinding shows only an http binding on port 80.
   Action: Set Require SSL (sslFlags Ssl) on the site now.
   Call: BREAKS IT. With only an http binding, Require SSL refuses every request
                    and the site goes offline. Add an https binding with a
@@ -1072,8 +1072,8 @@
      Enabled: True
   >> DoesNotRequirePreAuth: True
      SamAccountName: svc_sql
-  WHY: An account without pre-auth can be AS-REP roasted offline. Set-
-       ADAccountControl -DoesNotRequirePreAuth $false.
+  WHY: An account without pre-auth can be AS-REP roasted offline.
+       Set-ADAccountControl -DoesNotRequirePreAuth $false.
 
   Get-CimInstance Win32_Service output: Name, StartName, PathName. Tap the finding.
      DNS        LocalSystem                 C:\Windows\system32\dns.exe
@@ -1100,8 +1100,8 @@
      ADMIN$    C:\Windows     Remote Admin
   >> tools$    C:\Users\Public\tools
   WHY: A $ hides a share from browsing and keeps it reachable. tools$ is an
-       added share on a folder every user can write to: record it, then Remove-
-       SmbShare -Name tools$ -Force when the brief leaves it out. The other
+       added share on a folder every user can write to: record it, then
+       Remove-SmbShare -Name tools$ -Force when the brief leaves it out. The other
        three are the defaults.
 
   Get-MpPreference output. Tap the finding.
@@ -1109,8 +1109,8 @@
      ThreatIDDefaultAction_Ids      : {2147519003}
   >> ThreatIDDefaultAction_Actions  : {6}
      DisableRealtimeMonitoring      : False
-  WHY: Action 6 is Allow: Defender lets that threat ID run untouched. Remove-
-       MpPreference -ThreatIDDefaultAction_Ids 2147519003, check the policy key
+  WHY: Action 6 is Allow: Defender lets that threat ID run untouched.
+       Remove-MpPreference -ThreatIDDefaultAction_Ids 2147519003, check the policy key
        for the same override, then scan.
 
   winrm get winrm/config/service, a few lines. Tap the finding.

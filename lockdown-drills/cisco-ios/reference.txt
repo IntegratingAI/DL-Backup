@@ -3,8 +3,9 @@
      Cisco IOS 15.x routers and switches (Packet Tracer compatible)
  Training reference for lab devices you own or are authorized to change.
  Three levels: L1 Doorman, L2 Watchman, L3 Hunter. Every item = COMMAND, WHY,
- NOTE, and the hardening AREA it belongs to. No scripts by design: type it,
- read it, explain it. Item IDs match the Lockdown Drills trainer for this OS.
+ NOTE, and the hardening AREA it belongs to; ALSO adds a second caution when
+ an item needs one. No scripts by design: type it, read it, explain it. Item
+ IDs match the Lockdown Drills trainer for this OS.
  Unofficial practice; not affiliated with or endorsed by Cisco.
 
  HARDENING AREAS
@@ -57,11 +58,11 @@
   WHY: login enforces each line's password; without it, anyone walks in.
        exec-timeout 5 0 ends any session idle for five minutes. logging
        synchronous keeps log output separate from your typing.
-  NOTE: Watchman replaces line passwords with local usernames and SSH. Switches
-        with 16 VTY lines use line vty 0 15. The passwords here are
-        placeholders; give every line and secret its own unique passphrase.
-        exec-timeout 5 sets the same five minutes; the second number adds
-        seconds.
+  NOTE: These passwords are placeholders: give every line and secret a unique
+        passphrase. Switches with 16 VTY lines use line vty 0 15. exec-timeout
+        5 equals 5 0: minutes, then seconds.
+  ALSO: At the Watchman level, local usernames and SSH replace these line
+        passwords.
 
 [B-03] Hide passwords in the config
   AREA: Secure configuration
@@ -237,16 +238,15 @@
   SwA(config-if)# end
   SwA# show ip interface brief
   SwA# show vlan brief
-  WHY: A VLAN is a layer-2 broadcast domain that ports join. An SVI (interface
-       vlan 20) is the switch's layer-3 interface inside it, holding the
-       switch's own management address; ip default-gateway lets the layer-2
-       switch reply to hosts on other subnets, such as Teachers at Site B.
-  NOTE: Vlan20 shows down/down while VLAN 20 is missing from the VLAN database,
-        then up/down until at least one port in VLAN 20 (access, or a trunk that
-        allows it) is up and forwarding in STP: autostate. Larger networks give
-        management its own VLAN; here it stays on Teachers so the Teachers-only
-        ACL and the management subnet are one. Shutting interface vlan 1 leaves
-        the default VLAN devoid of an address.
+  WHY: Ports join VLANs, layer-2 broadcast domains; the SVI (interface vlan
+       20) is the switch's layer-3 management interface. ip default-gateway
+       lets the layer-2 switch reply across subnets, like Site B Teachers.
+  NOTE: Vlan20 is down/down until VLAN 20 exists in the VLAN database.
+        Autostate then holds it up/down until any VLAN 20 port (access, or a
+        trunk allowing it) forwards in STP.
+  ALSO: Larger networks give management its own VLAN; here management shares
+        the Teachers subnet and its Teachers-only ACL. Shutting interface vlan
+        1 leaves the default VLAN devoid of an address.
   LEARN IT: Defense Ladder, Freshman f7, A VLAN and an SVI.
             https://freeapp4that.store/defense-ladder/#freshman/f7
 
@@ -274,16 +274,15 @@
   SwA(config)# line vty 0 15
   SwA(config-line)# access-class 20 in
   SwA(config-line)# exit
-  WHY: SSH encrypts; access-class decides who reaches the prompt: the Teachers
-       subnets at Site A and Site B. A standard ACL matches the source
-       address, which is all a VTY filter needs, and the wildcard mask is the
-       inverse of the subnet mask. Confirm: SSH from a Students PC ends with %
-       Connection refused by remote host.
-  NOTE: Apply it to every VTY range the device lists (show running-config |
-        section line vty). A 2960 has line vty 0 4 and line vty 5 15; line vty
-        0 15 covers both. A 2911 lists line vty 0 4 by default, in Packet
-        Tracer and on real IOS 15; line vty 5 15 appears once someone creates
-        it, so the example adds that range with the ACL already applied.
+  WHY: SSH encrypts; access-class admits only Teachers subnets (Site A and
+       Site B); a standard (source-only) ACL suffices. Confirm: SSH from
+       Students PCs ends with % Connection refused by remote host.
+  NOTE: Apply access-class to every VTY range listed (show running-config |
+        section line vty). A 2960's line vty 0 15 covers both 0 4 and 5 15.
+        Wildcards invert subnet masks.
+  ALSO: A 2911 (Packet Tracer and IOS 15) lists only line vty 0 4 until
+        someone creates line vty 5 15. The example adds that range with the
+        ACL already applied.
 
 [A-02] Extended ACL on an interface: allow only what the scenario needs
   AREA: Secure configuration
@@ -299,18 +298,17 @@
   RtrA(config-if)# ip access-group OUTSIDE-IN in
   RtrA(config-if)# exit
   RtrA# show access-lists
-  WHY: In on G0/1 means arriving from the ISP; the ACL drops that unless a
-       line permits it, and deny log records what the implicit deny hides.
-       Confirm: show access-lists counters.
-  NOTE: 203.0.113.2 is RtrA's ISP-facing address; static NAT port forwarding (ip
-        nat inside source static tcp <server> 443 203.0.113.2 443, and the same
-        for 80) carries web traffic to the server. An inbound ACL on the outside
-        interface sees that public address, because IOS checks the ACL before it
-        translates. An interface ACL is stateless, so replies to sessions
-        started inside need their own permits: established matches TCP replies
-        (ACK or RST set), and the domain line admits DNS replies from 8.8.8.8. A
-        stateful firewall, such as the IOS zone-based policy firewall, tracks
-        sessions and does this more precisely.
+  WHY: The ACL drops traffic arriving from the ISP on G0/1 unless a line
+       permits it. The deny log line records what the implicit deny hides;
+       confirm with show access-lists counters.
+  NOTE: Permit 203.0.113.2, RtrA's public ISP-facing address: IOS checks
+        inbound ACLs before translating. Static NAT forwards web traffic: ip
+        nat inside source static tcp <server> 443 203.0.113.2 443, same for
+        80.
+  ALSO: Stateless interface ACLs need reply permits: established matches TCP
+        replies (ACK or RST set); the domain line admits 8.8.8.8 DNS replies.
+        Stateful IOS zone-based policy firewalls track sessions more
+        precisely.
 
 [A-03] Interface-level hardening
   AREA: Secure configuration
@@ -403,11 +401,12 @@
   RtrA# show ip route
   RtrA# ping 10.2.20.1 source 10.1.20.1
   RtrA# show users
-  WHY: These show plaintext passwords, VTY lacking login local or SSH, open
-       services, unused ports up, VLAN 1 anywhere, a trunk on native VLAN 1 or
-       missing a VLAN, and missing routes. Confirm: ping 10.2.20.1, the Site B
-       Teachers gateway, sourced from Site A's Teachers gateway proves both
-       sites route to each other's Teachers subnet.
+  WHY: Flag plaintext passwords, VTY lacking login local or SSH, open
+       services, and missing routes. Ping 10.2.20.1 source 10.1.20.1 (Site B's
+       Teachers gateway from Site A's); success proves two-way Teachers
+       routing.
+  NOTE: Flag VLAN 1 anywhere, including a trunk's native VLAN, and any trunk
+        missing a VLAN. Flag unused ports left up as well.
 
 [A-08] Router-on-a-stick with a native subinterface
   AREA: Secure configuration
@@ -428,13 +427,13 @@
   RtrA# show ip interface brief
   WHY: One trunk carries Students, Teachers, and Principals to RtrA. Each
        subinterface takes one tag and becomes that VLAN's .1 gateway, so the
-       three VLANs route to each other through RtrA. encapsulation dot1Q 99
-       native matches the switch's native VLAN 99, so untagged frames land on
-       a subinterface with no IP and no hosts.
+       three VLANs route to each other through RtrA.
   NOTE: Subinterfaces follow the physical port: no shutdown goes on G0/0,
-        which stays unaddressed. Watchman I-05 builds the switch-side trunk.
-        An ISR 4000 (IOS XE) names it GigabitEthernet0/0/0; subinterface
-        commands match.
+        which stays unaddressed. An ISR 4000 (IOS XE) names it
+        GigabitEthernet0/0/0; subinterface commands match.
+  ALSO: encapsulation dot1Q 99 native matches the switch's native VLAN 99, so
+        untagged frames land on a subinterface without an IP or hosts.
+        Watchman I-05 builds the switch-side trunk.
 
 [A-09] Host route to 8.8.8.8, shared through OSPF (concept)
   AREA: Secure configuration

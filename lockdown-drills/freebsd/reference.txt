@@ -3,8 +3,9 @@
      FreeBSD 15.1, with 14.x notes
  Training reference for virtual machines you own or are authorized to change.
  Three levels: L1 Doorman, L2 Watchman, L3 Hunter. Every item = COMMAND, WHY,
- NOTE, and the hardening AREA it belongs to. No scripts by design: type it,
- read it, explain it. Item IDs match the Lockdown Drills trainer for this OS.
+ NOTE, and the hardening AREA it belongs to; ALSO adds a second caution when
+ an item needs one. No scripts by design: type it, read it, explain it. Item
+ IDs match the Lockdown Drills trainer for this OS.
  Unofficial practice; not affiliated with or endorsed by the FreeBSD Project.
 
  WHERE THIS FITS
@@ -129,15 +130,15 @@
       ssh  stream  *  *  *  3  24h
   # echo 'UseBlocklist yes' >> /etc/ssh/sshd_config; sshd -t && service sshd restart
   # service blocklistd start; blocklistctl dump -b
-  WHY: There is no pam_faillock here. login.conf limits console retries;
-       blocklistd blocks an IP in pf after repeated sshd failures, which is the
-       brute force that actually happens.
-  NOTE: The scenario brief sets the numbers; these lines show one sample (the
-        CIS Benchmarks used in the other drills lock an account after 5 or
-        fewer failed attempts, for 15 minutes or more). blocklistd needs the
-        B-07 pf anchor before it blocks anything. Older releases call it
-        blacklistd and rename every knob to match (see Version notes); use one
-        set of names throughout.
+  WHY: FreeBSD runs without pam_faillock. login.conf limits console retries;
+       blocklistd blocks an IP in pf after repeated sshd failures, the brute
+       force that actually happens.
+  NOTE: The scenario brief sets the numbers; these lines show one sample. The
+        CIS Benchmarks in other drills lock an account after 5 or fewer
+        failures, for 15 minutes or more.
+  ALSO: blocklistd needs the B-07 pf anchor before it blocks anything. Older
+        releases call it blacklistd and rename every knob to match (see
+        Version notes); use one set of names throughout.
 
 [B-07] Firewall: pf
   AREA: Secure configuration (CIS Control 4)
@@ -219,8 +220,8 @@
        syslogd -ss keeps syslog off the network; clear_tmp empties /tmp at
        boot; sendmail_enable=NONE (now the default) keeps sendmail listeners
        off.
-  NOTE: If the machine has a desktop (slim, lightdm, gdm), also turn off auto-
-        login in its config under /usr/local/etc.
+  NOTE: If the machine has a desktop (slim, lightdm, gdm), also turn off
+        auto-login in its config under /usr/local/etc.
 
 ------------------------------ WATCHMAN ----------------------------------------
  Check the windows. sshd, sudo and doas, cron and periodic, rc.d and shell
@@ -435,10 +436,13 @@
   # pfctl -a 'blocklistd/22' -t port22 -T show
   # tcpdump -n -e -ttt -i pflog0
   # grep -nE '^pass in' /etc/pf.conf
-  WHY: pfctl -sr prints the main ruleset, where each anchor is one line, so a
-       pass in planted inside an anchor hides. pfctl -sA lists anchors (-v
-       adds nested); pfctl -a '*' -sr prints every anchor's rules; pflog0
-       shows live blocks and answers investigation questions about scanning.
+  WHY: pfctl -sr shows the main ruleset, where each anchor is one line, so a
+       planted "pass in" rule inside an anchor hides. pfctl -a '*' -sr prints
+       every anchor's rules.
+  NOTE: Nested anchors hide from plain pfctl -sA, which lists only anchors
+        attached to the main ruleset. pfctl -sA -v lists the nested ones too.
+  ALSO: Watching pflog0 with tcpdump shows live blocks and answers
+        investigation questions about scanning.
 
 [A-06] Recall drill: Linux habit to FreeBSD equivalent
       Say each FreeBSD equivalent out loud, then check your answers in the places named below.
@@ -448,11 +452,11 @@
       /etc/login.defs -> ?     pam_faillock -> ?
       ss -tulpn -> ?           /etc/sudoers -> ?        md5sum -> ?
       journalctl -> ?          auditd (Linux) -> ?      useradd/userdel -> ?
-  WHY: The concepts carry over from Linux; the file paths and command names
-       change. Say each FreeBSD equivalent from memory, then check it against
-       Defense Ladder se1 (tables Linux habit, FreeBSD equivalent; su, sudo,
-       and doas on FreeBSD; Hunting on any Unix) and items B-02, I-02, I-06,
-       I-09, and A-04.
+  WHY: Linux concepts transfer; file paths and command names change. Say each
+       FreeBSD equivalent from memory, then check it against Defense Ladder
+       se1 and items B-02, I-02, I-06, I-09, and A-04.
+  NOTE: Check three se1 tables: 'Linux habit, FreeBSD equivalent'; 'su, sudo,
+        and doas on FreeBSD'; and 'Hunting on any Unix'.
 
 [A-07] Verify loop, every thirty minutes
   # sockstat -46l; pw groupshow wheel; awk -F: '$3==0' /etc/passwd
