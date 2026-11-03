@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-FzGjLKOLirOEPkb59yd6oyKjC7UrVy6/yduSLlRSUJo=' 'sha256-Rvk4rHPo9O2GlkU0MAf2ebZFxjekOep6p6pRkANj3AA=' 'sha256-e1OQxsnMxBkb8mWd1DnBiJU+51/quSqLWe6VARpZS44=' 'sha256-hiyD0+akq5OfztpGvcBwmMWZgm7OySa/fGiA+gq9DRo=' 'sha256-yqFPYN768BBANUZxjrDG/GFxppOSx5y3kspPKiRUdzk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Rvk4rHPo9O2GlkU0MAf2ebZFxjekOep6p6pRkANj3AA=' 'sha256-bOsPVbSlPcF+Dj2qj/nV9MrFCZmBEWF18KrQUN1NLlQ=' 'sha256-e1OQxsnMxBkb8mWd1DnBiJU+51/quSqLWe6VARpZS44=' 'sha256-hiyD0+akq5OfztpGvcBwmMWZgm7OySa/fGiA+gq9DRo=' 'sha256-yqFPYN768BBANUZxjrDG/GFxppOSx5y3kspPKiRUdzk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/defense-ladder/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%8E%93%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -1288,21 +1288,12 @@ LADDER.addLevel({
   can:'read a scenario brief as the definition of correct, run the baseline, harden, verify loop, write a change log line, and say why availability counts as security',
   blocks:[
    C('The job in one paragraph','Remember',
-     P('Hands-on defense practice puts you in the seat of a new IT administrator at a small organization. Your <b>lab</b> is a practice machine, usually a virtual machine, left in a deliberately neglected state: weak passwords, extra administrators, unneeded services, and maybe hidden malware. Find and fix as much as you can <b>within your authorization</b>, <b>while everything the organization needs keeps running</b>.'),
-     NOTE('Many labs include a progress check that samples the problems and reports the fixes it can see, so a real fix can leave the score unchanged.'),
-     TIPS('<b>Authorization and scope.</b> Before you touch anything, know which machines you may change, what you may do to them, and when.',
-          'Professionals write that down as the <b>rules of engagement</b>. Work starts only once written permission is in hand.',
-          '<b>The scenario brief.</b> Every lab has one: authorized users and administrators, required services, software policy, and investigation questions. It defines "correct" for that machine.',
-          '<b>Baseline, harden, verify.</b> Record how the machine looks first, change one thing at a time, then confirm the change worked and everything required still works.',
-          '<b>Change log.</b> One line per change: time, machine, what you did, and how to undo it.',
+     P('You play a new IT administrator at a small organization. Your <b>lab</b> is a practice machine, usually a virtual machine, left neglected on purpose: weak passwords, extra administrators, unneeded services, and maybe hidden malware. Fix what you can <b>within your authorization</b>, <b>while everything the organization needs keeps running</b>.'),
+     TIPS('<b>Authorization and scope.</b> Get written permission first: which machines you may change, what you may do, and when. Professionals call it the <b>rules of engagement</b>.',
+          '<b>The scenario brief</b> defines "correct" for each lab: authorized users and administrators, required services, software policy, and investigation questions.',
           '<b>Availability is security too.</b> It is the A in the CIA triad. Removing a needed service causes an outage; a real fix keeps it running.',
-          '<b>Evidence first.</b> Answer the investigation questions, exactly as asked, before any change. A fix or cleanup can erase the evidence files and logs.')),
-   C('Baseline, harden, verify','Understand',
-     TIPS('<b>Baseline:</b> your "before" picture. List users, groups, running services, listening ports, installed software, firewall state, and patch level; snapshot if the lab allows.',
-          '<b>Harden:</b> fix one thing at a time, highest impact first, and log it before you press Enter.',
-          '<b>Verify:</b> re-run the baseline commands and compare. Confirm the fix took effect and that every required service and authorized user still works.',
-          '<b>Report:</b> finish with a short summary of what you changed and why. That summary is what a real manager reads.'),
-     NOTE('This loop mirrors real frameworks. NIST CSF 2.0 calls it Identify, Protect, and Detect; the CIS Critical Security Controls list what to harden. This course groups the hardening work into six areas, shown on the Hardening scorecard page.')),
+          '<b>Evidence first.</b> Answer the investigation questions, exactly as asked, before any change. A fix or cleanup can erase the evidence files and logs.'),
+     NOTE('Many labs include a progress check that samples the problems, so a real fix can leave the score unchanged.')),
     SEQ('The work loop: authorize, baseline, harden, verify, and report',[
      {ask:'Do you hold written authorization for this machine and this kind of change?',branches:[['Yes','Start the baseline.'],['No, or unsure','Stop and ask the owner. Work starts once permission is in writing.']]},
      ['Baseline','Record users, groups, services, listening ports, software, firewall state, and patch level. Take a snapshot if the lab allows it.','l1'],
@@ -1310,24 +1301,24 @@ LADDER.addLevel({
      ['Verify','Re-run the baseline commands: the fix took effect, and every required service and authorized user still works.','l3'],
      {ask:'Does everything the brief requires still work?',branches:[['Yes','Return to step 3 for the next fix.'],['No','Undo the change with its change-log line, then harden that item another way.']]},
      ['Report','Summarize what you changed, why, and what is left. That page is what a manager reads.','l4']
-   ],{intro:'Steps 3, 4, and 5 repeat once for each fix. Step 1 comes first on every machine, every time.',
+   ],{intro:'Steps 3, 4, and 5 repeat once for each fix.',
      caption:'One change at a time, each one logged and verified, keeps every fix reversible and every required service running.'}),
+   DETAIL('The loop in real frameworks',
+     P('NIST CSF 2.0 calls this loop Identify, Protect, and Detect; the CIS Critical Security Controls list what to harden. This course groups the hardening work into six areas, shown on the Hardening scorecard page.')),
    QUIZ('f1cy1','Check yourself',[
-     ['Which order is right?',['Harden, baseline, verify','Verify, harden, baseline','Baseline, harden, verify','Harden, verify, baseline'],2,'Record the before picture, change one thing at a time, then confirm it worked and that everything required still works.',{whys:['Hardening first changes the machine before you record it, so you lose the before picture you compare against.','Verify checks your changes, so it needs changes to check; in this order it runs before anything has changed.','The baseline records the before picture, hardening changes one thing at a time, and verify compares against that baseline, so each step needs the one before it.','A baseline taken last records the machine after your changes, so it shows nothing about what you changed.'],imp:'core',c:'host-baselines'}]
+     ['Which order is right?',['Harden, baseline, verify','Verify, harden, baseline','Baseline, harden, verify','Harden, verify, baseline'],2,'Each step needs the one before it: record, change, then compare.',{whys:['Hardening first changes the machine before you record it, so you lose the before picture you compare against.','Verify checks your changes, so it needs changes to check; in this order it runs before anything has changed.','The baseline records the before picture, hardening changes one thing at a time, and verify compares against that baseline, so each step needs the one before it.','A baseline taken last records the machine after your changes, so it shows nothing about what you changed.'],imp:'core',c:'host-baselines'}]
    ]),
    C('Where to practice, openly','Remember',
      TIPS('<b>Your own virtual machines.</b> Linux and FreeBSD are free; Microsoft offers time-limited Windows evaluation editions. You are authorized to break and rebuild your own VM.',
           '<b>Lockdown Range and Lockdown Drills</b> on this site: browser-based labs and drills for Windows, Linux, and Cisco IOS that run without any installation.',
-          '<b>picoCTF</b> (Carnegie Mellon University): free challenges and lessons for beginners.',
-          '<b>OverTheWire: Bandit</b>: the Linux command line, one level at a time.',
-          '<b>National Cyber League</b>: virtual, learning-centered competitions for students, with practice gyms.')),
+          '<b>Free practice sites</b> such as picoCTF, OverTheWire: Bandit, and the National Cyber League are under <b>Go further</b> at the end of this unit.')),
    C('Where it leads: work roles','Understand',
-     P('The <b>NICE Workforce Framework for Cybersecurity</b> (published by NIST, and also hosted on CISA\u2019s NICCS site) describes cybersecurity work as <b>work roles</b>, each with its tasks, knowledge, and skills. The hands-on work in this course touches several of them:'),
-     TIPS('<b>Systems Administration</b> and <b>Network Operations</b> (Implementation and Operation): keep machines and networks running and securely configured.',
-          '<b>Defensive Cybersecurity</b> and <b>Vulnerability Analysis</b> (Protection and Defense): find weaknesses and close them.',
-          '<b>Incident Response</b> and <b>Digital Forensics</b> (Protection and Defense): work out what happened and contain it.',
-          '<b>Security Control Assessment</b> (Oversight and Governance): check systems against a standard, like the checklist you build in Senior.'),
-     P('Go further: <a href="#senior/se14">Your path: roles, certifications, and practice</a> maps these roles to certifications and free practice.')),
+     P('The <b>NICE Workforce Framework for Cybersecurity</b>, from NIST, describes cyber jobs as <b>work roles</b>, each with its tasks, knowledge, and skills. This course\u2019s hands-on work touches several:'),
+     TIPS('<b>Systems Administration</b> and <b>Network Operations</b>: keep machines and networks running and securely configured.',
+          '<b>Defensive Cybersecurity</b> and <b>Vulnerability Analysis</b>: find weaknesses and close them.',
+          '<b>Incident Response</b> and <b>Digital Forensics</b>: work out what happened and contain it.',
+          '<b>Security Control Assessment</b>: check systems against a standard, like the checklist you build in Senior.'),
+     P('<a href="#senior/se14">Your path: roles, certifications, and practice</a> (Senior) maps these roles to certifications and free practice.')),
    FLASH('f1fl','Vocabulary',[
      ['Authorization','Permission from the system owner, ideally in writing, to access or change a system. Without it, even well-meant changes are unauthorized access.'],
      ['Scope','Exactly which systems, accounts, and actions your authorization covers. Anything outside it is off limits.'],
@@ -1343,10 +1334,10 @@ LADDER.addLevel({
      ['Work role','A NICE Framework description of one kind of cybersecurity job, with its tasks, knowledge, and skills.']
    ]),
    QUIZ('f1q','Check: how hands-on practice works',[
-     ['Before you change anything on a machine, what must you have?',['Administrator rights','Authorization from the owner for this machine and this kind of change','A fast internet connection','A script that does it for you'],1,'Permission comes from the owner, separately from technical access. Authorization and scope come first; in professional work they are written into the rules of engagement.',{whys:['Admin rights are technical access: they let you make a change, and only the owner can permit it.','The owner decides what happens to a machine, so permission that covers this machine and this kind of change is what makes the work authorized.','Connection speed affects downloads; permission to change the machine comes from its owner.','A script only makes the changes faster, and it still needs the owner’s permission to run on that machine.'],imp:'core',c:'eth-cyber-ethics'}],
-     ['Right after you disable a service, the lab reports a failed availability check. What happened?',['The lab is broken','You stopped something the scenario brief says the business needs','Availability checks are random','You found malware'],1,'The brief lists required services. Re-enable it (your change log says how), then harden it instead of removing it.',{whys:['The lab is working: the check exists to catch a required service going down, and it just did.','An availability check watches the services the brief lists as required, so a failure right after your change points at that change: restore the service, then harden it.','Availability checks test the brief’s list of required services the same way every time, so the result traces back to your change.','Malware is a separate finding; this check measures whether required services still run.'],imp:'core',c:'host-scenario-brief'}],
+     ['Before you change anything on a machine, what must you have?',['Administrator rights','Authorization from the owner for this machine and this kind of change','A fast internet connection','A script that does it for you'],1,'Technical access makes a change possible; the owner’s permission makes it authorized.',{whys:['Admin rights are technical access: they let you make a change, and only the owner can permit it.','The owner decides what happens to a machine, so permission that covers this machine and this kind of change is what makes the work authorized.','Connection speed affects downloads; permission to change the machine comes from its owner.','A script only makes the changes faster, and it still needs the owner’s permission to run on that machine.'],imp:'core',c:'eth-cyber-ethics'}],
+     ['Right after you disable a service, the lab reports a failed availability check. What happened?',['The lab is broken','You stopped something the scenario brief says the business needs','Availability checks are random','You found malware'],1,'Re-enable it (your change log says how), then harden it instead of removing it.',{whys:['The lab is working: the check exists to catch a required service going down, and it just did.','An availability check watches the services the brief lists as required, so a failure right after your change points at that change: restore the service, then harden it.','Availability checks test the brief’s list of required services the same way every time, so the result traces back to your change.','Malware is a separate finding; this check measures whether required services still run.'],imp:'core',c:'host-scenario-brief'}],
      ['You fix an obviously weak password and the lab\u2019s progress check stays the same. Best conclusion?',['You fixed it wrong','The check samples only some problems; a real fix still counts, so keep going','Undo it','Passwords are irrelevant'],1,'Progress checks sample the problems. Your goal is a secure machine rather than a number.',{whys:['A lab scores only a sample of problems, so an unchanged score says little about whether your fix worked.','Progress checks sample the problems, so a real fix can leave the score flat; the fix still closes a way in, and a secure machine is the goal.','Undoing a real fix reopens the weakness and leaves the machine weaker.','Weak passwords are one of the most common ways in, so fixing one matters whatever the score says.'],imp:'good',c:'host-baselines'}],
-     ['Which NICE Framework work role best matches "keep servers patched, configured, and running"?',['Cybercrime Investigation','Systems Administration','Cybersecurity Legal Advice','Executive Cybersecurity Leadership'],1,'Systems Administration sits in the Implementation and Operation category. Hardening work also overlaps Defensive Cybersecurity.',{whys:['Cybercrime Investigation gathers evidence about crimes after they happen.','Systems Administration sits in the Implementation and Operation category, whose daily tasks are installing, configuring, and patching servers and keeping them up.','Cybersecurity Legal Advice answers law and policy questions.','Executive leadership sets direction and funds the program, while other roles do the hands-on server work.'],imp:'good',c:'gov-careers'}]
+     ['Which NICE Framework work role best matches "keep servers patched, configured, and running"?',['Cybercrime Investigation','Systems Administration','Cybersecurity Legal Advice','Executive Cybersecurity Leadership'],1,'Hardening work also overlaps Defensive Cybersecurity.',{whys:['Cybercrime Investigation gathers evidence about crimes after they happen.','Systems Administration is the daily work of installing, configuring, and patching servers and keeping them up.','Cybersecurity Legal Advice answers law and policy questions.','Executive leadership sets direction and funds the program, while other roles do the hands-on server work.'],imp:'good',c:'gov-careers'}]
    ]),
    LINKS('Go further',['nice','nist-csf','cis-controls','t4t-range','pico','bandit','ncl'])
   ]},
@@ -1354,37 +1345,33 @@ LADDER.addLevel({
   can:'write a passphrase you can type, explain where a password manager and MFA help, name what stays out of an AI tool, and tell authorized from able',
   blocks:[
    C('Why ethics is unit two','Understand',
-     P('Security training teaches you to find weaknesses. The same knowledge opens doors that belong to other people. Every employer draws the line at <b>authorization</b>: you may test, change, or probe only systems you own or have explicit written permission to touch. Labs and VMs you own are built to be changed. Your school\u2019s network, a friend\u2019s account, a public website: these belong to someone else, so leave them alone, always, even "just to see".'),
-     TIPS('<b>PII</b> (personally identifiable information): name plus anything that pins it to one person (address, birthdate, Social Security number, photos, or school). Treat it like cash.',
-          '<b>Strong passwords</b> are long, unique per site, and kept in a password manager. Length beats clever substitutions.',
-          '<b>Two-factor authentication</b> (2FA) turns a stolen password into a near miss.',
-          '<b>Phishing</b> works on smart people. Hover before you click, check the sender domain, and report rather than reply.',
-          'Its signature: an urgent request for a password or authenticator code. Both stay with their owner; real IT staff work without them.',
-          '<b>Verify first.</b> Call a number you already know before you act on an urgent request.',
+     P('The skills that find weaknesses also open other people\u2019s doors. So every employer draws one line, <b>authorization</b>: test, change, or probe only systems you own or have written permission to touch. Everything else, such as your school\u2019s network or a friend\u2019s account, stays off limits, even "just to see".'),
+     TIPS('<b>PII</b> (personally identifiable information) is a name plus anything that pins it to one person, such as address, photo, or school. Treat it like cash.',
+          '<b>Phishing</b> works on smart people. Its signature: an urgent request for a password or authenticator code. Real IT staff work without either.',
+          '<b>Check before you act.</b> Hover before you click, check the sender domain, call a number you already know, and report rather than reply.',
           '<b>Cyberbullying and doxxing</b> cause real harm and are often crimes, whatever the "prank" label.')),
    C('Passphrases and password managers','Understand',
-     P('A <b>passphrase</b> of four or more random words is long and easy to type. A <b>password manager</b> makes a different long password for every site, fills it only on the right site, and locks behind one strong passphrase plus MFA. Uniqueness matters because of <b>credential stuffing</b>: when one site leaks its passwords, attackers try each email and password pair on hundreds of other sites.'),
+     P('A <b>passphrase</b> is four or more random words: long and easy to type. A <b>password manager</b> makes a unique password for every site, fills it only on the right one, and locks behind one strong passphrase. Add <b>MFA</b>, a second proof, and a stolen password alone fails. Unique passwords defeat <b>credential stuffing</b>: trying one site’s leaked sign-ins on hundreds of other sites.'),
      SCALE('Password strength, from guessable to strong',{from:'Guessable',to:'Strong',bands:[
-       ['Short common word','Pattern: word plus a digit, 8 characters. Falls to a guess list in seconds','bad'],
-       ['Word with swaps','Pattern: a common word with look-alike swaps (a to @, s to 5, o to 0). Falls to guessing tools, which try every swap','bad'],
-       ['Personal and long','Pattern: pet, team, and birth year. Falls to guesses built from your posts','amber'],
-       ['Strong but reused','Any pattern used on two sites. Falls to credential stuffing after one leak','amber'],
-       ['Strong','15 or more characters, unique to this account, from a password manager or four or more random words; lab briefs that follow CIS ask for at least 14. Patterns: word-word-word-word (20 or more characters) or 20 random characters from the manager. Falls to phishing, so add MFA','ok',1.6]]},
-      {intro:'These are patterns, so every real password stays private. Each band names the attack it falls to.',
-       caption:'Long, unique, and stored in a manager: all three together make a strong password.'})),
+       ['Short common word','Word plus a digit, 8 characters. Falls to a guess list in seconds','bad'],
+       ['Word with swaps','A common word with look-alike swaps (a to @, s to 5). Falls to guessing tools, which try every swap','bad'],
+       ['Personal and long','Pet, team, and birth year. Falls to guesses built from your posts','amber'],
+       ['Strong but reused','Any password used on two sites. Falls to credential stuffing after one leak','amber'],
+       ['Strong','15 or more characters, unique to this account, from a password manager or four or more random words (lab briefs that follow CIS ask for 14). Falls to phishing, so add MFA','ok',1.6]]},
+      {caption:'Long, unique, and stored in a manager: all three together make a strong password.'})),
    QUIZ('f2cy1','Check yourself',[
-     ['Which password is strongest?',['P@ssw0rd!','kettle-mango-orbit-ladder-reef','Summer2026','Mochi123 (your cat\u2019s name)'],1,'Length and unpredictability win: five random words beat a short password with symbols swapped in. A published phrase already sits in attackers\u2019 guess lists, so choose your own random words.',{whys:['Swapping letters for look-alike symbols is a pattern every guessing list already tries.','Five randomly chosen words make a long passphrase with no pattern to guess, and length beats symbol swaps.','A season plus a year is a pattern guessers try early.','Pet names show up in your posts, where a guesser can find them, and adding 123 is a pattern.'],imp:'core',c:'sec-passwords-mfa'}],
-     ['A gaming site leaks its passwords. Keola used the same one for school email. Which habit would have kept his email safe?',['A longer version of the same password, with symbols added','A unique password for every site, kept in a password manager','Changing it every week','Writing it on a sticky note'],1,'Attackers try leaked email and password pairs on other sites (credential stuffing). A unique password per site makes one leak stay one leak.',{whys:['Attackers try variants of a leaked password early, so a longer version of it falls quickly.','Attackers try leaked email-and-password pairs on other sites, so a unique password per site keeps one leak to one account, and the manager remembers them all.','Weekly changes still use one password across sites, so a leak still opens the others.','A sticky note shows the password to anyone nearby, and the password is still reused.'],imp:'core',c:'sec-passwords-mfa'}]
+     ['Which password is strongest?',['P@ssw0rd!','kettle-mango-orbit-ladder-reef','Summer2026','Mochi123 (your cat\u2019s name)'],1,'Length and randomness win. Choose your own words: a published phrase already sits in attackers\u2019 guess lists.',{whys:['Swapping letters for look-alike symbols is a pattern every guessing list already tries.','Five randomly chosen words make a long passphrase with no pattern to guess, and length beats symbol swaps.','A season plus a year is a pattern guessers try early.','Pet names show up in your posts, where a guesser can find them, and adding 123 is a pattern.'],imp:'core',c:'sec-passwords-mfa'}],
+     ['A gaming site leaks its passwords. Keola used the same one for school email. Which habit would have kept his email safe?',['A longer version of the same password, with symbols added','A unique password for every site, kept in a password manager','Changing it every week','Writing it on a sticky note'],1,'That attack is credential stuffing; a unique password per site keeps one leak to one account.',{whys:['Attackers try variants of a leaked password early, so a longer version of it falls quickly.','Attackers try leaked email-and-password pairs on other sites, so a unique password per site keeps one leak to one account, and the manager remembers them all.','Weekly changes still use one password across sites, so a leak still opens the others.','A sticky note shows the password to anyone nearby, and the password is still reused.'],imp:'core',c:'sec-passwords-mfa'}]
    ]),
    C('Privacy, AI tools, and a bad click','Understand',
      COMPARE('Privacy and security',[
       {name:'Privacy',tag:'The rules',tone:'l2',
-       rows:[['Decides','What should happen to personal data: who collects it, why, for how long, and who sees it.'],['At school','The club sign-up asks for name and grade alone and deletes the list after the season.'],['AI tools','What you paste into an AI tool may be stored, reviewed, or leaked: keep personal, school, and account data and other people’s information out, and check its answers before you act.']],
+       rows:[['Decides','What should happen to personal data: who collects it, why, for how long, and who sees it.'],['At school','The club sign-up asks for name and grade alone and deletes the list after the season.'],['AI tools','What you paste may be stored, reviewed, or leaked: keep personal, school, and account data and other people’s information out, and check answers before you act.']],
        hook:'the rules written on the envelope.'},
       {name:'Security',tag:'The protection',tone:'l3',
-       rows:[['Does','Protects that data with permissions, encryption, MFA, and backups.'],['At school','Grades sit in a system that teachers open with MFA.'],['AI tools','Use the tools your school approves, under your own account, and check any link or file in an answer before you open it.']],
+       rows:[['Does','Protects that data with permissions, encryption, MFA, and backups.'],['At school','Grades sit in a system that teachers open with MFA.'],['AI tools','Use school-approved tools under your own account, and check any link or file in an answer before you open it.']],
        hook:'the lock on the envelope.'}
-     ],{note:'<b>Data minimization:</b> collect only what the job needs, keep it only as long as needed, and share it only with people who need it. Many privacy laws require it.',
+     ],{note:'<b>Data minimization:</b> collect only what the job needs, keep it only as long as needed, and share it only with people who need it.',
        caption:'Privacy decides what should happen to data; security makes sure it does.'}),
      SEQ('I clicked a bad link: the next five minutes',[
       ['Stop','Close the page and type nothing more into it.','amber'],
@@ -1392,18 +1379,19 @@ LADDER.addLevel({
       ['Report right away','Tell your teacher or IT what you clicked, when, and what you typed.','l2'],
       ['Change the password','Use a clean device you trust, then check that MFA is on.','l3'],
       ['Follow IT','They may scan the device, reset sessions, or warn others.','ok']
-     ],{caption:'Schools and employers thank early reporters: a report in the first minutes shrinks the damage, and a hidden click lets it grow.'})),
+     ],{caption:'A report in the first minutes shrinks the damage; a hidden click lets it grow.'})),
    QUIZ('f2q','Scenarios: what do you do?',[
-     ['A classmate finds the teacher\u2019s Wi-Fi admin page is still on the default password. The classmate wants to "fix it for them".',['Fix it quietly; it helps the school','Tell the teacher or IT staff, and leave it alone','Post it in the class group chat so everyone knows','Log in just to confirm it works, then tell IT'],1,'Report it and keep your hands off. Logging in to a system outside your authorization is unauthorized access, even with good intentions.',{whys:['Changing someone else’s system without permission is unauthorized access, even when it helps.','The owner is the one allowed to change the system, so your part is a clear report while your hands stay off it.','A post shares the weakness with everyone in the chat before the owner can fix it.','Signing in to confirm is unauthorized access, even for a moment and with good intentions.'],imp:'core',c:'eth-cyber-ethics'}],
-     ['An email from "IT Help Desk" says your account will be deleted today unless you reply with your password and the code from your authenticator app.',['Reply quickly so you keep your account','Leave it unanswered; report it through your reporting channel or call IT on a number you already know','Reply with the password only','Click the link to check if it is real'],1,'Your password and MFA code stay with you; real IT staff do their work without them. Urgency plus a request for credentials is the signature of phishing; verify through a channel you already trust.',{whys:['Urgency plus a request for your password and code is the phishing signature, and a reply hands both over.','Real IT staff do their work without your password or code, so you report the message and check through a channel you already trust.','The password alone lets the sender sign in, or try it on your other accounts.','The link belongs to the sender, so it leads wherever they choose, often to a fake sign-in page.'],imp:'core',c:'sec-social-engineering'}],
-     ['A practice lab contains a file with a real-looking person\u2019s photo and home address. The investigation question asks only for the file name.',['Report only the file name','Copy the photo for a laugh','Share the address in the group chat','Delete the file to keep it hidden'],0,'Answer exactly what is asked, and keep PII contained even in practice. Leave the file in place unless the scenario brief says that kind of file must go.',{whys:['The question asks only for the file name, so that answer is complete, and the PII stays where it is.','Copying a person’s photo spreads PII, and a practice scenario trains the same habit as real work.','Sharing a home address spreads PII and can put a real person at risk.','Deleting the file changes the lab; the brief decides what gets removed.'],imp:'core',c:'eth-online-safety'}],
-     ['Pua wants an AI chat tool to tidy up a club report. What stays out of the chat?',['The report’s headings and word limit','Members’ names and phone numbers, and the club’s sign-in password','The draft text, with a request to fix the grammar','The club’s public meeting time'],1,'What you paste into an AI tool may be stored, reviewed, or leaked. Keep personal, school, and account data out, and check the answer before you use it.',{whys:['Headings and a word limit hold no personal or account data, so they are safe to share.','What you paste into an AI tool may be stored or reviewed by others, so names, phone numbers, and passwords stay with you.','Draft text free of personal data is safe to share for a grammar fix.','A public meeting time is already public, so sharing it exposes nothing new.'],imp:'core',c:'threat-ai-tools'}]
+     ['A classmate finds the teacher\u2019s Wi-Fi admin page is still on the default password. The classmate wants to "fix it for them".',['Fix it quietly; it helps the school','Tell the teacher or IT staff, and leave it alone','Post it in the class group chat so everyone knows','Log in just to confirm it works, then tell IT'],1,'Report it and keep your hands off: signing in without permission is unauthorized access, even to help.',{whys:['Changing someone else’s system without permission is unauthorized access, even when it helps.','The owner is the one allowed to change the system, so your part is a clear report while your hands stay off it.','A post shares the weakness with everyone in the chat before the owner can fix it.','Signing in to confirm is unauthorized access, even for a moment and with good intentions.'],imp:'core',c:'eth-cyber-ethics'}],
+     ['An email from "IT Help Desk" says your account will be deleted today unless you reply with your password and the code from your authenticator app.',['Reply quickly so you keep your account','Leave it unanswered; report it through your reporting channel or call IT on a number you already know','Reply with the password only','Click the link to check if it is real'],1,'Urgency plus a request for credentials is the signature of phishing; verify through a channel you already trust.',{whys:['Urgency plus a request for your password and code is the phishing signature, and a reply hands both over.','Real IT staff do their work without your password or code, so you report the message and check through a channel you already trust.','The password alone lets the sender sign in, or try it on your other accounts.','The link belongs to the sender, so it leads wherever they choose, often to a fake sign-in page.'],imp:'core',c:'sec-social-engineering'}],
+     ['A practice lab contains a file with a real-looking person\u2019s photo and home address. The investigation question asks only for the file name.',['Report only the file name','Copy the photo for a laugh','Share the address in the group chat','Delete the file to keep it hidden'],0,'Answer exactly what is asked, and keep PII contained even in practice.',{whys:['The question asks only for the file name, so that answer is complete, and the PII stays where it is.','Copying a person’s photo spreads PII, and a practice scenario trains the same habit as real work.','Sharing a home address spreads PII and can put a real person at risk.','Deleting the file changes the lab; the brief decides what gets removed.'],imp:'core',c:'eth-online-safety'}],
+     ['Pua wants an AI chat tool to tidy up a club report. What stays out of the chat?',['The report’s headings and word limit','Members’ names and phone numbers, and the club’s sign-in password','The draft text, with a request to fix the grammar','The club’s public meeting time'],1,'Keep personal, school, and account data out of AI tools, and check the answer before you use it.',{whys:['Headings and a word limit hold no personal or account data, so they are safe to share.','What you paste into an AI tool may be stored or reviewed by others, so names, phone numbers, and passwords stay with you.','Draft text free of personal data is safe to share for a grammar fix.','A public meeting time is already public, so sharing it exposes nothing new.'],imp:'core',c:'threat-ai-tools'}]
    ]),
-   C('Who gets security','Understand',
-     P('Good security has long been sold as a product: a paid manager, a corporate firewall, a consultant. The people with the least money and the oldest devices face the same attackers with fewer defenses. The habits in this unit cost nothing: a passphrase, MFA, a pause before a click. This course runs offline on any device for the same reason: the defense a student can afford is the one that spreads. When you set up a family member\u2019s phone or a club\u2019s laptop, you are moving security to someone the market skipped.'),
+   DETAIL('Who gets security',
+     P('Good security is often sold as a product, so the people with the least money and the oldest devices face the same attackers with fewer defenses. The habits in this unit cost nothing: a passphrase, MFA, and a pause before a click.'),
+     P('This course runs offline on any device for the same reason. When you set up a family member\u2019s phone or a club\u2019s laptop, you move security to someone the market skipped.'),
      TIPS('<b>Free beats paid when free is used.</b> A built-in password manager and the school’s MFA app protect more people than a product sitting unused.',
-          '<b>Access is a security control.</b> A privacy notice only some patients can read protects only them. Ask who is left out before calling a control done.',
-          'A tool that needs a fast laptop leaves out everyone on an older one; a control protects only people who can reach it.')),
+          '<b>Access is a security control.</b> A control protects only the people who can reach it, such as a privacy notice only some patients can read.',
+          'Ask who is left out before calling a control done.')),
    REFLECT('f2r','In your own words','Write two sentences: what does "authorized" mean, and why would a company fire a brilliant technician who ignores it?'),
    LINKS('Go further',['eff','cisa','khan'])
   ]},
@@ -1411,12 +1399,7 @@ LADDER.addLevel({
   can:'name the CIA property at stake in a case, tell a threat from a vulnerability, apply least privilege to an account, and sort controls into their types',
   blocks:[
    C('Five ideas you will use on every machine','Understand',
-     TIPS('<b>CIA triad.</b> Confidentiality (only the right people see it), Integrity (accurate and unaltered), and Availability (works when needed). Every fix protects at least one.',
-          '<b>Threat, vulnerability, risk.</b> Threat: who or what might attack. Vulnerability: the weakness they would use. Risk: how likely and how bad.',
-          '<b>Fix what you control.</b> You remove vulnerabilities; threats stay outside your control, so every fix on a machine closes a weakness.',
-          '<b>Least privilege.</b> Every account and program gets only the access its job needs. Most findings on a neglected machine are extra admins, services, and permissions.',
-          '<b>Defense in depth.</b> Layers: firewall, patched software, strong passwords, antivirus, logging, and backups. When one layer fails, the others still protect you.',
-          '<b>Authentication vs authorization.</b> Authentication proves who you are (password, key). Authorization decides what you may do (groups, permissions).')),
+     P('Every fix on a machine rests on five ideas, each pictured below: the <b>CIA triad</b>, <b>threat versus vulnerability</b>, <b>least privilege</b>, <b>defense in depth</b>, and <b>authentication versus authorization</b>.')),
     COMPARE('The CIA triad: what every fix protects',[
      {name:'Confidentiality',tag:'C',tone:'l1',
       svg:{label:'A padlock: only the right people can open it.',
@@ -1433,23 +1416,21 @@ LADDER.addLevel({
        body:'<rect x="62" y="6" width="64" height="62" rx="6" fill="var(--paper)" stroke="var(--l3)" stroke-width="2"/><path d="M62 27 H126 M62 47 H126" stroke="var(--l3)" stroke-width="1.5"/><path d="M70 17 H100 M70 37 H100 M70 57 H100" stroke="var(--ink-3)" stroke-width="2"/><circle cx="115" cy="17" r="4" fill="var(--ok)"/><circle cx="115" cy="37" r="4" fill="var(--ok)"/><circle cx="115" cy="57" r="4" fill="var(--ok)"/><text x="134" y="41" font-size="11" fill="var(--ink)">Running</text>'},
       rows:[['Means','Systems and data work when they are needed.'],['Broken by','Ransomware, a flood of traffic (denial of service), or removing a service the business needs.'],['Protected by','Backups, spare capacity, patching, and keeping every required service running.']],
       hook:'the lights stay on.'}
-   ],{intro:'Three goals, three different ways to fail. Name the letter a fix protects and you can explain why it matters.',
-     note:'<b>One attack can hit all three.</b> Ransomware encrypts files (availability), often copies them out first (confidentiality), and alters them (integrity).',
+   ],{note:'<b>One attack can hit all three.</b> Ransomware encrypts files (availability), often copies them out first (confidentiality), and alters them (integrity).',
      caption:'Confidentiality keeps data private, integrity keeps it accurate, and availability keeps it working.'}),
    PATH('Threat, vulnerability, and risk: one example, start to finish',[
      {name:'Threat',tag:'who or what might attack',tone:'bad',note:'A phishing crew sending fake sign-in pages. It sits outside your control.',via:'looks for'},
      {name:'Vulnerability',tag:'the weakness it would use',tone:'amber',note:'Staff email accounts guarded by a password alone. This part is yours to close.',via:'together make'},
      {name:'Risk',tag:'how likely × how bad',tone:'l3',note:'Likely, since phishing arrives daily. Bad, since a stolen mailbox leaks data.'}
-   ],{intro:'Three words for three different things. A threat is an actor or event, a vulnerability is a weakness, and risk is what you get when the two meet.',
-     note:'<b>Your control:</b> turn on multi-factor authentication. The weakness closes and the risk drops, even though the phishing crew keeps trying.',
+   ],{note:'<b>Your control:</b> turn on multi-factor authentication. The weakness closes and the risk drops, even though the phishing crew keeps trying.',
      caption:'You close vulnerabilities and add controls. That lowers the risk while the threats stay where they are.'}),
    SEQ('Identify, authenticate, authorize, and account',[
      ['Identification','You claim an identity: you type a username or present a smart card.','l1'],
      ['Authentication','You prove the claim with a password, a security key, or a fingerprint. Multi-factor authentication asks for two different kinds.','l2'],
      ['Authorization','The system decides what this account may do: its groups, its file permissions, and its sudo rights.','l3'],
      ['Accounting','The system records what happened, such as a successful sign-in recorded in the Windows Security log, or /var/log/auth.log on Mint and Ubuntu. Those records support <b>non-repudiation</b>: proof that a person took an action.','l4']
-   ],{intro:'Security people call the last three steps AAA. Each step answers its own question.',
-     note:'<b>“Authorization” has a second meaning</b> in this course: the system owner’s written permission for your work (unit 1). A computer grants an account its rights; an owner grants a person permission to work on the machine. Your work needs both.',
+   ],{intro:'Security people call the last three steps AAA.',
+     note:'<b>“Authorization” has a second meaning</b> in this course: the system owner’s written permission for your work (unit 1). A computer grants an account its rights; an owner grants a person permission. Your work needs both.',
      caption:'Authentication answers “who are you?”, authorization answers “what may you do?”, and accounting answers “what did you do?”'}),
    ANATOMY('Defense in depth: separate rings of control around the data',[
      {name:'Network',tag:'Ring 1',tone:'l1',text:'A network firewall or router ACL lets in only the traffic the business needs.',
@@ -1457,7 +1438,7 @@ LADDER.addLevel({
        children:[{name:'Accounts',tag:'Ring 3',tone:'l3',text:'Long unique passwords, MFA, lockout, and least privilege.',
         children:[{name:'Applications',tag:'Ring 4',tone:'l4',text:'Updated software, antivirus, and only the programs the brief allows.',
          children:[{core:true,name:'Data',sub:'Permissions, encryption, and backups kept somewhere else'}]}]}]}]}
-   ],{intro:'Each ring is a separate control. An attacker who gets past one ring meets the next.',note:'<b>Across every ring:</b> logging records what each ring saw, so you notice when one of them fails.',
+   ],{note:'<b>Across every ring:</b> logging records what each ring saw, so you notice when one of them fails.',
      label:'Four nested rings around the data: network, then host, then accounts, then applications. Logging runs across every ring.',
      caption:'When one ring fails, such as a password lost to phishing, the other rings still stand between the attacker and the data.'}),
    COMPARE('Least privilege and its family',[
@@ -1465,24 +1446,22 @@ LADDER.addLevel({
      {name:'Need to know',tone:'l2',rows:[['Rule','Open data only when your task calls for it, even where you hold access.'],['Lab example','A question asks for a file name, so the PII inside stays unread.']],hook:'read only the page you need.'},
      {name:'Separation of duties',tone:'l3',rows:[['Rule','Split a risky job: one person makes the change, a second approves it.'],['Lab example','One teammate writes the firewall change; another checks it before it goes live.']],hook:'two keys to open the vault.'},
      {name:'Deny by default',tone:'l4',rows:[['Rule','Block everything, then allow only what is needed; a failed check blocks.'],['Lab example','The firewall allows only the brief’s service ports, and a router ACL ends in an implicit deny.']],hook:'a guest list at the door.'}
-   ],{intro:'Four rules that all shrink access to what the job needs.',
-     note:'<b>Secure defaults</b> belong here too: new accounts, shares, and services start locked down, and you open only what the brief needs.',
-     caption:'Least privilege limits rights, need to know limits use, separation of duties splits power, and deny by default starts from closed.'}),
+   ],{intro:'Four rules that all shrink access to what the job needs. Most findings on a neglected machine break one: extra admins, services, or permissions.',
+     note:'<b>Secure defaults</b> belong here too: new accounts, shares, and services start locked down, and you open only what the brief needs.'}),
    QUIZ('f3cy1','Check yourself',[
-     ['The scenario brief says "Keola is the only administrator." You find Keola, Malia, and svc_update in the Administrators group. Which principle tells you what to do?',['Availability','Least privilege','Defense in depth','Non-repudiation'],1,'Only the accounts that need admin get admin. Remove Malia and svc_update from the group (keep their accounts unless the brief says they are unauthorized users).',{whys:['Availability keeps required services running; this question is about who holds admin rights.','Least privilege gives admin only to the accounts whose job needs it, and the brief names Keola alone, so Malia and svc_update leave the group.','Defense in depth adds layers of protection, while trimming extra admins is least privilege.','Non-repudiation proves who took an action, a separate goal from deciding who holds admin.'],imp:'core',c:'sec-least-privilege'}]
+     ['The scenario brief says "Keola is the only administrator." You find Keola, Malia, and svc_update in the Administrators group. Which principle tells you what to do?',['Availability','Least privilege','Defense in depth','Non-repudiation'],1,'Take Malia and svc_update out of Administrators, and keep their accounts unless the brief names them as unauthorized users.',{whys:['Availability keeps required services running; this question is about who holds admin rights.','Least privilege gives admin only to the accounts whose job needs it, and the brief names Keola alone, so Malia and svc_update leave the group.','Defense in depth adds layers of protection, while trimming extra admins is least privilege.','Non-repudiation proves who took an action, a separate goal from deciding who holds admin.'],imp:'core',c:'sec-least-privilege'}]
    ]),
    SCALE('Controls by type and job',{x:['Job','Prevent','Detect','Correct'],y:['Type','Admin','Technical','Physical'],
      cells:[[['Policy','Long passwords required','ok'],['Review','Monthly check of who is admin','amber'],['Plan','Written restore steps','l4']],
             [['Firewall','Blocks unlisted ports','ok'],['Alert','Many failed sign-ins','amber'],['Restore','Backup returns files','l4']],
             [['Badge door','Staff-only server room','ok'],['Camera','Records who entered','amber'],['Sprinkler','Puts out a server-room fire','l4']]]},
-     {intro:'Sort any control two ways: what kind of thing it is, and which job it does. Admin means administrative: rules and procedures people follow.',
+     {intro:'Admin means administrative: rules and procedures people follow.',
       key:[['ok','Prevent: stops it before it happens'],['amber','Detect: notices it happening'],['l4','Correct: repairs the damage']],
-      note:'Some lists add a fourth job, deter, such as a warning banner. A balanced defense has some of each kind; a lab full of prevention still needs logging to catch what slips through.',
-      caption:'Every cell is a different control. A strong defense fills every row and every column.'}),
+      note:'Some lists add a fourth job, deter, such as a warning banner.',
+      caption:'A strong defense fills every row and every column: a lab full of prevention still needs logging to catch what slips through.'}),
    C('Malware and attacks, by name','Remember',
      TIPS('<b>Virus</b> spreads when an infected file runs. <b>Worm</b> spreads itself over the network. <b>Trojan</b> pretends to be useful. <b>Ransomware</b> encrypts files and sells the key.',
           '<b>Keylogger</b> records keystrokes. <b>Backdoor</b>: a hidden way in (a netcat listener, an extra SSH key, or a rogue user). <b>Rootkit</b> hides from the operating system.',
-          '<b>SSH</b> is the encrypted remote-login service; a key file lets its holder sign in without a password, so each extra key deserves a look.',
           '<b>Social engineering</b> targets people instead of software: phishing, pretexting, and tailgating.',
           '<b>Brute force</b> throws many guesses at one account; lockout and length defeat it.',
           '<b>Password spraying</b> tries one or two common passwords on many accounts to stay under lockout. MFA, breached-password screening, and cross-account failure alerts stop it.',
@@ -1492,7 +1471,8 @@ LADDER.addLevel({
           '<b>Spyware</b> secretly watches the user and reports back; Microsoft Defender treats it as malware.',
           '<b>Adware</b> pushes ads, and a <b>cryptominer</b> spends the machine’s power mining currency; Defender blocks both as potentially unwanted applications (PUA) when PUA protection is on.',
           '<b>Botnet:</b> many infected machines under one controller.',
-          '<b>Supply-chain attack:</b> tampering with software before it reaches you, such as a poisoned update.')),
+          '<b>Supply-chain attack:</b> tampering with software before it reaches you, such as a poisoned update.',
+          '<b>Extra SSH keys</b> can be backdoors: SSH is the encrypted remote-login service, and a key file lets its holder sign in without a password.')),
    MATCH('f3m','Match the principle to the fix','Tap an item on the left, then its match on the right.',[
      ['Least privilege','Remove an unauthorized user from the Administrators group','The user’s job needs no admin rights, so taking it out of Administrators shrinks its access to what the job needs.'],
      ['Availability','Keep the web server running because the scenario brief says customers need it','Availability means systems work when people need them, and the brief says customers need this server.'],
@@ -4017,7 +3997,7 @@ function quizReread(b,r,box){
 function renderQuiz(b,fresh){
   const c=el('div','card quiz');
   c.appendChild(el('h3',null,`${b.title}<span class="blm">Check</span>`));
-  c.appendChild(el('p','sum qhelp','Choose an answer, then check it: “I’m sure” or “I’m guessing”. Your first check builds your map, and after it every option opens its reason.'));
+  c.appendChild(el('p','sum qhelp','Choose an answer, then check it: “I’m sure” or “I’m guessing”. Then every option shows its reason.'));
   const rec0=quizRecord(b);
   const shown=new Array(b.items.length).fill(null);
   const foot=el('div','row qfoot');
@@ -4562,9 +4542,10 @@ function renderTimer(b){
 }
 
 /* ---- links ---- */
+/* a closed panel (concision pass 4): the unit's lesson ends at its last activity, and the sources open on request */
 function renderLinks(b){
-  const c=el('div','card');
-  c.appendChild(el('h3',null,b.title+`<span class="blm">Trusted sources</span>`));
+  const c=el('details','deeper golinks'), n=b.keys.filter(k=>RES[k]).length;
+  c.appendChild(el('summary',null,esc(`${b.title}: ${n} trusted source${n===1?'':'s'}`)));
   b.keys.forEach(k=>{
     const r=RES[k];if(!r)return;
     const [name,url,why,kind]=r;
@@ -5255,10 +5236,10 @@ function continueCard(o){
 /* ---- the grade intro: whole on the first view of a grade, then folded into a summary (its open state is kept) ---- */
 function gradeIntro(L,head){
   const s=navState();
-  /* phones: the whole intro shows on the grade's first unit; any other unit opens with the closed summary, so the
-     unit's heading starts on the first screen */
+  /* the whole intro shows on the grade's first unit; any other unit opens with the closed summary, so the
+     unit's heading starts on the first screen (phones since 2026-10-24, every screen since concision pass 4) */
   const U0=L.units.find(u=>u.id===current.unit)||L.units[0];
-  if(!(s.seen&&s.seen[L.id])&&!(!(wideMQ&&wideMQ.matches)&&U0!==L.units[0])) return;
+  if(!(s.seen&&s.seen[L.id])&&U0===L.units[0]) return;
   const kids=[...head.children].slice(2);
   if(!kids.length) return;
   const d=el('details','gintro');
@@ -5689,10 +5670,9 @@ function flowTerms(L,U,uh){
   if(LADDER.glossary&&!GLOSSARY.some(g=>g.at===at)) return;
   const d=el('details','uterms');d.dataset.at=at;
   d.innerHTML='<summary>Terms in this unit<span class="tcount"></span></summary><div class="tbody"></div>';
-  /* open by default, with the first five terms before the lesson; a student who closes it keeps it closed (per device) */
-  /* mobile round (2026-10-24): closed by default on phones, so the lesson starts on the first screen; the student's
-     own choice, open or closed, is kept (per device) */
-  const tWant=()=>{ const p=flowLsGet(TERMS_KEY); return p==='open'?true:p==='closed'?false:!!(wideMQ&&wideMQ.matches); };
+  /* closed by default (phones since 2026-10-24, every screen since concision pass 4), so the lesson starts on the
+     first screen and defines each term where it is used; the student's own choice, open or closed, is kept (per device) */
+  const tWant=()=>flowLsGet(TERMS_KEY)==='open';
   d.open=tWant();
   d.addEventListener('toggle',()=>{ if(d.open) flowTermsFill(d); if(d.dataset.ready&&d.open!==tWant()) flowLsSet(TERMS_KEY,d.open?'open':'closed'); });
   const s=uh.querySelector('.sum'); if(s) s.after(d); else uh.appendChild(d);
