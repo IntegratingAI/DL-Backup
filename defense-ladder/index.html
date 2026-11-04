@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-CLOIhsie0hB71qPhYXvc6uMKfXOdzAQtPdiZR0pCzi0=' 'sha256-K7d8QORkrCuo8K5fGhIGb9ynifqGS+4L/tsyDVoNAYg=' 'sha256-MHCg9P+6LYyu7C50vzkfOkLdV3d0VdCBWTT2tEV6bvs=' 'sha256-uvebheRNxCcm7FISyQNlQ671HtUeowOWZdNoPpE5t0k=' 'sha256-yqFPYN768BBANUZxjrDG/GFxppOSx5y3kspPKiRUdzk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-MHCg9P+6LYyu7C50vzkfOkLdV3d0VdCBWTT2tEV6bvs=' 'sha256-ZpQI7RjugrvUZQ+I93T8JktBnsprQziHGydfaoAdaCY=' 'sha256-uvebheRNxCcm7FISyQNlQ671HtUeowOWZdNoPpE5t0k=' 'sha256-xLupVAZSr7UsgeUCLOQFctEBJUTLw+Rld1SS7jbA44I=' 'sha256-yqFPYN768BBANUZxjrDG/GFxppOSx5y3kspPKiRUdzk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/defense-ladder/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%8E%93%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -156,10 +156,16 @@ textarea.mv-code{font:600 .85rem/1.45 ui-monospace,Consolas,monospace;word-break
 .card li{margin:.25em 0}
 .note{border-left:4px solid var(--amber);background:var(--paper-2);padding:10px 12px;border-radius:0 8px 8px 0;margin:10px 0}
 .warn{border-left-color:var(--bad)}
+/* command tables (see renderCmds): each row stacks, the command on its own line in a code box and its meaning
+   beneath, indented; a table of short commands shows two columns once it has room (the container queries below) */
+.cmdw{container-type:inline-size}
 table.cmds{width:100%;border-collapse:collapse;font-size:.9rem;margin:6px 0 4px;display:block;overflow-x:auto}
-table.cmds td{padding:7px 8px;border-top:1px solid var(--line-2);vertical-align:top}
-table.cmds td:first-child{white-space:nowrap}
+table.cmds>tbody,table.cmds tr,table.cmds td{display:block}
+table.cmds tr{border-top:1px solid var(--line-2);padding:7px 0}
+table.cmds td{padding:0}
+table.cmds td+td{padding:4px 0 0 1.25rem}
 table.cmds code{background:var(--code-bg);color:var(--code-cmd);padding:2px 7px;border-radius:5px;font-size:.84rem}
+table.cmds td:first-child code{display:inline-block;max-width:100%;white-space:pre-wrap;overflow-wrap:break-word;padding-left:calc(7px + 2ch);text-indent:-2ch}
 pre.term{background:var(--code-bg);color:var(--code-ink);padding:12px 14px;border-radius:8px;overflow-x:auto;font-size:.84rem;line-height:1.5;margin:8px 0}
 p code,li code,.why code{background:var(--line-2);padding:1px 5px;border-radius:4px;font-size:.88em}
 
@@ -262,7 +268,7 @@ dl.gloss dd a{display:inline-block;max-width:100%}
 .ph ul{margin:6px 0 8px;padding-left:20px;font-size:.93rem}
 
 /* hardening areas and scorecard */
-table.areas td:first-child{white-space:normal;min-width:9.5em;width:40%}
+table.areas td:first-child{white-space:normal}
 table.areas small{color:var(--ink-2)}
 .sc-lbl{display:block;font-weight:600;margin-bottom:6px}
 .pl-len{display:block;font-size:.85rem;color:var(--ink-2);margin:4px 0 10px;max-width:16rem}
@@ -319,7 +325,7 @@ details.v-alt p{margin:6px 0 0}
 .v-panel{border:1.5px dashed var(--c);border-radius:8px;background:var(--paper);padding:8px;font-size:.82rem}
 .v-core{border:2px solid var(--ink-3);border-radius:6px;padding:10px;text-align:center;font-weight:700;background:var(--paper)}
 .v-sub{font-weight:400;font-size:.8rem;color:var(--ink-2)}
-.v-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:6px}
+.v-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(88px,var(--tmin,0px))),1fr));gap:6px}
 .v-grid>.v-box{background:var(--paper);padding:6px;text-align:center;font-size:.78rem}
 .v-grid>.v-box>.v-blabel{justify-content:center;margin:0 0 2px}
 .v-grid>.v-box>.v-btxt{margin:0}
@@ -409,12 +415,21 @@ ul.v-tree ul{margin-left:12px;padding-left:14px}
 .v-bands{display:flex;flex-direction:column;gap:4px;min-width:0}
 .v-band{border:2px solid var(--c);background:var(--bgc);border-radius:7px;padding:6px 8px;font-size:.86rem;min-width:0}
 .v-band small{display:block;color:var(--ink-2);font-size:.8rem}
+/* a scale lines its bands up in a row once each band has room for its longest word: at 560px for up to five
+   bands, at 760px for six or more (v-many) */
 @container vis (min-width:560px){
-  .v-range{grid-template-columns:minmax(0,1fr)}
-  .v-ends{flex-direction:row;width:auto}
-  .v-ends i{height:2px;width:auto;min-height:0;margin:0 14px 0 10px}
-  .v-ends i::after{bottom:auto;top:-5px;left:auto;right:-9px;border:6px solid transparent;border-right:0;border-left:9px solid var(--line)}
-  .v-bands{flex-direction:row}.v-band{flex:var(--w,1) 1 0}
+  .v-range:not(.v-many){grid-template-columns:minmax(0,1fr)}
+  .v-range:not(.v-many) .v-ends{flex-direction:row;width:auto}
+  .v-range:not(.v-many) .v-ends i{height:2px;width:auto;min-height:0;margin:0 14px 0 10px}
+  .v-range:not(.v-many) .v-ends i::after{bottom:auto;top:-5px;left:auto;right:-9px;border:6px solid transparent;border-right:0;border-left:9px solid var(--line)}
+  .v-range:not(.v-many) .v-bands{flex-direction:row}.v-range:not(.v-many) .v-band{flex:var(--w,1) 1 0;min-width:min-content;overflow-wrap:break-word}
+}
+@container vis (min-width:760px){
+  .v-range.v-many{grid-template-columns:minmax(0,1fr)}
+  .v-range.v-many .v-ends{flex-direction:row;width:auto}
+  .v-range.v-many .v-ends i{height:2px;width:auto;min-height:0;margin:0 14px 0 10px}
+  .v-range.v-many .v-ends i::after{bottom:auto;top:-5px;left:auto;right:-9px;border:6px solid transparent;border-right:0;border-left:9px solid var(--line)}
+  .v-range.v-many .v-bands{flex-direction:row}.v-range.v-many .v-band{flex:var(--w,1) 1 0;min-width:min-content;overflow-wrap:break-word}
 }
 table.v-mx{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:4px;font-size:.84rem}
 .v-mx th{font-size:.74rem;font-weight:700;color:var(--ink-2);text-align:center;vertical-align:middle;padding:2px;overflow-wrap:anywhere}
@@ -460,23 +475,20 @@ body{font-size:1rem}
 /* the unit heading: grade and "Unit N of M"; scroll targets stop below the sticky rail on phones */
 .unum{margin:0 0 2px;font-size:.85rem;font-weight:600;color:var(--ink-2)}
 .units,.uhead{scroll-margin-top:calc(var(--railh) + 8px)}
-/* wrapping instead of sideways scrolling */
-table.cmds td:first-child{white-space:normal}
-table.cmds code{white-space:pre-wrap;overflow-wrap:anywhere}
-pre.term{white-space:break-spaces;overflow-wrap:anywhere}
+/* wrapping instead of sideways scrolling: code wraps at its spaces, and keepNames keeps each name whole (a long
+   path breaks only after a \ or /); a word breaks mid-letter only when it is wider than its whole box */
+pre.term{white-space:break-spaces;overflow-wrap:break-word}
 pre.term .tln{display:block;padding-left:2ch;text-indent:-2ch}
-.vis code{white-space:normal;overflow-wrap:anywhere}
+.vis code{white-space:normal}
+main code{overflow-wrap:break-word}
+.nb{white-space:nowrap}
+.any{overflow-wrap:anywhere}
 .v-tag{white-space:normal;overflow-wrap:anywhere;min-width:0}
-p code,li code,.why code,dd code,td code,.owhy code{overflow-wrap:anywhere}
-@media (max-width:599px){
-  table.cmds,table.cmds tbody,table.cmds tr,table.cmds td{display:block;width:auto}
-  table.cmds tr{border-top:1px solid var(--line-2);padding:6px 0}
-  table.cmds td{border-top:0;padding:2px 0}
-  table.areas td:first-child{min-width:0;width:auto}
-}
-.match{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.match{grid-template-columns:minmax(min-content,1fr) minmax(min-content,1fr)}
 .mcol{display:flex;flex-direction:column;gap:8px;min-width:0}
 .mi{overflow-wrap:anywhere}
+/* a matching tile shares its row with the other column, so a name over 12 characters there may break at its hyphen */
+.mi .nbl{white-space:normal}
 .mi[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 .v-facts,.v-scroll{overflow-x:auto;max-width:100%}
 .scroll-cue{font-size:.8rem;color:var(--ink-2);margin:4px 0 0}
@@ -815,12 +827,39 @@ details.uterms .tcount{font-weight:400;color:var(--ink-2)}
 }
 /* Wide mode keeps text at 72 characters a line or fewer; visuals and comparisons keep the full width */
 .main :is(.card>p,.card>.sum,.card>.note,.card>ul>li,.card>ol>li,.card>.legend,.q,.why,.oreason,.sl-why,.rnote,.v-why,.v-note,details.deeper>p,details.deeper>.note,details.deeper>ul>li),.uhead .sum,.lvhead .intro,.lvhead .bloom-cap{max-width:72ch}
-/* command tables from 600 px: the command column takes its content's width, 45% at most (its code wraps past that) */
-@media (min-width:600px){
-  table.cmds{display:grid;grid-template-columns:fit-content(45%) minmax(0,1fr);overflow:visible}
-  table.cmds>tbody,table.cmds>thead,table.cmds tr{display:contents}
-  table.cmds td:first-child{width:auto;max-width:45%}
-  table.cmds td:first-child code{white-space:pre-wrap}
+/* two columns for a table of short commands, once its box leaves the meanings about 18rem (40 characters a line):
+   the command column is exactly as wide as its longest command, so every command sits on one line
+   (cmds-s: up to 16 characters, cmds-m: 24, cmds-l: 32, cmds-x: 48). Both cells take the same padding, so a
+   command and its meaning start on one baseline. */
+@container (min-width:28rem){
+  table.cmds-s{display:grid;grid-template-columns:max-content minmax(0,1fr)}
+  table.cmds-s>tbody,table.cmds-s tr{display:contents}
+  table.cmds-s td,table.cmds-s td+td{padding:7px 8px;border-top:1px solid var(--line-2)}
+  table.cmds-s td:first-child code{white-space:pre}
+}
+@container (min-width:32rem){
+  table.cmds-m{display:grid;grid-template-columns:max-content minmax(0,1fr)}
+  table.cmds-m>tbody,table.cmds-m tr{display:contents}
+  table.cmds-m td,table.cmds-m td+td{padding:7px 8px;border-top:1px solid var(--line-2)}
+  table.cmds-m td:first-child code{white-space:pre}
+}
+@container (min-width:36rem){
+  table.cmds-l{display:grid;grid-template-columns:max-content minmax(0,1fr)}
+  table.cmds-l>tbody,table.cmds-l tr{display:contents}
+  table.cmds-l td,table.cmds-l td+td{padding:7px 8px;border-top:1px solid var(--line-2)}
+  table.cmds-l td:first-child code{white-space:pre}
+}
+@container (min-width:44rem){
+  table.cmds-x{display:grid;grid-template-columns:max-content minmax(0,1fr)}
+  table.cmds-x>tbody,table.cmds-x tr{display:contents}
+  table.cmds-x td,table.cmds-x td+td{padding:7px 8px;border-top:1px solid var(--line-2)}
+  table.cmds-x td:first-child code{white-space:pre}
+}
+/* the six areas (unit and scorecard): a column of names and controls, up to 40% wide, that wraps like any text */
+@container (min-width:30rem){
+  table.areas{display:grid;grid-template-columns:fit-content(40%) minmax(0,1fr)}
+  table.areas>tbody,table.areas tr{display:contents}
+  table.areas td,table.areas td+td{padding:7px 8px;border-top:1px solid var(--line-2)}
 }
 /* terminal output in columns (a run of three or more spaces) keeps its columns; the excerpt scrolls sideways */
 pre.term .tln.tab{white-space:pre;overflow-wrap:normal;padding-left:0;text-indent:0}
@@ -3375,10 +3414,70 @@ function markScroll(n){
 }
 function watchScrollers(root){
   if(scrollObs) root.querySelectorAll('.v-facts,.v-scroll,table.cmds,pre.term').forEach(n=>scrollObs.observe(n));
-  /* from 600 px a command table lays out as a grid (the command column sized to its content), so its rows and cells
-     say what they are */
+  /* a command table lays out as stacked rows or as a two-column grid, never as a table, so its rows and cells say
+     what they are */
   root.querySelectorAll('table.cmds:not([role])').forEach(t=>{ t.setAttribute('role','table'); t.querySelectorAll('tr').forEach(r=>{ r.setAttribute('role','row'); r.querySelectorAll('td,th').forEach(d=>d.setAttribute('role','cell')); }); });
 }
+/* names stay whole. In code and terminal lines, a name of up to 20 characters that holds punctuation
+   (Get-LocalUser, startup-config, secpol.msc) never splits across lines; so does a PowerShell cmdlet or parameter
+   written in plain text (Get-LocalUser, -Group). A longer name (Get-ADDefaultDomainPasswordPolicy, a registry path,
+   a URL), a comma list in code (Name,Enabled), and in plain text any path or web address of 12 characters or more,
+   breaks only at its joints: after a
+   separator such as \ or /, at a hyphen, or between camelCase words. The text is unchanged, so copying a command
+   copies exactly what is shown. Everything added to the page passes through here, including the reasons a quiz,
+   spot drill, or type-in shows after a check. */
+const KN_SEL='code:not([data-kn]),kbd:not([data-kn]),samp:not([data-kn]),.mono:not([data-kn]),pre.term .tln:not(.tab):not([data-kn])',
+  KN_SKIP='[data-kn],.any,.nb,pre,svg,script,style,textarea', KN_SEP=/([\\\/,;&?=|:])/,
+  KN_CMD=/^(?:[A-Z][a-z]+-[A-Z][A-Za-z]+|-[A-Z][A-Za-z]+)[,.;:)]*$/;
+const knTexts=r=>{ const w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT), ts=[]; for(let t=w.nextNode();t;t=w.nextNode()) ts.push(t); return ts; };
+function knRun(f,p){
+  if(p.length>20) p.replace(/(\p{Ll})(?=\p{Lu})/gu,'$1\0').split('\0').forEach((s,i)=>{ if(i) f.appendChild(document.createElement('wbr')); f.appendChild(document.createTextNode(s)); });
+  else if(p.length>1&&/[^\p{L}\p{N}]/u.test(p)){
+    /* a name over 12 characters splits into pieces at its inner hyphens (Test-|NetConnection): the joint between two
+       pieces follows the outer span, which only a matching tile lets break, and each piece stays whole */
+    const s=el('span','nb'), segs=p.length>12?p.replace(/([\p{L}\p{N}]-)(?=[\p{L}\p{N}])/gu,'$1\0').split('\0'):[p];
+    if(segs.length>1){ s.className='nb nbl'; segs.forEach(g=>{ const x=el('span','nb'); x.textContent=g; s.appendChild(x); }); }
+    else s.textContent=p;
+    f.appendChild(s);
+  }
+  else f.appendChild(document.createTextNode(p));
+}
+function knToken(f,p,joints){
+  if(p.length<=20&&!joints){ knRun(f,p); return; }
+  const s=el('span','any');
+  p.split(KN_SEP).forEach(x=>{ if(!x) return; if(KN_SEP.test(x)){ s.appendChild(document.createTextNode(x)); s.appendChild(document.createElement('wbr')); } else knRun(s,x); });
+  f.appendChild(s);
+}
+/* each word's treatment: 0 left as it is, 1 a name, 2 a path or web address (breaks at its joints) */
+function knKind(p,code){
+  if(!p||/^\s/.test(p)) return 0;
+  if(code) return /,./.test(p)?2:p.length>20||p.length>1&&/[^\p{L}\p{N}]/u.test(p)?1:0;
+  return p.length>30||p.length>=12&&/[\\\/=&]|\?\S/.test(p)?2:KN_CMD.test(p)?1:0;
+}
+function knNode(t,code){
+  if(!(code?/[^\s\p{L}\p{N}]\S|\S{21}/u:/\S{12}|-[A-Z]/).test(t.data)) return;
+  const parts=t.data.split(/(\s+)/), kinds=parts.map(p=>knKind(p,code));
+  if(!kinds.some(Boolean)) return;
+  const f=document.createDocumentFragment();
+  parts.forEach((p,i)=>{ if(!p) return; if(kinds[i]) knToken(f,p,kinds[i]===2); else f.appendChild(document.createTextNode(p)); });
+  f.childNodes.forEach(n=>knMade.add(n));
+  t.replaceWith(f);
+}
+/* the nodes keepNames itself puts in, which the observer below leaves alone */
+const knMade=new WeakSet();
+function keepNames(root){
+  const list=[...root.querySelectorAll(KN_SEL)];
+  if(root.matches&&root.matches(KN_SEL)) list.push(root);
+  list.forEach(c=>{ c.dataset.kn='1'; knTexts(c).forEach(t=>knNode(t,true)); });
+  knTexts(root).forEach(t=>{ if(t.parentElement&&!t.parentElement.closest(KN_SKIP)) knNode(t,false); });
+}
+/* elements and bare text (a reason filled in with innerHTML) alike */
+if(typeof MutationObserver==='function') new MutationObserver(rs=>{ rs.forEach(r=>r.addedNodes.forEach(n=>{
+  const p=n.parentElement;
+  if(knMade.has(n)||!p||p.closest(KN_SKIP)) return;
+  if(n.nodeType===1) keepNames(n);
+  else if(n.nodeType===3) knNode(n,!!p.closest('code,kbd,samp,.mono'));
+})); }).observe(main,{childList:true,subtree:true});
 function unitFromHash(){
   const m=/^#([a-z]+)\/([a-z]+[0-9]+)$/.exec(location.hash||'');
   const g=m&&gradeInfo(m[1]);
@@ -3513,10 +3612,13 @@ function renderCard(b){
   b.parts.forEach(p=>c.appendChild(renderBlock(p,null,true)));
   return c;
 }
+/* the longest command picks the layout: up to 48 characters, the table shows two columns once its box has room;
+   longer commands always stack, each on its own line with its meaning beneath (CSS: .cmdw and the container queries) */
 function renderCmds(b){
-  const wrap=el('div');
+  const wrap=el('div','cmdw');
   if(b.title) wrap.appendChild(el('p',null,`<b>${b.title}</b>`));
-  const t=el('table','cmds');
+  const n=Math.max(...b.rows.map(([cmd])=>String(cmd).length));
+  const t=el('table','cmds'+(n<=16?' cmds-s':n<=24?' cmds-m':n<=32?' cmds-l':n<=48?' cmds-x':''));
   b.rows.forEach(([cmd,why])=>{
     const tr=el('tr');
     tr.appendChild(el('td',null,`<code>${esc(cmd)}</code>`));
@@ -3617,7 +3719,13 @@ function anatBox(x){
   if(x.core) return `<div class="v-core">${x.name||''}${x.sub?`<div class="v-sub">${x.sub}</div>`:''}</div>`;
   const fld=(f,cls)=>f&&f.length?`<div class="${cls}"><b>${f[0]}</b>${f.slice(1).join('<br>')}</div>`:'';
   const kids=(x.children||[]).map(anatBox).join('');
-  const inner=(x.panel?`<div class="v-panel"><b>${x.panel[0]}</b>${x.panel.slice(1).join(' · ')}</div>`:'')+(kids?(x.grid?`<div class="v-grid">${kids}</div>`:kids):'');
+  /* tiles are at least as wide as their longest word or name (up to 30 characters; code is wider per character), so
+     each one stays on one line */
+  const CODE=/<(code|samp|kbd)\b[^>]*>[\s\S]*?<\/\1>|<span class="mono">[\s\S]*?<\/span>/g;
+  const longest=s=>Math.min(30,Math.max(0,...s.replace(/<[^>]*>/g,' ').split(/\s+/).map(w=>w.length)));
+  const need=Math.max(longest((kids.match(CODE)||[]).join(' '))*.48,longest(kids.replace(CODE,' '))*.42,longest((x.children||[]).map(c=>c.name||'').join(' '))*.5);
+  const tmin=need?`--tmin:${(need+1.2).toFixed(1)}rem`:'';
+  const inner=(x.panel?`<div class="v-panel"><b>${x.panel[0]}</b>${x.panel.slice(1).join(' · ')}</div>`:'')+(kids?(x.grid?`<div class="v-grid" style="${tmin}">${kids}</div>`:kids):'');
   const body=(x.head||x.trail)?`<div class="v-arow">${fld(x.head,'v-hdr')}<div class="v-inner">${inner}</div>${fld(x.trail,'v-trl')}</div>`:(inner?`<div class="v-inner">${inner}</div>`:'');
   return `<div class="v-box" style="${toneCss(x.tone,'l2')}"><div class="v-blabel"><span>${x.name||''}</span>${x.tag?`<span class="v-tag">${x.tag}</span>`:''}</div>`+
     (x.text?`<div class="v-btxt">${x.text}</div>`:'')+body+svgHtml(x.svg)+'</div>';
@@ -3774,21 +3882,22 @@ function renderScale(b,inCard){
     return visShell(b,inCard,h,'<ul>'+alt.join('')+'</ul>');
   }
   const B=p.bands||[];
-  const h=`<div class="v-range"><div class="v-ends" aria-hidden="true"><span>${p.from||''}</span><i></i><span>${p.to||''}</span></div><div class="v-bands">`+
+  const h=`<div class="v-range${B.length>5?' v-many':''}"><div class="v-ends" aria-hidden="true"><span>${p.from||''}</span><i></i><span>${p.to||''}</span></div><div class="v-bands">`+
     B.map(([l,n,t,w])=>`<div class="v-band" style="${toneCss(t,'l2')};--w:${+w||1}"><b>${l}</b>${n?`<small>${n}</small>`:''}</div>`).join('')+'</div></div>';
   const alt=`<p>From ${p.from||'the start'} to ${p.to||'the end'}:</p><ol>`+B.map(([l,n])=>`<li>${l}${n?': '+n:''}</li>`).join('')+'</ol>';
   return visShell(b,inCard,h,alt);
 }
 
 function renderAreas(){
-  const t=el('table','cmds areas');
+  const w=el('div','cmdw'), t=el('table','cmds areas');
+  w.appendChild(t);
   AREAS.forEach((a,i)=>{
     const tr=el('tr');
     tr.appendChild(el('td',null,`<b>${i+1}. ${a.n}</b><br><small>${a.cis}</small>`));
     tr.appendChild(el('td',null,a.d));
     t.appendChild(tr);
   });
-  return t;
+  return w;
 }
 
 /* ---- flashcards ---- */
@@ -4602,9 +4711,9 @@ function renderScorecard(){
     main.appendChild(c);
   });
   const ex=el('div','card');ex.appendChild(el('h3',null,'Outside the six areas'));
-  const t=el('table','cmds areas');
+  const tw=el('div','cmdw'), t=el('table','cmds areas');
   AREAS_EXTRA.forEach(([n,d])=>{const tr=el('tr');tr.appendChild(el('td',null,`<b>${n}</b>`));tr.appendChild(el('td',null,d));t.appendChild(tr);});
-  ex.appendChild(t);main.appendChild(ex);
+  tw.appendChild(t);ex.appendChild(tw);main.appendChild(ex);
   const row=el('div','row');
   const reset=el('button','btn sec sm','Clear scorecard');
   let armed=false;
@@ -4910,11 +5019,11 @@ function renderAbout(){
 
   const c2=el('div','card');
   c2.innerHTML=`<h3>How the drills map to Bloom\u2019s taxonomy</h3>`;
-  const t=el('table','cmds');
+  const t=el('table','cmds cmds-s');
   [['Remember','Flashcards, vocabulary, and the six hardening areas'],['Understand','Concept cards, matching, and "which action is safe" quizzes'],['Apply','Command tables, hands-on labs, IOS configuration, and the hardening scorecard'],['Analyze','Spot-the-problem in configs and logs, finding persistence'],['Evaluate','Rank the findings, judgment-under-pressure quizzes, and ethics'],['Create','Checklist builder, session planner, team runbook, and your own code']].forEach(([a,b])=>{
     const tr=el('tr');tr.appendChild(el('td',null,`<b>${a}</b>`));tr.appendChild(el('td',null,b));t.appendChild(tr);
   });
-  c2.appendChild(t);
+  const tw=el('div','cmdw'); tw.appendChild(t); c2.appendChild(tw);
   main.appendChild(c2);
 
   // grouped resource list
@@ -10298,8 +10407,8 @@ LADDER.addLevel({
      bloom:'Analyze'}),
    SCALE('Severity by confidence',{x:['Confidence: how likely it is real','Low','Medium','High'],y:['Severity: how bad if real','High','Medium','Low'],
      cells:[
-       [['Investigate now','Prove or clear within the hour','amber'],['Escalate','Hand to the lead','bad'],['Escalate and contain','Act before it spreads','bad']],
-       [['Handle','Close and tune the rule','muted'],['Investigate','Pull raw events, widen the search','amber'],['Escalate','Hand to the lead','bad']],
+       [['Inves&shy;tigate now','Prove or clear within the hour','amber'],['Escalate','Hand to the lead','bad'],['Escalate and contain','Act before it spreads','bad']],
+       [['Handle','Close and tune the rule','muted'],['Inves&shy;tigate','Pull raw events, widen the search','amber'],['Escalate','Hand to the lead','bad']],
        [['Handle','Close with a note','muted'],['Handle','Fix and close','ok'],['Handle','Record and close','ok']]]},
      {intro:'Place each alert by severity and confidence before you act.',
       note:'An <a href="#sophomore/s10">escalation note</a> says what fired, what you checked, and what is still unknown. A rule that keeps landing bottom left needs tuning, since false positives bury true positives.',
