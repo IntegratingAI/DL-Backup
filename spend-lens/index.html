@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-+eaS0PVLnebOEvzGjwRzhMjKxJoKU3I3eXOoLw47iMY=' 'sha256-4VKdrfdZvSyhQhJmsN/6thGnWjuF3sl4NJop1Pz0V/s=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/ https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/ https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/; connect-src data: https://beta-bridge.simplefin.org/simplefin/ https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-7aW1WjrL4vJRDgHvsOoHXGyjM/OWtVAeQdMNtyGMCvw=' 'sha256-JF3u9vsNxHD3z4Bur2Xpd6M8PxCIQsaw0FYLi+ZEPU4=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/ https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/ https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/; connect-src data: https://beta-bridge.simplefin.org/simplefin/ https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out HUD, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
 <link rel="canonical" href="https://freeapp4that.store/spend-lens/">
@@ -199,7 +199,7 @@ select { appearance: none; -webkit-appearance: none; background-image: linear-gr
 .preview { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 18px; background: var(--surface); }
 .preview h2 { margin-bottom: 4px; }
 .pv-table { margin-top: 10px; border-top: 1px solid var(--line); max-height: 420px; overflow: auto; }
-.pv-row { display: grid; grid-template-columns: 20px 68px 1fr auto; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 0.9rem; }
+.pv-row { display: grid; grid-template-columns: 20px 4.25rem 1fr auto; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 0.9rem; }
 .pv-row .date { font-size: 0.8rem; color: var(--ink-2); white-space: nowrap; }
 .pv-row.dupe { background: var(--line-2); }
 .pv-row .desc { display: flex; flex-direction: column; min-width: 0; }
@@ -222,7 +222,7 @@ summary { cursor: pointer; color: var(--accent); font-weight: 500; }
 /* Rules */
 .rulerow { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 0.95rem; }
 .rulerow .kw { font-weight: 500; overflow-wrap: anywhere; }
-.catrow { display: grid; grid-template-columns: 12px 1fr 96px auto; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 0.95rem; }
+.catrow { display: grid; grid-template-columns: 12px 1fr 6rem auto; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 0.95rem; }
 .catrow input[type="text"] { min-height: 36px; padding: 6px 8px; }
 .catrow .ex { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--ink-2); white-space: nowrap; }
 .catrow .ex input { accent-color: var(--accent); }
@@ -231,8 +231,10 @@ summary { cursor: pointer; color: var(--accent); font-weight: 500; }
 .builtins b { color: var(--ink); font-weight: 500; }
 
 /* HUD */
-.hud-table { border-top: 1px solid var(--line); }
-.bill { display: grid; grid-template-columns: 1fr 96px 96px; gap: 4px 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line-2); cursor: pointer; }
+.hud-table { border-top: 1px solid var(--line); overflow-x: auto; }
+/* a table wider than the screen (very large text) scrolls inside itself; its rows keep their focus ring inside it */
+.hud-table [tabindex]:focus-visible { outline-offset: -2px; }
+.bill { display: grid; grid-template-columns: 1fr 6rem 6rem; gap: 4px 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line-2); cursor: pointer; }
 .bill:hover .name { color: var(--accent); }
 .bill .name { font-weight: 500; }
 .bill .status { grid-column: 1 / -1; color: var(--ink-2); font-size: 0.8rem; margin-top: -2px; }
@@ -246,8 +248,8 @@ summary { cursor: pointer; color: var(--accent); font-weight: 500; }
 .bill.total .name { font-weight: 600; }
 .bill.rest { cursor: default; color: var(--ink-2); border-bottom: 0; padding-top: 2px; }
 .bill.rest .name { font-weight: 400; }
-@media (max-width: 380px) { .bill { grid-template-columns: 1fr 84px 84px; } }
-.acct { display: grid; grid-template-columns: 1fr 96px 108px; gap: 4px 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line-2); }
+@media (max-width: 380px) { .bill { grid-template-columns: 1fr 5.25rem 5.25rem; } }
+.acct { display: grid; grid-template-columns: 1fr 6rem 6.75rem; gap: 4px 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line-2); }
 .acct .name { font-weight: 500; }
 .acct .status { grid-column: 1 / -1; color: var(--ink-2); font-size: 0.8rem; margin-top: -2px; }
 .acct .num { text-align: right; white-space: nowrap; font-weight: 600; }
@@ -268,9 +270,9 @@ summary { cursor: pointer; color: var(--accent); font-weight: 500; }
 .st-good { background: var(--in); }
 .st-warn { background: #D6A32A; }
 .st-bad { background: var(--out); }
-.bill.plan { cursor: default; align-items: start; grid-template-columns: 1fr 104px 118px; }
+.bill.plan { cursor: default; align-items: start; grid-template-columns: 1fr 6.5rem 7.375rem; }
 .bill.plan .num, .bill.plan .num .pm { white-space: normal; }
-@media (max-width: 380px) { .bill.plan { grid-template-columns: 1fr 92px 104px; } }
+@media (max-width: 380px) { .bill.plan { grid-template-columns: 1fr 5.75rem 6.5rem; } }
 .bill.plan:hover .name { color: var(--ink); }
 .bill.plan .name .pm, .bill.plan .num .pm { display: block; font-weight: 400; font-size: 0.76rem; color: var(--ink-2); line-height: 1.3; }
 .bill.plan .num { font-weight: 500; }
@@ -284,19 +286,19 @@ summary { cursor: pointer; color: var(--accent); font-weight: 500; }
 .secbar select { width: auto; flex: 1 1 auto; max-width: 320px; font-weight: 500; }
 .flabel { display: block; font-size: 0.85rem; color: var(--ink-2); margin: 10px 0; }
 .flabel > input, .flabel > select { display: block; width: 100%; margin-top: 4px; color: var(--ink); font-size: 1rem; }
-.acct.debt { grid-template-columns: 1fr 78px 72px 84px; }
+.acct.debt { grid-template-columns: 1fr 4.875rem 4.5rem 5.25rem; }
 .acct.debt .name .pm { display: block; font-weight: 400; font-size: 0.76rem; color: var(--ink-2); }
 .acct.debt input { padding: 6px 6px; }
-@media (max-width: 380px) { .acct.debt { grid-template-columns: 1fr 70px 64px 74px; gap: 4px 6px; } }
+@media (max-width: 380px) { .acct.debt { grid-template-columns: 1fr 4.375rem 4rem 4.625rem; gap: 4px 6px; } }
 .bill.chosen .name { color: var(--accent); }
-.bill.goal { grid-template-columns: 1fr 112px 86px; }
+.bill.goal { grid-template-columns: 1fr 7rem 5.375rem; }
 .bill.goal .name .pm, .bill.goal .num .pm { display: block; font-weight: 400; font-size: 0.76rem; color: var(--ink-2); white-space: normal; }
 .bill.goal .num { white-space: normal; }
 .gbar { display: block; height: 6px; border-radius: 3px; background: var(--chip); overflow: hidden; margin-top: 4px; }
 .gbar i { display: block; height: 100%; background: var(--in); }
 .gbar i.st-warn { background: #D6A32A; }
 .gbar i.st-bad { background: var(--out); }
-.cf { display: grid; grid-template-columns: 52px 1fr 78px 80px; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 0.9rem; align-items: center; }
+.cf { display: grid; grid-template-columns: 3.25rem 1fr 4.875rem 5rem; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 0.9rem; align-items: center; }
 .cf.head { font-size: 0.78rem; color: var(--ink-2); border-bottom: 1px solid var(--line); }
 .cf .num { text-align: right; white-space: nowrap; }
 .cf.warn .num:last-child { color: var(--warn-ink); font-weight: 600; }
@@ -319,17 +321,17 @@ details.why summary { font-size: 0.9rem; }
 }
 
 /* Accounts & forecast */
-.acct.acc { grid-template-columns: 1fr 84px 80px 60px; }
+.acct.acc { grid-template-columns: 1fr 5.25rem 5rem 3.75rem; }
 .acct.acc .name { display: grid; gap: 4px; }
 .acct.acc .name input, .acct.acc .name select { min-height: 34px; padding: 5px 8px; text-align: left; font-size: 0.9rem; }
 .acct.acc .name select { padding-right: 26px; background-position: calc(100% - 12px) 50%, calc(100% - 7px) 50%; }
 .acct.acc input { padding: 5px 6px; min-height: 34px; }
 .acct.acc .status input.mini { display: inline-block; width: 90px; min-height: 28px; padding: 3px 6px; text-align: right; margin: 0 4px; }
 .acct.acc.total .num { font-weight: 600; }
-@media (max-width: 380px) { .acct.acc { grid-template-columns: 1fr 74px 72px 54px; gap: 4px 6px; } }
-.bill.fc { grid-template-columns: 1fr 86px 96px 110px; }
+@media (max-width: 380px) { .acct.acc { grid-template-columns: 1fr 4.625rem 4.5rem 3.375rem; gap: 4px 6px; } }
+.bill.fc { grid-template-columns: 1fr 5.375rem 6rem 6.875rem; }
 .bill.fc .num { white-space: normal; }
-@media (max-width: 380px) { .bill.fc { grid-template-columns: 1fr 76px 84px 96px; gap: 4px 6px; } }
+@media (max-width: 380px) { .bill.fc { grid-template-columns: 1fr 4.75rem 5.25rem 6rem; gap: 4px 6px; } }
 .gstep h2 { display: flex; align-items: center; gap: 10px; }
 .gnum { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 0.85rem; font-family: var(--body); flex: 0 0 auto; }
 .gstep p { margin: 6px 0; }
@@ -352,8 +354,9 @@ details.setup[open] > summary .st-sum { display: none; }
 details.setup .form { padding-top: 8px; }
 details.setup .hud-table { margin-top: 8px; }
 /* Tap affordance */
-.bill[data-bill] .name::after, .bill[data-goal] .name::after, .crow[data-cat] .name::after { content: " \203A"; color: var(--ink-3); font-weight: 400; }
-.ledger .row[data-id] .amt::after { content: " \203A"; color: var(--ink-3); font-weight: 400; }
+.bill[data-bill] .name::after, .bill[data-goal] .name::after, .crow[data-cat] .name::after { content: " \203A"; content: " \203A" / ""; color: var(--ink-3); font-weight: 400; }
+.ledger .row[data-id] .amt::after { content: " \203A"; content: " \203A" / ""; color: var(--ink-3); font-weight: 400; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 /* Floating add button (phones) */
 .fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 15; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 12px 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); cursor: pointer; }
 body[data-tab="add"] .fab { display: none; }
@@ -565,7 +568,8 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
 <datalist id="whoList"></datalist>
 <button class="fab" id="fab" aria-label="Add transactions">+ Add</button>
 <div id="sheet" class="sheet" hidden></div>
-<div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
+<div id="toast" class="toast" hidden aria-hidden="true"></div>
+<div id="srStatus" class="sr-only" role="status" aria-live="polite"></div>
 <script>
 /* PFAT (Personal Finance Advisor Tool) — core logic. No DOM access here so it can be tested in node. */
 'use strict';
@@ -704,7 +708,7 @@ const SL_DEFAULT_RULES = [
   ['st. jude','Gifts & donations'],['st jude','Gifts & donations'],['habitat for humanity','Gifts & donations'],['gift','Gifts & donations'],['flowers','Gifts & donations'],['florist','Gifts & donations'],
   ['hallmark','Gifts & donations'],['afaf','Gifts & donations'],['cfc ','Gifts & donations'],
   // Fees & interest
-  ['late fee','Fees & interest'],['late payment fee','Fees & interest'],['returned payment fee','Fees & interest'],['monthly fee','Fees & interest'],['monthly service fee','Fees & interest'],['maintenance fee','Fees & interest'],['atm fee','Fees & interest'],['cash advance fee','Fees & interest'],['balance transfer fee','Fees & interest'],['foreign transaction fee','Fees & interest'],['overdraft fee','Fees & interest'],['paper statement fee','Fees & interest'],['interest charge','Fees & interest'],['purchase interest','Fees & interest'],['finance charge','Fees & interest'],['late charge','Fees & interest'],['overdraft','Fees & interest'],['nsf','Fees & interest'],
+  ['late fee','Fees & interest'],['late payment fee','Fees & interest'],['returned payment fee','Fees & interest'],['monthly fee','Fees & interest'],['monthly service fee','Fees & interest'],['maintenance fee','Fees & interest'],['atm fee','Fees & interest'],['cash advance fee','Fees & interest'],['balance transfer fee','Fees & interest'],['foreign transaction fee','Fees & interest'],['overdraft fee','Fees & interest'],['paper statement fee','Fees & interest'],['interest charge','Fees & interest'],['purchase interest','Fees & interest'],['finance charge','Fees & interest'],['late charge','Fees & interest'],['overdraft','Fees & interest'],['nsf','Fees & interest'],['insufficient funds','Fees & interest'],['non-sufficient funds','Fees & interest'],['nonsufficient funds','Fees & interest'],['od fee','Fees & interest'],['courtesy pay','Fees & interest'],['returned item fee','Fees & interest'],
   ['service charge','Fees & interest'],['annual fee','Fees & interest'],['foreign transaction','Fees & interest'],['penalty','Fees & interest'],['interest ch','Fees & interest'],
   // Cash & ATM
   ['atm','Cash & ATM'],['cash withdrawal','Cash & ATM'],['withdrawal cash','Cash & ATM'],['cash advance','Cash & ATM'],
@@ -4682,7 +4686,7 @@ function slAssignBills(bills, txns) {
   const compiled = bills.map(slCompileBill);
   const out = {}; for (const b of bills) out[b.id] = [];
   for (const t of txns) {
-    if (!(t.amount < 0) || t.excluded) continue;
+    if (!(t.amount < 0) || t.excluded || slHighCostOf(t)) continue;
     let hit = null;
     for (const cb of compiled) { if (cb.rules.some(r => r.re.test(t.desc) || r.re.test(t.merchant))) { hit = cb; break; } }
     if (!hit) for (const cb of compiled) { if (cb.bill.cat && t.category === cb.bill.cat) { hit = cb; break; } }
@@ -4690,7 +4694,42 @@ function slAssignBills(bills, txns) {
   }
   return out;
 }
-function slBillStats(bill, matches, range, todayISO) {
+const SL_BILL_EVERY = [1, 2, 3, 6, 12];
+function slMonthIdx(ym) { return +ym.slice(0, 4) * 12 + +ym.slice(5, 7) - 1; }
+/* How often a bill comes, in months (1, 2, 3, 6, or 12): the bill's own setting, else the gaps between its payments.
+   A gap counts as more than a month only when the months it skips are on record for the accounts the bill is paid from
+   (span.months), so a missing statement, or one payment early and the next one late, stays monthly; so does a month
+   with two payments (paying ahead). Paid once, with two or more recorded months after it and no repeat: once a year,
+   a guess the bill can override. span: {last, months} for the bill's own accounts. */
+function slBillEvery(bill, matches, span) {
+  const set = +(bill && bill.every);
+  if (SL_BILL_EVERY.includes(set)) return { every: set, auto: false, guess: false };
+  const one = { every: 1, auto: true, guess: false };
+  if (!bill || bill.kind === 'variable' || !(matches || []).length) return one;
+  const covered = (ym) => !span || !span.months || (span.months.has ? span.months.has(ym) : span.months.includes(ym));
+  const byMonth = {}, count = {};
+  for (const t of matches) { const ym = t.date.slice(0, 7); count[ym] = (count[ym] || 0) + 1; if (!byMonth[ym] || t.date > byMonth[ym]) byMonth[ym] = t.date; }
+  const dates = Object.values(byMonth).sort();
+  if (dates.length >= 2) {
+    if (Object.values(count).some(n => n > 1)) return one;
+    const gaps = [];
+    for (let i = 1; i < dates.length; i++) {
+      const g = Math.max(1, Math.round((slDaysFromISO(dates[i]) - slDaysFromISO(dates[i - 1])) / 30.44));
+      let ok = g > 1;
+      for (let ym = slAddMonths(dates[i - 1].slice(0, 7) + '-01', 1).slice(0, 7); ok && ym < dates[i].slice(0, 7); ym = slAddMonths(ym + '-01', 1).slice(0, 7)) if (!covered(ym)) ok = false;
+      gaps.push(ok ? g : 1);
+    }
+    const g = slMedian(gaps);
+    return { every: g <= 1.5 ? 1 : g <= 2.5 ? 2 : g <= 4.5 ? 3 : g <= 9 ? 6 : 12, auto: true, guess: false };
+  }
+  if (!span || !span.last) return one;
+  const paid = slMonthIdx(dates[0].slice(0, 7));
+  const lastFull = slMonthIdx(span.last.slice(0, 7)) - (span.last < slAddDays(slMonthEnd(span.last), -2) ? 1 : 0);
+  let after = 0; for (let k = paid + 1; k <= lastFull; k++) if (covered(Math.floor(k / 12) + '-' + slPad2(k % 12 + 1))) after++;
+  return after >= 2 ? { every: 12, auto: true, guess: true } : one;
+}
+/* span (optional): {first, last} dates of the records, which lets a bill paid once read as yearly */
+function slBillStats(bill, matches, range, todayISO, span) {
   const today = todayISO || slTodayISO();
   const curMonth = today.slice(0, 7);
   const monthly = {}; const dayByMonth = {};
@@ -4702,13 +4741,66 @@ function slBillStats(bill, matches, range, todayISO) {
   let typical = null;
   if (completed.length) typical = slRound2(slMedian(completed.map(ym => monthly[ym])));
   else if (monthly[curMonth] > 0) typical = slRound2(monthly[curMonth]);
+  // a bill that comes every few months: its usual amount is per payment; "dues" counts the months in the range it falls in
+  const ev = slBillEvery(bill, matches, span), every = ev.every;
+  let next = null, dues = null, dueNow = true;
+  if (every > 1) {
+    const paid = Object.keys(monthly).filter(ym => monthly[ym] > 0).sort();
+    if (paid.length) typical = slRound2(slMedian(paid.slice(-3).map(ym => monthly[ym])));
+    const lastPaid = matches.map(t => t.date).sort().pop(), anchor = slMonthIdx(lastPaid.slice(0, 7));
+    const due = (ym) => ((slMonthIdx(ym) - anchor) % every + every) % every === 0;
+    next = slAddMonths(lastPaid, every); dueNow = due(curMonth);
+    if (range && range.from && rTo) { dues = 0; for (let ym = range.from.slice(0, 7); ym <= rTo.slice(0, 7); ym = slAddMonths(ym + '-01', 1).slice(0, 7)) if (due(ym)) dues++; }
+  }
   const expected = bill.expected > 0 ? +bill.expected : typical;
   const days = Object.values(dayByMonth); const dueDay = days.length ? Math.round(slMedian(days)) : null;
   const months = range && range.from && rTo ? Math.max(1, Math.round((slDaysFromISO(rTo) - slDaysFromISO(range.from) + 1) / 30.4)) : Math.max(1, Object.keys(monthly).length);
   const last = inPeriod.length ? inPeriod[inPeriod.length - 1].date : (matches.length ? matches.map(t => t.date).sort().pop() : null);
-  return { actual, count: inPeriod.length, inPeriod, typical, expected, dueDay, months, perMonth: slRound2(actual / months), last, everMatched: matches.length > 0, accounts: [...new Set(matches.map(t => t.account || ''))] };
+  return { actual, count: inPeriod.length, inPeriod, typical, expected, dueDay, months, perMonth: slRound2(actual / months), last, everMatched: matches.length > 0, accounts: [...new Set(matches.map(t => t.account || ''))], every, everyGuess: ev.guess, next, dues, dueNow, share: every > 1 && expected ? slRound2(expected / every) : null };
 }
-if (typeof module !== 'undefined') Object.assign(module.exports, { SL_DEFAULT_BILLS, slCompileBill, slAssignBills, slBillStats });
+if (typeof module !== 'undefined') Object.assign(module.exports, { SL_DEFAULT_BILLS, SL_BILL_EVERY, slCompileBill, slAssignBills, slBillEvery, slBillStats });
+
+/* ---------- Fees and high-cost credit ---------- */
+/* Fees & interest by kind, over [from, to] */
+const SL_FEE_KINDS = [['overdraft', /overdraft|\bnsf\b|insufficient|non-?sufficient|returned (?:item|payment)|\bod (?:fee|item)|courtesy pay/i, 'Overdraft and returned-payment fees'], ['late', /\blate\b/i, 'Late fees'], ['interest', /interest|finance charge/i, 'Interest charges'], ['atm', /\batm\b/i, 'ATM fees'], ['service', /monthly|maintenance|service (?:fee|charge)|account fee/i, 'Monthly service fees'], ['foreign', /foreign|international|fx fee|currency/i, 'Foreign transaction fees']];
+function slFees(txns, from, to) {
+  const out = {}; let total = 0;
+  for (const t of txns) {
+    if (t.excluded || t.category !== 'Fees & interest' || (from && t.date < from) || (to && t.date > to)) continue;
+    const v = -t.amount; total += v;
+    const k = SL_FEE_KINDS.find(([, re]) => re.test(t.desc)) || ['other', null, 'Other fees'];
+    const g = out[k[0]] || (out[k[0]] = { kind: k[0], label: k[2], sum: 0, count: 0 }); g.sum += v; if (v > 0) g.count++;
+  }
+  return { total: slRound2(total), groups: Object.values(out).map(g => Object.assign(g, { sum: slRound2(g.sum) })).filter(g => g.sum > 0).sort((a, b) => b.sum - a.sum) };
+}
+/* Lenders whose loans cost far more than a card or a credit union loan, and buy-now-pay-later plans */
+const SL_HIGH_COST = [
+  ['payday', ['advance america', 'check into cash', 'checkintocash', 'cashnetusa', 'cashnet usa', 'speedy cash', 'ace cash express', 'check n go', 'checkngo', 'moneytree', 'amscot', 'check city', 'opploans', 'oppfi', 'rise credit', 'risecredit', 'netcredit', 'mobiloans', 'possible finance', 'cash america', 'world finance', 'onemain', 'mariner finance', 'lendup', 'emerald advance', 'refund advance']],
+  ['advance', ['earnin', 'dave inc', 'dave.com', 'brigit', 'meetcleo', 'cleo ai', 'moneylion', 'instacash', 'cash app borrow', 'klover', 'floatme', 'empower finance', 'albert instant']],
+  ['title', ['titlemax', 'loanmax', 'title loan', 'tmx finance']],
+  ['rent-to-own', ['rent-a-center', 'rent a center', 'rentacenter', "aaron's sales", 'aarons sales', "aaron's lease", 'aarons lease', 'aarons.com', 'aarons inc', 'acima', 'progressive leasing', 'prog leasing', 'snap finance', 'katapult', 'koalafi', 'flexshopper']],
+  ['bnpl', ['klarna', 'afterpay', 'affirm', 'sezzle', 'zip.co', 'quadpay', 'pay in 4']]
+];
+const SL_HIGH_COST_C = SL_HIGH_COST.flatMap(([kind, kws]) => kws.map(k => Object.assign(slMakeRule(k, kind), { kind })));
+// a payment to a person (Zelle, Venmo, person to person) that shares a lender's name is a person; Cash App Borrow is a loan
+function slHighCostOf(t) {
+  const d = String(t.desc || ''), m = String(t.merchant || ''), p2p = /\b(zelle|venmo)\b/i.test(d) || t.category === 'Person to person';
+  for (const r of SL_HIGH_COST_C) if ((r.re.test(d) || r.re.test(m)) && (!p2p || r.kw === 'cash app borrow')) return r;
+  return null;
+}
+/* Payments to and money from those lenders since `from`: [{name, kind, out, in, count, last}] */
+function slHighCost(txns, from) {
+  const out = {};
+  for (const t of txns) {
+    if (t.excluded || (from && t.date < from)) continue;
+    const r = slHighCostOf(t); if (!r) continue;
+    const g = out[r.kw] || (out[r.kw] = { name: r.kw, kind: r.kind, out: 0, in: 0, count: 0, last: '' });
+    if (t.amount < 0) { g.out += -t.amount; g.count++; } else g.in += t.amount;
+    if (t.date > g.last) g.last = t.date;
+  }
+  return Object.values(out).map(g => Object.assign(g, { out: slRound2(g.out), in: slRound2(g.in) })).sort((a, b) => b.out - a.out);
+}
+if (typeof module !== 'undefined') Object.assign(module.exports, { SL_FEE_KINDS, SL_HIGH_COST, slFees, slHighCostOf, slHighCost });
 
 /* ---------- Plan: rules of thumb ---------- */
 const SL_RULES = { rentPctGross: 0.30, carPctGross: 0.10, dtiPctGross: 0.36, retirePctGross: 0.15, efMonthsMin: 3, efMonthsMax: 6, needsPct: 0.50, wantsPct: 0.30, savePct: 0.20, retireAge: 67, realReturn: 0.05 };
@@ -4741,7 +4833,12 @@ function slRecentMonths(txns, n, todayISO) {
   if (!pick.length) pick = months.slice(-n);
   return pick;
 }
-function slPlanActuals(txns, bills, catMap, n, todayISO) {
+/* opts.saveAccts (optional): names of savings and investing accounts; transfers into them count as saving, and money
+   moved back out counts against it, so saving is the net flow */
+function slPlanActuals(txns, bills, catMap, n, todayISO, opts) {
+  const saveAccts = (opts && opts.saveAccts) || new Set(), smooth = (opts && opts.smooth) || {};
+  const moved = (t) => t.category === 'Transfer' || SL_SAVE_CATS.includes(t.category);
+  const saveSide = new Set(txns.filter(t => t.transferId && saveAccts.has(t.account) && moved(t)).map(t => t.transferId));
   let months = slRecentMonths(txns, n || 3, todayISO);
   if (!months.length) return null;
   // "partial": the months include the one under way, or begin before the records do; the figures then cover "days" days
@@ -4756,6 +4853,11 @@ function slPlanActuals(txns, bills, catMap, n, todayISO) {
   const byCat = {}; let income = 0, cardPay = 0, saveOut = 0, unsortedIn = 0;
   for (const t of inRange) {
     if (t.excluded) continue;
+    // a matched transfer counts once, on the savings side, whichever way it went (in is saving, out is a withdrawal)
+    if (t.transferId && saveAccts.has(t.account) && moved(t)) { saveOut += t.amount; continue; }
+    if (t.transferId && saveSide.has(t.transferId)) continue;
+    // money back from savings, unmatched (a matched contribution's receiving leg is not a withdrawal)
+    if (t.amount > 0 && SL_SAVE_CATS.includes(t.category) && !t.transferId && !saveAccts.has(t.account)) { saveOut -= t.amount; continue; }
     if (t.amount < 0) {
       if (t.category === 'Credit card payment') { cardPay += -t.amount; continue; }
       if (SL_SAVE_CATS.includes(t.category)) { saveOut += -t.amount; continue; }
@@ -4768,7 +4870,12 @@ function slPlanActuals(txns, bills, catMap, n, todayISO) {
     }
   }
   const assigned = slAssignBills(bills, inRange);
-  const billAvg = {}; for (const b of bills) billAvg[b.id] = slRound2((assigned[b.id] || []).reduce((a, t) => a - t.amount, 0) / k);
+  // a bill that comes every few months counts at its monthly share (opts.smooth: {billId: {share, cat}}), not as a lump
+  for (const [id, sm] of Object.entries(smooth)) {
+    for (const t of assigned[id] || []) if (!t.excluded && !(catMap[t.category] && catMap[t.category].excluded)) byCat[t.category] = (byCat[t.category] || 0) + t.amount;
+    if (sm && sm.cat && sm.share > 0) byCat[sm.cat] = (byCat[sm.cat] || 0) + sm.share * k;
+  }
+  const billAvg = {}; for (const b of bills) billAvg[b.id] = smooth[b.id] ? slRound2(smooth[b.id].share || 0) : slRound2((assigned[b.id] || []).reduce((a, t) => a - t.amount, 0) / k);
   let needs = 0, wants = 0, unsorted = 0, spend = 0, cardBuys = 0;
   for (const [c, v] of Object.entries(byCat)) { const vv = Math.max(0, v); spend += vv; if (SL_NEEDS.includes(c)) needs += vv; else if (c === 'Uncategorized') unsorted += vv; else if (c === SL_CARD_PURCHASES) cardBuys += vv; else wants += vv; }
   const essentials = needs;
@@ -4806,20 +4913,53 @@ function slDebtPlan(debts, extra, method) {
 }
 
 /* ---------- Ahead: paydays ---------- */
+/* Twice-a-month pay: five or more paydays averaging more than 14.3 days apart (pay every two weeks averages 14). Every other
+   payday forms a group that lands on one day of the month (the 10th, the 15th, the 1st), or on the month's last day, paid a
+   few days early when that day falls on a weekend. Returns {days: [a, b]} (0 = the last day), or null. */
+function slSemiAnchors(dates) {
+  if (dates.length < 5) return null;
+  const avg = (slDaysFromISO(dates[dates.length - 1]) - slDaysFromISO(dates[0])) / (dates.length - 1);
+  if (avg < 14.3 || avg > 16.5) return null;
+  const groups = [[], []]; dates.forEach((d, i) => groups[i % 2].push(d));
+  const spread = (a) => Math.max(...a) - Math.min(...a), days = [];
+  for (const g of groups) {
+    const doms = g.map(d => +d.slice(8, 10)), dims = g.map(d => +slMonthEnd(d).slice(8, 10));
+    if (doms.some(x => x <= 5) && doms.some(x => x >= 26)) {
+      // the 1st, paid early at the end of the month before (0, -1, -2 …)
+      const v = doms.map((x, i) => x >= 26 ? x - dims[i] : x); if (spread(v) > 3) return null;
+      days.push(Math.max(...v) >= 1 ? Math.max(...v) : 0); continue;
+    }
+    const nearEnd = doms.filter((x, i) => dims[i] - x <= 2).length * 2 > doms.length;
+    if (nearEnd) { if (spread(doms.map((x, i) => x - dims[i])) > 3) return null; days.push(0); continue; }
+    if (spread(doms) > 3) return null;
+    days.push(Math.max(...doms));
+  }
+  const a = days[0] || 31, b = days[1] || 31;
+  if (Math.abs(a - b) < 10) return null;
+  return { days: days.sort((x, y) => (x || 31) - (y || 31)) };
+}
+/* A payday on a Saturday or Sunday arrives the Friday before */
+function slPayShift(iso) { const w = slWeekday(iso); return w === 6 ? slAddDays(iso, -1) : w === 0 ? slAddDays(iso, -2) : iso; }
 function slPaydayPattern(txns, todayISO) {
   const today = todayISO || slTodayISO();
   const inc = txns.filter(t => t.amount > 0 && t.category === 'Income' && !t.excluded).sort((a, b) => a.date < b.date ? -1 : 1);
   if (inc.length < 2) return null;
   // merge same-day deposits
   const byDay = {}; for (const t of inc) byDay[t.date] = (byDay[t.date] || 0) + t.amount;
-  const dates = Object.keys(byDay).sort(); if (dates.length < 2) return null;
+  let dates = Object.keys(byDay).sort(); if (dates.length < 2) return null;
+  // the paychecks: deposits near the usual one (a bonus, a refund, or a little interest stays out)
+  const recent = dates.slice(-8).map(d => byDay[d]), top = Math.max(...recent), usual = slMedian(recent.filter(v => v >= top * 0.25));
+  const pays = dates.filter(d => byDay[d] >= usual * 0.6 && byDay[d] <= usual * 1.6);
+  if (pays.length >= 2) dates = pays;
   const amounts = dates.map(d => byDay[d]);
   const ints = []; for (let i = 1; i < dates.length; i++) ints.push(slDaysFromISO(dates[i]) - slDaysFromISO(dates[i - 1]));
   const med = slMedian(ints);
   let cadence = null;
   const domSet = new Set(dates.slice(-6).map(d => +d.slice(8, 10)));
+  const semi = slSemiAnchors(dates.slice(-8));
   if (Math.abs(med - 7) <= 1) cadence = 'weekly';
   else if (med >= 13 && med <= 17 && domSet.size <= 2) cadence = 'semimonthly';
+  else if (semi) cadence = 'semimonthly';
   else if (Math.abs(med - 14) <= 2) cadence = 'biweekly';
   else if (med >= 13 && med <= 17) cadence = 'semimonthly';
   else if (Math.abs(med - 30.4) <= 4) cadence = 'monthly';
@@ -4827,7 +4967,13 @@ function slPaydayPattern(txns, todayISO) {
   const typical = slRound2(slMedian(amounts.slice(-6)));
   const last = dates[dates.length - 1];
   const next = [];
-  if (cadence === 'semimonthly') {
+  if (cadence === 'semimonthly' && semi) {
+    for (let k = 0; k < 4; k++) {
+      const ym = slAddMonths(slMonthStart(today), k).slice(0, 7), lastDay = +slMonthEnd(ym + '-01').slice(8, 10);
+      for (const dd of semi.days) { const iso = slPayShift(ym + '-' + slPad2(Math.min(dd || lastDay, lastDay))); if (iso > last && iso >= today) next.push(iso); }
+    }
+    next.sort();
+  } else if (cadence === 'semimonthly') {
     const days = dates.slice(-6).map(d => +d.slice(8, 10)); const uniq = [...new Set(days)].sort((a, b) => a - b);
     const d1 = uniq[0], d2 = uniq[uniq.length - 1] || Math.min(28, d1 + 15);
     let m = slMonthStart(today);
@@ -4903,7 +5049,7 @@ function slUnusual(txns, catMap, days, todayISO) {
   }
   return out.sort((a, b) => a.t.amount - b.t.amount).slice(0, 10);
 }
-if (typeof module !== 'undefined') Object.assign(module.exports, { slDebtPlan, slPaydayPattern, slProject, slPacing, slPriceChanges, slUnusual });
+if (typeof module !== 'undefined') Object.assign(module.exports, { slDebtPlan, slPaydayPattern, slSemiAnchors, slPayShift, slProject, slPacing, slPriceChanges, slUnusual });
 
 /* ---------- Accounts & year forecast ---------- */
 const SL_ACCOUNT_TYPES = [
@@ -4940,7 +5086,8 @@ function slYearForecast(accounts, todayISO, limits, age, retireAge, inflationPct
       const l = limits[t.limit] ? +limits[t.limit] : 0;
       const catchup = t.limit === 'deferral' ? ((age >= 60 && age <= 63) ? +limits.superCatchup || 0 : age >= 50 ? +limits.catchup || 0 : 0) : (age >= 50 ? +limits.iraCatchup || 0 : 0);
       limit = l + catchup;
-      ytd = a.ytd !== '' && a.ytd != null ? +a.ytd : slRound2(monthly * monthsElapsed);
+      // the limit covers your own contributions; a.own (optional) is the monthly amount without the employer match
+      ytd = a.ytd !== '' && a.ytd != null ? +a.ytd : slRound2((a.own != null ? +a.own : monthly) * monthsElapsed);
       room = Math.max(0, slRound2(limit - ytd));
       toMax = monthsLeft > 0.25 ? slRound2(room / monthsLeft) : null;
     }
@@ -4994,10 +5141,51 @@ function categories() {
 function refreshCats() { catMap = slCatMap(categories()); catMap[SL_CARD_PURCHASES] = { name: SL_CARD_PURCHASES, color: '#7A8CA5', excluded: false }; }
 // The transactions every figure counts. With "count card payments as spending" on, a card payment that no imported card
 // statement matches (unpaired) counts as card purchases, on every tab alike; payments matched to a card statement stay out.
+// Cash typed by hand (account "Cash"): in a month with typed cash rows, an ATM withdrawal moves money into cash, and the typed rows hold the spending.
 function moneyTxns() {
-  if (!state.settings.countCardPayments) return state.txns;
-  return state.txns.map(t => t.category === 'Credit card payment' && t.amount < 0 && !t.transferId && !t.excluded ? Object.assign({}, t, { category: SL_CARD_PURCHASES }) : t);
+  const cards = !!state.settings.countCardPayments, cashMonths = typedCashMonths();
+  if (!cards && !cashMonths.size) return state.txns;
+  return state.txns.map(t => {
+    if (cards && t.category === 'Credit card payment' && t.amount < 0 && !t.transferId && !t.excluded) return Object.assign({}, t, { category: SL_CARD_PURCHASES });
+    if (cashMonths.has(t.date.slice(0, 7)) && t.category === 'Cash & ATM' && t.amount < 0 && t.source !== 'manual') return Object.assign({}, t, { category: 'Transfer', atmToCash: true });
+    return t;
+  });
 }
+function isCashAcct(a) { return /^cash\b/i.test(a || ''); }
+function typedCashMonths() { const out = new Set(); for (const t of state.txns) if (t.source === 'manual' && t.amount < 0 && isCashAcct(t.account)) out.add(t.date.slice(0, 7)); return out; }
+// Savings and investing accounts: transfers into them count as saving (net of money moved back out)
+function saveAccountNames() { return new Set(Object.entries(accountKinds()).filter(([, v]) => v && ['hysa', 'brokerage', 'ira', 'crypto', 'investment'].includes(v.type)).map(([k]) => k)); }
+// Each account's recorded months and newest record (up to today); a bill reads the accounts it is paid from, so a missing
+// statement or a card imported for one month never makes a monthly bill look yearly
+function coverage() {
+  const out = {}, today = slTodayISO();
+  for (const t of state.txns) { if (t.date > today) continue; const c = out[t.account] || (out[t.account] = { months: new Set(), last: '' }); c.months.add(t.date.slice(0, 7)); if (t.date > c.last) c.last = t.date; }
+  return out;
+}
+function billSpan(cov, matches) {
+  const months = new Set(); let last = '';
+  for (const a of new Set((matches || []).map(t => t.account))) { const c = cov[a]; if (!c) continue; c.months.forEach(x => months.add(x)); if (c.last > last) last = c.last; }
+  return { last, months };
+}
+// The figures the Plan works from: saving as the net flow into savings accounts, and bills that come every few months at their monthly share
+function planOpts() { const smooth = {}; for (const x of yearlyBills()) smooth[x.b.id] = { share: x.st.share, cat: x.cat }; return { saveAccts: saveAccountNames(), smooth }; }
+// How many payments of a bill fall in the range: one a month, or the months a less frequent bill comes due
+function billTimes(st, single, months) { return st.every > 1 ? (st.dues || 0) : (single ? 1 : months); }
+// From now to its next date, the month-by-month amount that has a less frequent bill ready (as a sinking fund for it would)
+function sinkMonthly(st) { if (!st.next || !st.expected) return st.share; const left = Math.max(1, slMonthIdx(st.next.slice(0, 7)) - slMonthIdx(slTodayISO().slice(0, 7))); return slRound2(st.expected / left); }
+function everyText(st) { const need = sinkMonthly(st); return (st.every === 12 ? 'once a year' : 'every ' + st.every + ' months') + (st.everyGuess ? ' (paid once so far)' : '') + (st.next ? ' · next around ' + slFmtDateShort(st.next, true) : '') + (need ? ' · ' + money(need) + '/mo from now covers it' : ''); }
+// Bills that come every few months, with their figures (for sinking funds)
+function yearlyBills() {
+  ensureBills(); if (!state.txns.length) return [];
+  const cov = coverage(), assigned = slAssignBills(state.bills, state.txns);
+  const most = (list) => { const n = {}; for (const t of list) n[t.category] = (n[t.category] || 0) + 1; return Object.keys(n).sort((a, b) => n[b] - n[a])[0] || ''; };
+  return state.bills.filter(b => b.kind !== 'variable').map(b => ({ b, st: slBillStats(b, assigned[b.id] || [], null, null, billSpan(cov, assigned[b.id])), cat: most(assigned[b.id] || []) })).filter(x => x.st.every > 1 && x.st.expected && x.st.next);
+}
+// Long-range projections, rounded so they read as estimates: to $10,000 from $100,000 up, else to $1,000
+function approx(v) { const a = Math.abs(v), step = a >= 100000 ? 10000 : a >= 1000 ? 1000 : 1; return Math.round(v / step) * step; }
+// The text a row's HTML reads as (for a row's accessible name)
+function textOf(html) { const d = document.createElement('div'); d.innerHTML = html; return d.textContent.replace(/\s+/g, ' ').trim(); }
+function andList(a) { return a.length <= 2 ? a.join(' and ') : a.slice(0, -1).join(', ') + ', and ' + a[a.length - 1]; }
 // Card payments with nothing on the card side (no card statement, no payment received on a card), over the last 90 days
 function unbackedCardPay() {
   const today = slTodayISO(), since = slAddDays(today, -90);
@@ -5061,6 +5249,10 @@ function cleanSettings(s, fromBackup) {
   return out;
 }
 function isObj(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
+// Each account's kind, known from its statements: {name: {type, last4}}. Kept between visits, so transfers into a savings
+// account still count as saving after a reload
+const KIND_TYPES = ['card', 'checking', 'hysa', 'brokerage', 'ira', 'tsp', 'crypto', 'investment', 'other'];
+function cleanKinds(k) { const out = {}; if (isObj(k)) for (const [n, v] of Object.entries(k)) if (n !== '__proto__' && isObj(v) && KIND_TYPES.includes(v.type)) out[n] = { type: v.type, last4: typeof v.last4 === 'string' ? v.last4.slice(0, 8) : null }; return out; }
 const SAFE_COLOR = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
 // Saved data or a backup, with every record of the wrong shape dropped, so one bad entry can't break every visit
 function cleanStore(d) {
@@ -5100,7 +5292,7 @@ function saveWarn(on) {
 }
 function save() {
   if (!state.settings.autosave) return;
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ v: 1, imports: state.imports || [], txns: state.txns, rules: state.rules, customCats: state.customCats, catOverrides: state.catOverrides, budgets: state.budgets, bills: state.bills, balances: state.balances, plan: state.plan, accounts: state.accounts, goals: state.goals, cash: state.cash, paycheck: state.paycheck, snapshots: state.snapshots, insurance: state.insurance, limits: state.limits, settings: state.settings, ui: { period: state.ui.period, from: state.ui.from, to: state.ui.to, lastAccount: state.ui.lastAccount, aheadSec: state.ui.aheadSec, checkSec: state.ui.checkSec, moreSec: state.ui.moreSec } })); }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ v: 1, imports: state.imports || [], txns: state.txns, rules: state.rules, customCats: state.customCats, catOverrides: state.catOverrides, budgets: state.budgets, bills: state.bills, balances: state.balances, plan: state.plan, accounts: state.accounts, goals: state.goals, cash: state.cash, paycheck: state.paycheck, snapshots: state.snapshots, insurance: state.insurance, limits: state.limits, settings: state.settings, ui: { period: state.ui.period, from: state.ui.from, to: state.ui.to, lastAccount: state.ui.lastAccount, aheadSec: state.ui.aheadSec, checkSec: state.ui.checkSec, moreSec: state.ui.moreSec, accountKinds: state.ui.accountKinds || {} } })); }
   catch (e) { console.warn('Could not save', e); saveWarn(true); return; }
   saveWarn(false);
 }
@@ -5115,7 +5307,7 @@ function load() {
       state.txns = c.txns.map(cleanTxn);
       for (const k of ['imports', 'rules', 'customCats', 'catOverrides', 'budgets', 'bills', 'balances', 'plan', 'goals', 'snapshots', 'accounts', 'cash', 'paycheck', 'insurance', 'limits']) state[k] = c[k];
       Object.assign(state.settings, cleanSettings(d.settings, false));
-      if (d.ui) Object.assign(state.ui, { period: d.ui.period || 'thisMonth', from: d.ui.from || '', to: d.ui.to || '', lastAccount: d.ui.lastAccount || '', aheadSec: d.ui.aheadSec || 'debts', checkSec: d.ui.checkSec || 'paycheck', moreSec: d.ui.moreSec || 'guide' });
+      if (d.ui) Object.assign(state.ui, { period: d.ui.period || 'thisMonth', from: d.ui.from || '', to: d.ui.to || '', lastAccount: d.ui.lastAccount || '', aheadSec: d.ui.aheadSec || 'debts', checkSec: d.ui.checkSec || 'paycheck', moreSec: d.ui.moreSec || 'guide', accountKinds: cleanKinds(d.ui.accountKinds) });
     }
   } catch (e) { console.warn('Could not load saved data', e); }
 }
@@ -5210,6 +5402,8 @@ function nameRowInputs(root) {
 }
 function toast(msg, isErr) {
   const el = $('#toast'); el.textContent = msg; el.classList.toggle('err', !!isErr); el.hidden = false;
+  // screen readers hear it from a live region that stays on the page, refilled a moment later so the change is announced
+  const sr = $('#srStatus'); if (sr) { sr.textContent = ''; setTimeout(() => { sr.textContent = msg; }, 60); }
   clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, isErr ? 6000 : 3000);
 }
 function setBusy(msg, cancellable) { const b = $('#busy'); b.innerHTML = msg ? esc(msg) + (cancellable ? ' <button class="btn small" id="ocrCancel">Cancel</button>' : '') : ''; b.hidden = !msg; }
@@ -5453,7 +5647,9 @@ function openEdit(id) {
   };
 }
 let sheetReturnFocus = null;
-function trapSheet() { sheetReturnFocus = document.activeElement; }
+// sheetOpened: when a sheet opened; a click on the backdrop in its first 0.6 s (the second half of a double-click) leaves it open
+let sheetOpened = 0;
+function trapSheet() { sheetReturnFocus = document.activeElement; sheetOpened = performance.now(); }
 function closeSheet() { if (sheetOnClose) { const f = sheetOnClose; sheetOnClose = null; f(); } const s = $('#sheet'); s.hidden = true; s.innerHTML = ''; if (sheetReturnFocus && document.contains(sheetReturnFocus) && sheetReturnFocus.focus) { try { sheetReturnFocus.focus({ preventScroll: true }); } catch (e) { /* ignore */ } } sheetReturnFocus = null; }
 function sheetKeydown(e) {
   if (e.key !== 'Tab') return;
@@ -5740,8 +5936,9 @@ function renderPreview() {
   let h = '<h2>Check before importing</h2><p class="muted small">' + esc(p.name) + ' · read as ' + esc(kindName) + (fileQueue.length ? ' · ' + fileQueue.length + ' more file' + (fileQueue.length > 1 ? 's' : '') + ' waiting' : '') + '</p>';
   if (res.error) h += '<div class="notice">Could not read this: ' + esc(res.error) + '</div>';
   const unread = res.unread || [], skippedLines = res.skippedLines || [];
+  const look = skippedLines.filter(needsLook), quiet = skippedLines.filter(u => !needsLook(u));
   if (p.kind === 'text') {
-    h += '<p><b>' + res.txns.length + '</b> row' + (res.txns.length === 1 ? '' : 's') + ' \u00b7 <b>' + unread.length + '</b> line' + (unread.length === 1 ? '' : 's') + ' not read \u00b7 ' + skippedLines.length + ' skipped' + (dupes ? ' \u00b7 <b>' + dupes + '</b> already in your records (unticked)' : '') + '</p>';
+    h += '<p><b>' + res.txns.length + '</b> row' + (res.txns.length === 1 ? '' : 's') + ' \u00b7 <b>' + unread.length + '</b> line' + (unread.length === 1 ? '' : 's') + ' not read \u00b7 ' + (look.length ? '<b>' + look.length + '</b> to look at \u00b7 ' : '') + quiet.length + ' skipped' + (dupes ? ' \u00b7 <b>' + dupes + '</b> already in your records (unticked)' : '') + '</p>';
     const holdingsOnly = !res.txns.length && p.details && p.details.kind === 'investment' && (p.details.holdings || skippedLines.some(x => /holdings|summary/.test(x.reason)));
     if (holdingsOnly) h += '<p class="muted small">Holdings snapshot: no transactions are expected. ' + (p.details.balance != null ? 'Its value can be saved to an account below.' : 'Confirm or type the positions marked below, then save its value.') + '</p>';
     else if (!res.txns.length) h += '<p class="muted small">No transactions found. Rows need a date and an amount with cents (like 45.67).</p>';
@@ -5749,11 +5946,12 @@ function renderPreview() {
     const addOf = (u) => (res.suggestions || []).find(s => s.field === 'add' && !s.applied && s.raw === u.text);
     const nAddU = unread.filter(addOf).length;
     if (unread.length) h += '<details class="unread"' + (nAddU ? ' open' : '') + '><summary>' + unread.length + ' line' + (unread.length === 1 ? '' : 's') + ' with an amount could not be read as a row' + (nAddU ? ' (a reading is suggested for ' + nAddU + ')' : '') + '</summary><ul class="small">' + unread.map(u => { const a = addOf(u); return '<li>' + esc(u.text) + ' <span class="muted">(' + esc(u.reason) + ')</span>' + (a ? ' <span class="tag warn" title="' + esc(a.note) + '">suggested</span> <span class="sug-add">suggested reading: a row of ' + esc(money(a.to)) + (a.add && a.add.date ? ' on ' + esc(slFmtDateShort(a.add.date)) : '') + ' \u2014 ' + esc(a.note) + '</span>' : '') + '</li>'; }).join('') + '</ul></details>';
-    if (skippedLines.length) h += '<details class="unread"><summary>' + skippedLines.length + ' line' + (skippedLines.length === 1 ? '' : 's') + ' skipped on purpose</summary><ul class="small">' + skippedLines.map(u => '<li>' + esc(u.text) + ' <span class="muted">(' + esc(u.reason) + ')</span></li>').join('') + '</ul></details>';
+    if (look.length) h += '<details class="unread" open><summary>' + look.length + ' line' + (look.length === 1 ? ' needs' : 's need') + ' a look</summary><p class="hint">Rows need an amount with cents, like 12.00. ' + (p.fromPdf || p.fromOcr ? 'Add one by hand if it belongs.' : 'Fix the line in the box and read it again, or add it by hand.') + '</p><ul class="small">' + look.map(u => '<li>' + esc(u.text) + '</li>').join('') + '</ul></details>';
+    if (quiet.length) h += '<details class="unread"><summary>' + quiet.length + ' line' + (quiet.length === 1 ? '' : 's') + ' skipped on purpose</summary><ul class="small">' + quiet.map(u => '<li>' + esc(u.text) + ' <span class="muted">(' + esc(u.reason) + ')</span></li>').join('') + '</ul></details>';
   } else h += '<p>' + (res.txns.length ? '<b>' + res.txns.length + '</b> transactions found' : '<b>No transactions found.</b> Lines need a date and an amount with cents (like 45.67)') + (res.skipped ? ', ' + res.skipped + ' line' + (res.skipped > 1 ? 's' : '') + ' ignored' : '') + (dupes ? ', <b>' + dupes + '</b> already in your records (unticked)' : '') + '.</p>';
   if (p.kind === 'text' && p.seenBefore) h += '<div class="notice">This statement was already imported on ' + esc(slFmtDate(p.seenBefore.at)) + ' (same statement). Rows already saved are unticked.</div>';
   if (p.kind === 'text') { const view = (res.txns || []).map(t => Object.assign({}, t, { amount: p.flipRow[t._i] ? -t.amount : t.amount })); p.checks = slStatementChecks(view, p.text, p.details); }
-  if (p.kind === 'text') h += verdictBlock(p) + statementDetailsBlock(p) + statementChecksBlock(p);
+  if (p.kind === 'text') h += verdictBlock(p) + signQuestion(p) + statementDetailsBlock(p) + statementChecksBlock(p);
   if (res.backup) h += '<div class="notice">This is a PFAT backup with ' + res.backup.txns.length + ' transactions, ' + (res.backup.rules || []).length + ' rules and your categories. Choose below whether to add its transactions to what you have, or replace everything.</div>';
   h += '<div class="form"><label>Account name <input type="text" id="pvAccount" list="accountList" value="' + esc(p.account) + '"></label>';
   if (res.backup) h += '<div class="radios"><label><input type="radio" name="pvReplace" value="0"' + (!p.opts.replace ? ' checked' : '') + '> Add transactions</label><label><input type="radio" name="pvReplace" value="1"' + (p.opts.replace ? ' checked' : '') + '> Replace everything with this backup</label></div>';
@@ -5942,19 +6140,22 @@ function ensureBills() { if (!Array.isArray(state.bills)) state.bills = SL_DEFAU
 function cardName(m) { const w = String(m).split(' ').filter(x => !/^(CRCARDPMT|PAYMENT|PAYMENTS|PYMT|PMT|PMTS|AUTOPAY|EPAY|E-PAYMENT|EPAYMENT|ONLINE|CARD|CARDS|SERV|SERVICES|BILL|PAY|DES|ACH|WEB|ID|TYPE|THANK|YOU|MOBILE|INTERNET|TRANSFER|TO)$/.test(x)); return titleCase(w.join(' ') || m); }
 function ordinal(n) { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
 function billStatus(b, st, single, r, fresh) {
+  const every = st.every > 1 ? everyText(st) : '';
   if (single) {
+    if (st.count && every) return { text: 'paid ' + slFmtDateShort(st.last) + ' · ' + every, due: false };
     if (st.count) {
       let t = st.count > 1 ? st.count + ' payments, last ' + slFmtDateShort(st.last) : 'paid ' + slFmtDateShort(st.last);
       if (st.expected) { const d = st.actual - st.expected; if (Math.abs(d) >= 1) t += ' · ' + money(Math.abs(d)) + (b.kind === 'variable' ? (d > 0 ? ' over' : ' under') + ' the usual' : (d > 0 ? ' more' : ' less') + ' than expected'); }
       return { text: t, due: false };
     }
     const today = slTodayISO(); const inCurrent = r.to >= today;
-    if (!inCurrent) return { text: 'nothing that month', due: false };
+    if (!inCurrent) return { text: every && !st.dues ? every : 'nothing that month', due: false };
+    if (every && !st.dueNow) return { text: every, due: false };
     const past = st.dueDay && +today.slice(8, 10) > st.dueDay + 3 && recordsPast(fresh, st.dueDay + 3, st.accounts);
     return { text: 'not seen yet this month' + (st.dueDay ? ' · usually around the ' + ordinal(st.dueDay) : ''), due: !!past };
   }
-  if (!st.count) return { text: 'nothing in this period', due: false };
-  return { text: st.count + (st.count === 1 ? ' payment' : ' payments') + ' · ' + money(st.perMonth) + ' per month' + (st.last ? ' · last ' + slFmtDateShort(st.last, true) : ''), due: false };
+  if (!st.count) return { text: every || 'nothing in this period', due: false };
+  return { text: st.count + (st.count === 1 ? ' payment' : ' payments') + ' · ' + (every ? 'last ' + slFmtDateShort(st.last, true) + ' · ' + every : money(st.perMonth) + ' per month' + (st.last ? ' · last ' + slFmtDateShort(st.last, true) : '')), due: false };
 }
 // True when the records run past the given day of the current month, so a bill missing by then is truly missing (and not just beyond the latest import).
 // With the accounts a bill has been paid from, their newest records decide; otherwise the newest record overall.
@@ -5976,7 +6177,7 @@ function renderHud() {
   const history = slFilter(moneyTxns(), { account: state.ui.account });
   const fresh = slFreshness(history);
   const assigned = slAssignBills(state.bills, history);
-  const pa = history.length ? slPlanActuals(history, state.bills, catMap, 3) : null;
+  const pa = history.length ? slPlanActuals(history, state.bills, catMap, 3, null, planOpts()) : null;
   const subtract = !!state.settings.countCardPayments;
   const cardPay = slRound2(scoped.filter(t => (t.category === 'Credit card payment' || t.category === SL_CARD_PURCHASES) && t.amount < 0 && !t.excluded).reduce((a, t) => a - t.amount, 0));
   const counted = slRound2(scoped.filter(t => t.category === SL_CARD_PURCHASES && t.amount < 0).reduce((a, t) => a - t.amount, 0));
@@ -5988,22 +6189,26 @@ function renderHud() {
     '<div class="figure"><div class="label">Money out</div><div class="value out">' + money(s.spend) + '</div><div class="delta">' + (months > 1 ? money(s.spend / months) + ' per month' : '') + '</div></div>' +
     '<div class="figure"><div class="label">Left over</div><div class="value ' + (left < 0 ? 'out' : '') + '">' + money(left) + '</div><div class="delta">' + (s.income ? (left < 0 ? 'more out than in' : pct(left, s.income) + ' of money in') : '') + '</div></div></div>';
   h += '<p class="figline">' + esc(r.label) + ' · ' + s.count + (s.count === 1 ? ' transaction' : ' transactions') + (counted ? ' · card payments counted as spending: ' + money(counted) : cardPay ? ' · card payments ' + money(cardPay) + ' (the purchases come from the card statements)' : '') + (r.partial && fresh.latest ? ' · records through ' + esc(slFmtDateShort(fresh.latest)) : '') + '</p>';
+  const toCash = slRound2(scoped.filter(t => t.atmToCash).reduce((a, t) => a - t.amount, 0));
+  if (toCash > 0) h += '<p class="figline">ATM withdrawals of ' + money(toCash) + ' moved money into Cash; the cash rows you typed hold that spending, so each dollar counts once.</p>';
   h += freshNote(fresh, r);
   // asked once: card payments with no card statement behind them leave the purchases out of spending
   const unbacked = !subtract && !state.settings.cardPayAsked ? unbackedCardPay() : 0;
   if (unbacked > 0) h += '<div class="notice cardask"><p>Card payments of <b>' + money(unbacked) + '</b> left your accounts in the last 3 months, and PFAT holds none of those cards\' statements, so the purchases behind them are missing from your spending.</p><div class="actions"><button class="btn small primary" id="cardAskYes">Count card payments as spending</button><button class="btn small" id="cardAskNo">I\'ll import the card statements</button></div></div>';
   // money in from accounts outside PFAT (a partner's account, a payment app) reads as a transfer; a tap counts it as income
-  const ins = {}; for (const t of scoped) if (t.amount > 0 && t.category === 'Transfer' && !t.transferId && !t.excluded) { const k = t.merchant || t.desc; (ins[k] || (ins[k] = { name: k, sum: 0 })).sum += t.amount; }
+  // (a card's own plan or balance transfers stay out: they move money inside the card)
+  const cardAccts = cardAccountNames(), ins = {}; for (const t of scoped) if (t.amount > 0 && t.category === 'Transfer' && !t.transferId && !t.excluded && !cardAccts.has(t.account)) { const k = t.merchant || t.desc; (ins[k] || (ins[k] = { name: k, sum: 0 })).sum += t.amount; }
   const inTop = Object.values(ins).filter(x => x.sum >= 50).sort((a, b) => b.sum - a.sum).slice(0, 3);
   if (inTop.length) h += '<div class="notice"><p>Transfers in from accounts outside PFAT sit outside money in: ' + inTop.map(x => '<b>' + esc(titleCase(x.name)) + '</b> ' + money(x.sum)).join(', ') + '. If one is pay or a partner\'s share, count it as income; later ones follow.</p><div class="actions">' + inTop.map(x => '<button class="btn small" data-income-kw="' + esc(String(x.name).toLowerCase()) + '">Count ' + esc(titleCase(x.name)) + ' as income</button>').join('') + '</div></div>';
 
   // Routine bills
   const rows = []; const unseen = []; let expTotal = 0, actTotal = 0, actCounted = 0;
+  const cov = coverage();
   for (const b of state.bills) {
-    const st = slBillStats(b, assigned[b.id] || [], r);
+    const st = slBillStats(b, assigned[b.id] || [], r, null, billSpan(cov, assigned[b.id]));
     if (!st.everMatched && !(b.expected > 0)) { unseen.push(b); continue; }
     rows.push({ b, st });
-    if (st.expected) expTotal += st.expected * (single ? 1 : months);
+    if (st.expected) expTotal += st.expected * billTimes(st, single, months);
     actTotal += st.actual;
     actCounted += st.inPeriod.filter(t => slCounted(t, catMap)).reduce((a, t) => a - t.amount, 0);
   }
@@ -6012,8 +6217,10 @@ function renderHud() {
     h += '<div class="hud-table"><div class="bill head"><span class="name">Bill</span><span class="num">' + (single ? 'Expected' : 'Expected total') + '</span><span class="num">' + (single ? 'This month' : 'Actual') + '</span></div>';
     for (const { b, st } of rows) {
       const stt = billStatus(b, st, single, r, fresh);
-      const exp = st.expected ? st.expected * (single ? 1 : months) : null;
-      h += '<div class="bill" data-bill="' + esc(b.id) + '" role="button" tabindex="0"><span class="name">' + esc(b.name) + '</span><span class="num">' + (exp ? money(exp) : '—') + (!single && st.expected ? '<span class="pm">' + money(st.expected) + '/mo</span>' : '') + '</span><span class="num actual">' + (st.count ? money(st.actual) : '<span class="muted">' + money(0) + '</span>') + (!single && st.count ? '<span class="pm">' + money(st.perMonth) + '/mo</span>' : '') + '</span><span class="status' + (stt.due ? ' due' : '') + '">' + stt.text + (pa ? hudGuideline(b.id, pa.billAvg) : '') + '</span></div>';
+      const exp = st.expected ? st.expected * billTimes(st, single, months) : null;
+      const pmExp = !single && st.expected ? (st.every > 1 ? money(st.share) + '/mo set aside' : money(st.expected) + '/mo') : '';
+      const label = b.name + ', ' + (single ? 'expected ' : 'expected total ') + (exp ? money(exp) : 'none') + ', ' + (single ? 'this month ' : 'actual ') + money(st.count ? st.actual : 0) + ', ' + textOf(stt.text + (pa ? hudGuideline(b.id, pa.billAvg) : ''));
+      h += '<div class="bill" data-bill="' + esc(b.id) + '" role="button" tabindex="0" aria-label="' + esc(label) + '"><span class="name">' + esc(b.name) + '</span><span class="num">' + (exp ? money(exp) : '—') + (pmExp ? '<span class="pm">' + pmExp + '</span>' : '') + '</span><span class="num actual">' + (st.count ? money(st.actual) : '<span class="muted">' + money(0) + '</span>') + (!single && st.count ? '<span class="pm">' + money(st.perMonth) + '/mo</span>' : '') + '</span><span class="status' + (stt.due ? ' due' : '') + '">' + stt.text + (pa ? hudGuideline(b.id, pa.billAvg) : '') + '</span></div>';
     }
     h += '<div class="bill total"><span class="name">Routine bills</span><span class="num">' + money(expTotal) + '</span><span class="num actual">' + money(actTotal) + '</span></div>';
     h += '<div class="bill rest"><span class="name">Everything else (variable spending)</span><span class="num"></span><span class="num">' + money(Math.max(0, s.spend - actCounted)) + '</span></div></div>';
@@ -6058,8 +6265,10 @@ function openBillEdit(id) {
     '<label>Name <input type="text" id="bName" value="' + esc(bill.name) + '" required placeholder="e.g. Car insurance"></label>' +
     '<label>Keywords, comma-separated <input type="text" id="bKws" value="' + esc(bill.kws.join(', ')) + '" placeholder="e.g. geico, usaa p&c"></label>' +
     '<p class="hint">A transaction matches when any keyword appears in its description. Leave empty to match a whole category instead.</p>' +
-    '<div class="grid2"><label>Category <select id="bCat"><option value="">— none —</option>' + catOptions(bill.cat, false) + '</select></label><label>Expected per month <input type="text" inputmode="decimal" id="bExpected" value="' + (bill.expected > 0 ? esc(bill.expected) : '') + '" placeholder="automatic"></label></div>' +
+    '<div class="grid2"><label>Category <select id="bCat"><option value="">— none —</option>' + catOptions(bill.cat, false) + '</select></label><label>Expected amount <input type="text" inputmode="decimal" id="bExpected" value="' + (bill.expected > 0 ? esc(bill.expected) : '') + '" placeholder="automatic"></label></div>' +
     '<label>Type <select id="bKind"><option value="bill"' + (bill.kind === 'bill' ? ' selected' : '') + '>Fixed bill</option><option value="loan"' + (bill.kind === 'loan' ? ' selected' : '') + '>Loan payment</option><option value="variable"' + (bill.kind === 'variable' ? ' selected' : '') + '>Variable spending</option></select></label>' +
+    '<p class="hint">Expected amount: each payment for a bill or loan, a month\'s total for variable spending.</p>' +
+    '<label>How often <select id="bEvery">' + [['', 'Automatic, from the payments'], ['1', 'Every month'], ['2', 'Every 2 months'], ['3', 'Every 3 months'], ['6', 'Every 6 months'], ['12', 'Once a year']].map(([v, l]) => '<option value="' + v + '"' + (String(bill.every || '') === v ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></label>' +
     (b ? '<p class="hint">' + (merchants.length ? 'Currently matching: ' + esc(merchants.map(titleCase).join(', ')) + (matched.length ? ' (' + matched.length + ' transactions)' : '') : 'Nothing matches yet.') + '</p>' : '') +
     '<div class="actions"><button type="submit" class="btn primary">Save</button><button type="button" class="btn" id="bCancel">Cancel</button>' + (b ? '<button type="button" class="btn danger" id="bDelete">Delete</button>' : '') + '</div></form></div>';
   sheet.hidden = false; trapSheet(); $('#bName').focus();
@@ -6071,7 +6280,8 @@ function openBillEdit(id) {
     const kws = $('#bKws').value.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
     const cat = $('#bCat').value; const ex = slParseAmountToken($('#bExpected').value);
     if (!kws.length && !cat) { toast('Add a keyword or pick a category', true); return; }
-    Object.assign(bill, { name, kws, cat, expected: ex && ex.value > 0 ? slRound2(ex.value) : null, kind: $('#bKind').value });
+    const every = +$('#bEvery').value;
+    Object.assign(bill, { name, kws, cat, expected: ex && ex.value > 0 ? slRound2(ex.value) : null, kind: $('#bKind').value, every: SL_BILL_EVERY.includes(every) ? every : null });
     if (!b) state.bills.push(bill);
     save(); closeSheet(); renderHud(); toast(b ? 'Bill updated' : 'Bill added');
   };
@@ -6112,7 +6322,7 @@ function planModel() {
   const p = state.plan;
   const cpm = slChecksPerMonth(p.freq);
   const history = moneyTxns();
-  const act = history.length ? slPlanActuals(history, state.bills, catMap, 3) : null;
+  const act = history.length ? slPlanActuals(history, state.bills, catMap, 3, null, planOpts()) : null;
   const grossCheck = num(p.gross), grossM = grossCheck * cpm, grossY = grossM * 12;
   const netCheckIn = num(p.net);
   const netM = netCheckIn ? netCheckIn * cpm : (act ? act.income : 0);
@@ -6130,7 +6340,7 @@ function renderPlan() {
   const m = planModel(); const p = m.p; const R = SL_RULES;
   const per = (monthly) => money(monthly / m.cpm) + ' per check · ' + money(monthly) + ' a month';
   const planSummary = m.grossM ? (m.age ? 'Age ' + m.age + ' · ' : '') + esc(FREQ_LABEL[p.freq]) + ' · ' + money(m.grossCheck, { whole: true }) + ' gross per check' + (p.contrib !== '' || p.match !== '' ? ' · retirement ' + Math.round(m.contrib * 100) + '% + ' + Math.round(m.match * 100) + '%' : '') : 'Add your age and gross pay to start';
-  let h = '<section class="section" style="margin-top:4px">' + setupBlock('plan', 'Your numbers', planSummary, !!(m.grossM && m.age), '<p class="hint" style="margin-top:10px">Only what the guidelines need. Nothing here leaves your device. Changes apply as you type.</p>' +
+  let h = '<section class="section" style="margin-top:4px">' + setupBlock('plan', 'Your numbers', planSummary, !!(m.grossM && m.age), '<p class="hint" style="margin-top:10px">Only what the guidelines need; they follow US rules of thumb and IRS limits. Nothing here leaves your device. Changes apply as you type.</p>' +
     '<form id="planForm" class="form"><div class="grid3">' +
     '<label>Age <input type="number" id="pAge" min="16" max="100" value="' + esc(p.age) + '" placeholder="e.g. 34"></label>' +
     '<label>Paid <select id="pFreq">' + Object.entries(FREQ_LABEL).map(([k, v]) => '<option value="' + k + '"' + (p.freq === k ? ' selected' : '') + '>' + v + '</option>').join('') + '</select></label>' +
@@ -6190,10 +6400,10 @@ function renderPlan() {
     const mult = slRetireMultiple(m.age); const target = mult * m.grossY;
     const st = (p.retireBal === '' && !m.retFromAccounts) ? 'none' : slStatusFloor(m.retireBal, target);
     const years = Math.max(0, R.retireAge - m.age);
-    const fv = slFutureValue(m.retireBal, (m.retireM + m.matchM) * 12, years, R.realReturn);
+    const fv = retireAt67(m);
     h += '<section class="section"><h2>Retirement check at ' + m.age + '</h2><div class="hud-table">' +
       line('Saved so far', 'about ' + (mult < 1 ? mult.toFixed(1) : mult % 1 ? mult.toFixed(1) : mult) + '× your yearly pay by age ' + m.age + ' (Fidelity\'s 1× by 30 … 10× by 67)', money(target, { whole: true }) + '<span class="pm">' + mult.toFixed(1) + ' × ' + money(m.grossY, { whole: true }) + '</span>', (p.retireBal === '' && !m.retFromAccounts) ? null : money(m.retireBal, { whole: true }) + '<span class="pm">' + (target ? Math.round(m.retireBal / target * 100) + '% of benchmark' : '') + '</span>', st, (p.retireBal === '' && !m.retFromAccounts) ? 'Enter your balance above.' : cap(fword(st)) + (st !== 'good' ? '. The benchmark assumes no pension; a military or other pension covers part of this.' : '.')) +
-      (years > 0 && (m.retireM + m.matchM || m.retireBal) ? line('If nothing changes', 'keep contributing ' + Math.round(retirePct * 100) + '% of gross for ' + years + ' more years', '10×<span class="pm">benchmark at 67</span>', (fv / m.grossY).toFixed(1) + '×<span class="pm">about ' + money(fv, { whole: true }) + ' in today\'s dollars</span>', slStatusFloor(fv / m.grossY, 10), 'Illustration only: 5% growth above inflation, contributions rising with pay.') : '') +
+      (years > 0 && (m.retireM + m.matchM || m.retireBal) ? line('If nothing changes', 'keep contributing ' + Math.round(retirePct * 100) + '% of gross for ' + years + ' more years', '10×<span class="pm">benchmark at 67</span>', (fv / m.grossY).toFixed(1) + '×<span class="pm">about ' + money(approx(fv), { whole: true }) + ' in today\'s dollars</span>', slStatusFloor(fv / m.grossY, 10), 'Illustration only: 7% growth less 2.5% inflation, as in From here to December 31, with contributions rising with pay.') : '') +
       '</div></section>';
   } else h += '<section class="section"><h2>Retirement check</h2><p class="muted small">Add your age above to compare your balance with the age-based benchmark.</p></section>';
   h += renderYearForecast(m);
@@ -6209,7 +6419,7 @@ function renderPlan() {
   steps.push('Then goals: house down payment, car replacement fund, college, travel — ideally as named savings transfers so they show up here.');
   h += '<section class="section"><h2>What to do with each check, in order</h2><p class="sub">A common order of operations; each step builds on the one before.</p><ol class="steps">' + steps.map(s => '<li>' + s + '</li>').join('') + '</ol></section>';
 
-  h += '<section class="section"><h2>Where these numbers come from</h2><div class="privacy"><p>50/30/20 (needs, wants, savings) popularized by Elizabeth Warren\'s <i>All Your Worth</i>. Rent under 30% of gross is the HUD threshold for being cost-burdened; 28/36 are the housing and total-debt ratios mortgage lenders use. 20/4/10 is a common car-buying rule. 15% retirement savings and the age multiples (1× by 30, 3× by 40, 6× by 50, 8× by 60, 10× by 67) are Fidelity\'s guidelines. 3 to 6 months of essentials is the usual emergency-fund range.</p><p>These are general rules of thumb, not personalized financial advice. High cost-of-living areas, tax-free allowances, a pension, or expensive debt can all justify different targets.</p></div></section>';
+  h += '<section class="section"><h2>Where these numbers come from</h2><div class="privacy"><p>50/30/20 (needs, wants, savings) popularized by Elizabeth Warren\'s <i>All Your Worth</i>. Rent under 30% of gross is the HUD threshold for being cost-burdened; 28/36 are the housing and total-debt ratios mortgage lenders use. 20/4/10 is a common car-buying rule. 15% retirement savings and the age multiples (1× by 30, 3× by 40, 6× by 50, 8× by 60, 10× by 67) are Fidelity\'s guidelines. 3 to 6 months of essentials is the usual emergency-fund range.</p><p>These are general rules of thumb; a licensed professional can advise on your own situation. High cost-of-living areas, tax-free allowances, a pension, or expensive debt can all justify different targets.</p></div></section>';
   el.innerHTML = h; nameRowInputs(el);
 }
 function bindPlan() {
@@ -6333,6 +6543,8 @@ function renderGoals() {
     h += '</div>';
     if (totalNeed) h += '<p class="hud-note">All dated goals together need about ' + money(totalNeed) + ' a month, ' + money(totalNeed / cpm) + ' per check.</p>';
   }
+  const sinks = yearlyBills().filter(x => !goals.some(g => String(g.name).toLowerCase() === x.b.name.toLowerCase()));
+  if (sinks.length) h += '<h3 style="margin-top:16px">Bills that come every few months</h3><ul class="insights">' + sinks.map(x => '<li><b>' + esc(x.b.name) + '</b>: about ' + money(x.st.expected) + ' ' + (x.st.every === 12 ? 'once a year' : 'every ' + x.st.every + ' months') + ', next around ' + esc(slFmtDate(x.st.next)) + '. Setting aside ' + money(sinkMonthly(x.st)) + ' a month from now covers it' + (Math.abs(sinkMonthly(x.st) - x.st.share) >= 1 ? ', then about ' + money(x.st.share) + ' a month' : '') + '. <button class="btn link" data-sink="' + esc(x.b.id) + '">Make it a sinking fund</button></li>').join('') + '</ul>';
   const m = planModel();
   h += '<div class="actions"><button class="btn primary" data-ahead="addGoal">Add a goal</button>' + (!goals.some(g => /emergency/i.test(g.name)) && m.act && m.act.essentials && !m.act.partial && !(m.act.cardBuys > 0) ? '<button class="btn" data-ahead="addEf">Add emergency fund goal (' + money(m.act.essentials * SL_RULES.efMonthsMin, { whole: true }) + ')</button>' : '') + '</div>';
   h += '<details class="why"><summary>Sinking funds, briefly</summary><p class="hint">A sinking fund is money set aside a little at a time for a cost you can see coming: the yearly insurance premium, tires, a trip. Dividing the amount by the months left turns a surprise into a line item. Keeping it in a named savings transfer lets the tool track it here.</p></details></section>';
@@ -6367,7 +6579,8 @@ function cashEvents(today, to) {
   const c = state.cash; const events = [];
   // the forecast follows the paying accounts: purchases on a card reach them through the card payment, so rows in card
   // accounts stay out (they would count twice)
-  const cardAccts = cardAccountNames(), paying = state.txns.filter(t => !cardAccts.has(t.account));
+  // (cash typed by hand left checking as ATM withdrawals, so the Cash account stays out too)
+  const cardAccts = cardAccountNames(), paying = state.txns.filter(t => !cardAccts.has(t.account) && !isCashAcct(t.account));
   const history = paying.length ? paying : state.txns;
   const pay = slPaydayPattern(history);
   const payAmt = num(c.payNet) || (pay ? pay.typical : 0) || (planModel().netCheck || 0);
@@ -6383,18 +6596,20 @@ function cashEvents(today, to) {
   } else if (pay) paydays = pay.next.filter(d => d <= to);
   for (const d of paydays) events.push({ date: d, label: 'Payday', amount: slRound2(payAmt), kind: 'payday' });
   const assigned = slAssignBills(state.bills, history);
-  const curYM = today.slice(0, 7);
+  const curYM = today.slice(0, 7), cov = coverage();
   const matchedMerchants = new Set();
   for (const b of state.bills) {
     const list = assigned[b.id] || []; if (!list.length) continue;
     list.forEach(t => matchedMerchants.add(t.merchant));
-    const st = slBillStats(b, list, null); const amt = b.expected > 0 ? +b.expected : st.typical; if (!amt) continue;
+    const st = slBillStats(b, list, null, null, billSpan(cov, list)); const amt = b.expected > 0 ? +b.expected : st.typical; if (!amt) continue;
     if (b.kind === 'variable') {
       if (b.cat === 'Subscriptions') { list.forEach(t => matchedMerchants.delete(t.merchant)); continue; }
       const weekly = amt * 12 / 52; let d = slAddDays(today, 1);
       while (d <= to) { events.push({ date: d, label: b.name.replace(/\s*\(.*?\)/, '') + ', typical week', amount: -slRound2(weekly), kind: 'variable' }); d = slAddDays(d, 7); }
       continue;
     }
+    // a bill that comes every few months lands once, on its next date
+    if (st.every > 1) { if (st.next && st.next >= today && st.next <= to) events.push({ date: st.next, label: b.name, amount: -slRound2(amt), kind: 'bill' }); continue; }
     const dueDay = st.dueDay || 1;
     const paidThisMonth = list.some(t => t.date.slice(0, 7) === curYM);
     for (let k = 0; k < 2; k++) {
@@ -6433,7 +6648,7 @@ function renderCash() {
     '<label>Cushion to keep <input type="text" inputmode="decimal" id="cBuf" value="' + esc(c.buffer) + '" placeholder="200"></label>' +
     '<label>Take-home per check <input type="text" inputmode="decimal" id="cPay" value="' + esc(c.payNet) + '" placeholder="' + (pay ? 'seen: ' + money(pay.typical, { whole: true }) : '0.00') + '"></label>' +
     '<label>Next payday <input type="date" id="cNext" value="' + esc(c.nextPay) + '"></label>' +
-    '</div><p class="hint">' + (pay ? 'Paydays look ' + esc(pay.cadence === 'biweekly' ? 'every two weeks' : pay.cadence) + ' at about ' + money(pay.typical) + ', last on ' + esc(slFmtDate(pay.last)) + '. Leave the payday fields blank to use that.' : 'No regular deposits found yet, so enter the take-home amount and next payday.') + '</p><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button></div></form>');
+    '</div><p class="hint">' + (pay ? 'Paydays look ' + esc(FREQ_LABEL[pay.cadence] || pay.cadence) + ' at about ' + money(pay.typical) + ', last on ' + esc(slFmtDate(pay.last)) + '. Leave the payday fields blank to use that.' : 'No regular deposits found yet, so enter the take-home amount and next payday.') + '</p><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button></div></form>');
   if (c.balance === '') return h + '<div class="empty"><h2>Enter today\'s balance to project</h2><p>Bills, card payments, and recurring charges come from your transactions; paydays are detected from deposits.</p></div></section>';
   const { events } = cashEvents(today, to);
   const buffer = num(c.buffer);
@@ -6455,7 +6670,7 @@ function renderCash() {
 /* Alerts */
 function renderAlerts() {
   const today = slTodayISO();
-  const pa = slPlanActuals(moneyTxns(), state.bills, catMap, 3);
+  const pa = slPlanActuals(moneyTxns(), state.bills, catMap, 3, null, planOpts());
   const pacing = slPacing(moneyTxns(), catMap, state.budgets, pa ? pa.byCat : null);
   const price = slPriceChanges(state.txns, catMap);
   const rec = slDetectRecurring(state.txns, catMap);
@@ -6464,7 +6679,11 @@ function renderAlerts() {
   const r = slPeriodRange('thisMonth');
   const assigned = slAssignBills(state.bills, state.txns);
   const fresh = slFreshness(state.txns);
-  const late = state.bills.filter(b => b.kind !== 'variable').map(b => ({ b, st: slBillStats(b, assigned[b.id] || [], r) })).filter(x => x.st.everMatched && !x.st.count && x.st.dueDay && +today.slice(8, 10) > x.st.dueDay + 3 && recordsPast(fresh, x.st.dueDay + 3, x.st.accounts));
+  const cov = coverage(), billSt = state.bills.filter(b => b.kind !== 'variable').map(b => ({ b, st: slBillStats(b, assigned[b.id] || [], r, null, billSpan(cov, assigned[b.id])) }));
+  const billSoon = billSt.filter(x => x.st.every > 1 && x.st.next && x.st.next >= today && x.st.next <= slAddDays(today, 45));
+  const soonM = new Set(billSoon.flatMap(x => (assigned[x.b.id] || []).map(t => t.merchant)));
+  const fees = slFees(state.txns, slAddDays(today, -90), today), hc = slHighCost(state.txns, slAddDays(today, -180));
+  const late = billSt.filter(x => x.st.dueNow && x.st.everMatched && !x.st.count && x.st.dueDay && +today.slice(8, 10) > x.st.dueDay + 3 && recordsPast(fresh, x.st.dueDay + 3, x.st.accounts));
   const dups = slFindDuplicates(state.txns.filter(t => t.date >= slAddDays(today, -60)));
   let h = '<section class="section" style="margin-top:4px"><h2>Alerts</h2><p class="sub">Things worth a look right now, from your transactions.</p>';
   let any = false;
@@ -6475,8 +6694,12 @@ function renderAlerts() {
   h += block('Records to bring up to date', 'The alerts below cover what has been imported so far.', behind);
   h += block('Pace this month', 'Spent so far, with where that lands by month end at the current rate.', pacing.filter(p => p.status !== 'good').slice(0, 8).map(p => '<li>' + sdot(p.status) + '<span class="stword">' + (p.status === 'bad' ? 'Over' : 'Watch') + '</span> · <b>' + esc(p.category) + '</b>: ' + money(p.spent) + ' of ' + money(p.ref, { whole: true }) + (p.isBudget ? ' budget' : ' (your usual)') + (p.projected ? ' · on pace for ' + money(p.projected, { whole: true }) : '') + '</li>'));
   h += block('Price went up', 'Fixed bills and subscriptions charging more than they used to.', price.map(x => '<li>' + sdot('warn') + '<b>' + esc(titleCase(x.merchant)) + '</b> went from ' + money(x.from) + ' to ' + money(x.to) + ' (+' + x.pct + '%) on ' + esc(slFmtDate(x.date)) + '</li>'));
-  h += block('Big charges coming', 'Quarterly or yearly charges expected within 45 days.', dueSoon.map(x => '<li>' + sdot('warn') + '<b>' + esc(titleCase(x.merchant)) + '</b> about ' + money(x.amount) + (x.next >= today ? ' around ' : ', expected since ') + esc(slFmtDate(x.next)) + ' (' + esc(x.cadence) + ')</li>'));
+  h += block('Big charges coming', 'Charges that come every few months or once a year, expected within 45 days.', dueSoon.filter(x => !soonM.has(x.merchant)).map(x => '<li>' + sdot('warn') + '<b>' + esc(titleCase(x.merchant)) + '</b> about ' + money(x.amount) + (x.next >= today ? ' around ' : ', expected since ') + esc(slFmtDate(x.next)) + ' (' + esc(x.cadence) + ')</li>').concat(billSoon.map(x => '<li>' + sdot('warn') + '<b>' + esc(x.b.name) + '</b> about ' + money(x.st.expected) + ' around ' + esc(slFmtDate(x.st.next)) + ' (' + (x.st.every === 12 ? 'yearly' : 'every ' + x.st.every + ' months') + ')</li>')));
   h += block('Bills not seen yet', 'Usually paid by now this month.', late.map(x => '<li>' + sdot('warn') + '<b>' + esc(x.b.name) + '</b> usually around the ' + ordinal(x.st.dueDay) + (x.st.expected ? ', about ' + money(x.st.expected) : '') + '</li>'));
+  const FEE_TIP = { overdraft: 'A low-balance alert from your bank, or overdraft protection linked to savings, usually costs less.', service: 'Many banks waive it with direct deposit or a minimum balance, and many credit unions charge none.', atm: 'Your own bank\'s ATMs, or cash back at a store checkout, skip it.', late: 'Autopay for at least the minimum keeps payments on time.', interest: 'Paying the full statement balance each month keeps card interest at zero.', foreign: 'Cards made for travel waive it.' };
+  h += block('Fees and interest', 'Charged in the last 90 days: ' + money(fees.total) + '.', fees.groups.map(g => '<li>' + sdot(g.kind === 'overdraft' ? 'bad' : 'warn') + '<b>' + esc(g.label) + '</b>: ' + money(g.sum) + (g.count > 1 ? ' (' + g.count + ' charges)' : '') + '. ' + (FEE_TIP[g.kind] || '') + (g.kind === 'overdraft' && g.count >= 2 ? ' <button class="btn link" data-go="check:human">When to see a human</button>' : '') + '</li>'));
+  const HC_KIND = { payday: 'payday or high-cost installment lender', advance: 'cash-advance app', title: 'car-title lender', 'rent-to-own': 'rent-to-own store', bnpl: 'buy now, pay later' };
+  h += block('High-cost borrowing', 'Lenders and plans that often cost more than they seem, last 6 months. A credit union\'s small-dollar loan or a nonprofit credit counselor usually costs far less.', hc.length ? hc.map(x => '<li>' + sdot(x.kind === 'bnpl' ? 'warn' : 'bad') + '<b>' + esc(titleCase(x.name)) + '</b> (' + HC_KIND[x.kind] + '): ' + andList([x.count ? money(x.out) + ' paid in ' + x.count + (x.count === 1 ? ' payment' : ' payments') : '', x.in ? money(x.in) + ' received' : ''].filter(Boolean)) + ', last on ' + esc(slFmtDate(x.last)) + '.' + (x.kind === 'bnpl' ? ' Late fees and several plans at once add up; listing each under Debt payoff keeps the total in view.' : '') + '</li>').concat(['<li>Ways out and free help: <button class="btn link" data-go="check:human">When to see a human</button></li>']) : []);
   h += block('Unusual charges', 'Out of line with your history at the same place, last 30 days.', unusual.map(u => '<li>' + sdot('bad') + '<b>' + esc(u.t.desc) + '</b> ' + money(-u.t.amount) + ' on ' + esc(slFmtDate(u.t.date)) + ' — ' + esc(u.reason) + '</li>'));
   const dueSoon2 = Object.values(state.balances || {}).filter(v => v && v.kind !== 'loan' && v.due && +v.balance > 0 && v.due >= today && v.due <= slAddDays(today, 10));
   h += block('Card payments due', 'From your statements: due within 10 days.', dueSoon2.map(v => '<li>' + sdot('warn') + '<b>' + esc(v.name || 'Card') + '</b> ' + money(+v.balance) + (v.min ? ' (minimum ' + money(+v.min) + ')' : '') + ' due ' + esc(slFmtDate(v.due)) + '</li>'));
@@ -6500,6 +6723,7 @@ function bindAhead() {
   ab.addEventListener('click', e => {
     const act = e.target.closest('[data-ahead]');
     if (act) { if (act.dataset.ahead === 'addAccount') openAccountAdd(); if (act.dataset.ahead === 'addGoal') openGoalEdit(null); if (act.dataset.ahead === 'addEf') { const m = planModel(); openGoalEdit(null, { name: 'Emergency fund', target: m.act ? String(Math.round(m.act.essentials * SL_RULES.efMonthsMin)) : '', saved: state.plan.efBal || '', kw: 'savings' }); } return; }
+    const sink = e.target.closest('[data-sink]'); if (sink) { const x = yearlyBills().find(y => y.b.id === sink.dataset.sink); if (x) openGoalEdit(null, { name: x.b.name, target: String(Math.round(x.st.expected)), by: x.st.next.slice(0, 7) }); return; }
     const row = e.target.closest('.bill[data-goal]'); if (row) openGoalEdit(row.dataset.goal);
   });
   ab.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.bill[data-goal]')) { e.preventDefault(); e.target.click(); } });
@@ -6643,12 +6867,12 @@ function renderRetireExtras() {
   const spendY = num(p.spend) || (m.act ? (m.act.needs + m.act.wants) * 12 : 0);
   if (spendY) {
     const covered = (num(p.pension) + num(p.ss)) * 12; const gapY = Math.max(0, spendY - covered); const need = gapY * 25;
-    const years = Math.max(0, R.retireAge - (m.age || 0)); const fv = m.grossY ? slFutureValue(m.retireBal, (m.retireM + m.matchM) * 12, years, R.realReturn) : null;
+    const fv = m.grossY ? retireAt67(m) : null;
     h += '<div class="hud-table"><div class="bill head"><span class="name">Nest egg needed</span><span class="num">Per year</span><span class="num">Total</span></div>' +
       '<div class="bill plan"><span class="name">Spending in retirement<span class="pm">' + (num(p.spend) ? 'your estimate' : 'your current needs + wants') + '</span></span><span class="num">' + money(spendY, { whole: true }) + '</span><span class="num"></span></div>' +
       '<div class="bill plan"><span class="name">Covered by pension + Social Security</span><span class="num">− ' + money(covered, { whole: true }) + '</span><span class="num"></span></div>' +
       '<div class="bill plan"><span class="name">Gap to fund from savings<span class="pm">× 25, the 4% withdrawal rule</span></span><span class="num">' + money(gapY, { whole: true }) + '</span><span class="num actual">' + money(need, { whole: true }) + '</span></div>' +
-      (fv != null && m.age ? '<div class="bill plan"><span class="name">Projected at 67<span class="pm">from the Plan tab\'s illustration</span></span><span class="num"></span><span class="num actual">' + sdot(slStatusFloor(fv, need || 1)) + money(fv, { whole: true }) + '<span class="pm">' + (need ? Math.round(fv / need * 100) + '% of the gap · ' + fword(slStatusFloor(fv, need)) : 'no gap to fund') + '</span></span></div>' : '') + '</div>';
+      (fv != null && m.age ? '<div class="bill plan"><span class="name">Projected at 67<span class="pm">from the Plan tab\'s illustration</span></span><span class="num"></span><span class="num actual">' + sdot(slStatusFloor(fv, need || 1)) + money(approx(fv), { whole: true }) + '<span class="pm">' + (need ? Math.round(fv / need * 100) + '% of the gap · ' + fword(slStatusFloor(fv, need)) : 'no gap to fund') + '</span></span></div>' : '') + '</div>';
     if (need && m.grossY) h += '<p class="hud-note">That is ' + (need / m.grossY).toFixed(1) + '× your current pay, versus the 10× generic benchmark' + (covered ? ' — the pension and Social Security do the rest' : '') + '.</p>';
   }
   // limits
@@ -6658,8 +6882,9 @@ function renderRetireExtras() {
   const yours = m.grossY * m.contrib;
   h += '<section class="section"><h2>Contribution limits (' + esc(L.year) + ')</h2><p class="sub">IRS limits for the year; employer match does not count against your own limit.</p>' +
     setupBlock('limits', 'IRS limits', esc(L.year) + ': ' + money(num(L.deferral), { whole: true }) + ' 401k/TSP · ' + money(num(L.ira), { whole: true }) + ' IRA · catch-ups ' + money(num(L.catchup), { whole: true }) + ' / ' + money(num(L.iraCatchup), { whole: true }), true, '<form id="limForm" class="form" style="margin-top:10px"><div class="grid3"><label>Year <input type="text" id="lYear" value="' + esc(L.year) + '"></label><label>401k / TSP employee limit <input type="text" inputmode="decimal" id="lDeferral" value="' + esc(L.deferral) + '"></label><label>Catch-up, age 50+ <input type="text" inputmode="decimal" id="lCatchup" value="' + esc(L.catchup) + '"></label><label>Catch-up, ages 60–63 <input type="text" inputmode="decimal" id="lSuper" value="' + esc(L.superCatchup) + '"></label><label>IRA limit <input type="text" inputmode="decimal" id="lIra" value="' + esc(L.ira) + '"></label><label>IRA catch-up, 50+ <input type="text" inputmode="decimal" id="lIraCatchup" value="' + esc(L.iraCatchup) + '"></label></div><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button><button class="btn small" type="button" data-check="resetLimits">Reset to 2026 values</button></div></form>');
+  if (+L.year < +slTodayISO().slice(0, 4)) h += '<div class="notice">These limits are for ' + esc(L.year) + '. The IRS sets each year\'s limits the fall before; update them above with this year\'s figures.</div>';
   if (m.grossY) h += '<div class="hud-table"><div class="bill head"><span class="name">Your room this year</span><span class="num">Limit</span><span class="num">You</span></div>' +
-    '<div class="bill plan"><span class="name">401k / TSP<span class="pm">' + (super63 ? 'with the 60–63 catch-up' : catch50 ? 'with the 50+ catch-up' : 'under 50') + '</span></span><span class="num">' + money(defLimit, { whole: true }) + '</span><span class="num actual">' + money(yours, { whole: true }) + '<span class="pm">' + Math.round(yours / defLimit * 100) + '% of limit · ' + money(Math.max(0, defLimit - yours), { whole: true }) + ' of room</span></span></div>' +
+    '<div class="bill plan"><span class="name">401k / TSP<span class="pm">' + (super63 ? 'with the 60–63 catch-up' : catch50 ? 'with the 50+ catch-up' : 'under 50') + '</span></span><span class="num">' + money(defLimit, { whole: true }) + '</span><span class="num actual">' + money(yours, { whole: true }) + '<span class="pm">' + Math.round(yours / defLimit * 100) + '% of limit · ' + money(Math.max(0, defLimit - yours), { whole: true }) + ' left unused at this rate</span></span></div>' +
     '<div class="bill plan"><span class="name">IRA<span class="pm">traditional and Roth combined</span></span><span class="num">' + money(iraLimit, { whole: true }) + '</span><span class="num actual">' + money(iraLimit / 12, { whole: true }) + '<span class="pm">per month to max it</span></span></div></div>';
   h += '<details class="why"><summary>Roth or traditional</summary><p class="hint">Traditional contributions skip tax now and are taxed when withdrawn; Roth is taxed now and withdrawn tax-free. A rule of thumb: Roth while your tax rate is low (early career, deployments, tax-free combat pay), traditional when it is high. Mixing both keeps options open. Under the Blended Retirement System the service automatically adds 1% and matches up to another 4% when you contribute 5%.</p></details>';
   return h + '</section></section>';
@@ -6667,7 +6892,7 @@ function renderRetireExtras() {
 
 /* When to see a human */
 function renderHuman() {
-  return '<section class="section" style="margin-top:4px"><h2>When to see a human</h2><p class="sub">This tool automates the routine advice for simple finances. These are the moments it is not enough.</p>' +
+  return '<section class="section" style="margin-top:4px"><h2>When to see a human</h2><p class="sub">This tool automates the routine advice for simple finances. These are the moments that call for a person.</p>' +
     '<ul class="insights">' +
     '<li><b>Taxes beyond a W-2</b> — side income, rental property, selling investments, multiple states, or a big refund or bill every year.</li>' +
     '<li><b>Buying a home</b> — how much house, loan type, VA loan use, and what the full monthly cost really is.</li>' +
@@ -6676,6 +6901,7 @@ function renderHuman() {
     '<li><b>Estate basics</b> — a will, beneficiaries on every account (they override the will), powers of attorney, guardianship for children.</li>' +
     '<li><b>Debt that is not shrinking</b> — if the Debt payoff section says payments never catch the interest, a nonprofit credit counselor can negotiate rates; that is different from debt-settlement companies.</li>' +
     '<li><b>Investing beyond index funds</b> — anything with a sales pitch, a guarantee, or a fee you cannot explain.</li>' +
+    '<li><b>Overdrafts that keep coming</b> — two or more overdraft or returned-payment fees in a few months: your bank can set a low-balance alert or link savings as a backup, many credit unions offer accounts built to avoid overdrafts, and a nonprofit credit counselor can help build a cushion.</li>' +
     '<li><b>High-cost borrowing</b> — payday, title, and rent-to-own loans, refund advances, or several buy-now-pay-later plans at once. A credit union\'s small-dollar loan or a nonprofit credit counselor usually costs far less.</li>' +
     '<li><b>Collections, garnishment, or bankruptcy</b> — a debt collector calling, wages being garnished, or bankruptcy on the table: a nonprofit credit counselor first, and a consumer or bankruptcy attorney (legal aid if money is tight).</li>' +
     '<li><b>Student loans</b> — choosing a repayment plan, forgiveness programs, or loans in default: start with the free help at studentaid.gov before paying anyone.</li>' +
@@ -6685,20 +6911,20 @@ function renderHuman() {
     '</ul>' +
     '<section class="section"><h2>Where to find one</h2><ul class="insights">' +
     '<li><b>Military and families</b> — free personal financial counselors through the installation Military & Family Readiness Center, and Military OneSource (financial counseling and free tax filing).</li>' +
-    '<li><b>Everyone</b> — a fee-only fiduciary planner (paid by you, not by commissions); for debt, a nonprofit credit counseling agency.</li>' +
+    '<li><b>Everyone</b> — a fee-only fiduciary planner (paid only by you, with no commissions); for debt, a nonprofit credit counseling agency.</li>' +
     '<li><b>Free tools</b> — the Consumer Financial Protection Bureau\'s guides, your bank or credit union\'s financial coaching, and Social Security\'s benefit estimates at ssa.gov.</li>' +
     '<li><b>Free tax filing help</b> — IRS VITA and TCE sites, for most households earning under the VITA income limit, and for people 60 and older.</li>' +
     '</ul></section>' +
     '<section class="section"><h2>Short glossary</h2><ul class="insights">' +
     '<li><b>Emergency fund</b> — cash for income loss or a surprise bill, kept separate from spending money. Three to six months of essentials.</li>' +
     '<li><b>Avalanche / snowball</b> — two orders for paying extra on debt: highest rate first (cheapest) or smallest balance first (fastest wins).</li>' +
-    '<li><b>50/30/20</b> — needs, wants, savings as shares of take-home pay. A starting point, not a law.</li>' +
+    '<li><b>50/30/20</b> — needs, wants, savings as shares of take-home pay. A starting point to adjust to your life.</li>' +
     '<li><b>DTI</b> — debt-to-income: housing plus debt payments divided by gross pay. Lenders want it under 36%.</li>' +
     '<li><b>Utilization</b> — card balance divided by limit, as reported on the statement date.</li>' +
     '<li><b>Sinking fund</b> — saving monthly for a known future cost so it never hits the emergency fund.</li>' +
     '<li><b>4% rule</b> — a portfolio can usually support withdrawing 4% a year; so needed savings ≈ 25 × the yearly gap your pension does not cover.</li>' +
     '</ul></section>' +
-    '<div class="privacy" style="margin-top:16px"><p>PFAT gives general information from widely used rules of thumb. It does not know your full situation and is not a substitute for a licensed professional\'s advice.</p></div></section>';
+    '<div class="privacy" style="margin-top:16px"><p>PFAT gives general information from widely used US rules of thumb (HUD\'s 30% and lenders\' 28/36) and the IRS\'s contribution limits. A licensed professional can advise on your full situation.</p></div></section>';
 }
 
 function bindCheckup() {
@@ -6757,25 +6983,39 @@ function renderAccountsSection(m) {
   h += '<div class="actions" style="padding-bottom:12px"><button class="btn" data-plan="addAcc">Add an account</button></div>';
   return '<section class="section">' + setupBlock('accounts', 'Accounts', accSummary, n > 0, h) + '</section>';
 }
-function renderYearForecast(m) {
+// Retirement savings at 67 in today's dollars, the same figure on every tab: the listed accounts' own projection, else the
+// balance and contributions at 7% growth less 2.5% inflation (the defaults for a retirement account)
+function retireAt67(m) {
+  const yf = yearForecast(m), months = Math.max(0, SL_RULES.retireAge - (m.age || 0)) * 12, stream = (m.retireM || 0) + (m.matchM || 0);
+  // with accounts listed but no 401k/TSP among them, the Plan's workplace contributions still count
+  if (yf && yf.rows.some(x => x.retirement)) return yf.totals.retireAt67 + (!yf.rows.some(x => x.type.id === 'tsp') && stream > 0 ? slFVMonthly(0, stream, months, 7 - 2.5) : 0);
+  return slFVMonthly(m.retireBal, stream, months, 7 - 2.5);
+}
+// The accounts carried to Dec 31 and to 67; a 401k/TSP's own share (without the match) counts toward its limit
+function yearForecast(m) {
   ensureAccounts(); ensureCheckup();
-  if (!state.accounts.length) return '';
+  if (!state.accounts.length) return null;
+  return slYearForecast(state.accounts.map(a => { const monthly = num(a.monthly) || (a.type === 'tsp' && m.retireM ? m.retireM + m.matchM : 0); return { id: a.id, name: a.name || slAccountType(a.type).label, type: a.type, balance: num(a.balance), monthly, own: a.type === 'tsp' && m.retireM > 0 ? m.retireM : monthly, rate: a.rate === '' ? '' : num(a.rate), ytd: a.ytd === '' ? '' : num(a.ytd) }; }), slTodayISO(), state.limits, m.age, SL_RULES.retireAge, 2.5);
+}
+function renderYearForecast(m) {
+  const f = yearForecast(m); if (!f) return '';
   const today = slTodayISO();
-  const f = slYearForecast(state.accounts.map(a => ({ id: a.id, name: a.name || slAccountType(a.type).label, type: a.type, balance: num(a.balance), monthly: num(a.monthly) || (a.type === 'tsp' && m.retireM ? m.retireM + m.matchM : 0), rate: a.rate === '' ? '' : num(a.rate), ytd: a.ytd === '' ? '' : num(a.ytd) })), today, state.limits, m.age, SL_RULES.retireAge, 2.5);
   const left = f.monthsLeft;
   let h = '<section class="section"><h2>From here to December 31</h2><p class="sub">It is ' + esc(slFmtDate(today)) + ': ' + left.toFixed(1) + ' months of the year left. Balances now, what keeps going in, and where that lands by year end' + (m.age ? ', then carried to 67' : '') + '.</p>';
   h += '<div class="hud-table"><div class="bill head fc"><span class="name">Account</span><span class="num">Now</span><span class="num">Dec 31</span><span class="num">' + (m.age ? 'At 67' : '') + '</span></div>';
   for (const r of f.rows) {
     const invest = r.retirement || r.type.id === 'brokerage';
-    h += '<div class="bill plan fc"><span class="name">' + esc(r.name) + '<span class="pm">' + esc(r.type.label) + ' · ' + money(r.monthly, { whole: true }) + '/mo at ' + r.rate + '%</span></span><span class="num">' + money(r.balance, { whole: true }) + '</span><span class="num">' + money(r.yearEnd, { whole: true }) + (r.growthThisYear ? '<span class="pm">' + money(r.growthThisYear, { whole: true }) + ' growth</span>' : '') + '</span><span class="num actual">' + (m.age && invest ? money(r.at67, { whole: true }) + '<span class="pm">today\'s dollars</span>' : (m.age ? '<span class="pm">cash, not projected</span>' : '')) + '</span>' +
-      (r.limit != null ? '<span class="status">' + money(r.ytd, { whole: true }) + ' of the ' + money(r.limit, { whole: true }) + ' ' + f.year + ' limit so far · ' + (r.room > 0 ? money(r.room, { whole: true }) + ' of room' + (r.toMax ? ', ' + money(r.toMax, { whole: true }) + '/mo would max it by Dec 31' : '') : 'maxed for the year') + '</span>' : '') + '</div>';
+    h += '<div class="bill plan fc"><span class="name">' + esc(r.name) + '<span class="pm">' + esc(r.type.label) + ' · ' + money(r.monthly, { whole: true }) + '/mo at ' + r.rate + '%</span></span><span class="num">' + money(r.balance, { whole: true }) + '</span><span class="num">' + money(r.yearEnd, { whole: true }) + (r.growthThisYear ? '<span class="pm">' + money(r.growthThisYear, { whole: true }) + ' growth</span>' : '') + '</span><span class="num actual">' + (m.age && invest ? money(approx(r.at67), { whole: true }) + '<span class="pm">today\'s dollars</span>' : (m.age ? '<span class="pm">kept as cash</span>' : '')) + '</span>' +
+      (r.limit != null ? '<span class="status">' + money(r.ytd, { whole: true }) + (r.type.limit === 'deferral' ? ' of your own (the match is extra)' : '') + ' toward the ' + money(r.limit, { whole: true }) + ' ' + esc(state.limits.year) + ' limit so far · ' + (r.room > 0 ? money(r.room, { whole: true }) + ' still open this year' + (r.toMax ? ', ' + money(r.toMax, { whole: true }) + '/mo would max it by Dec 31' + (r.type.limit === 'ira' ? ' (an IRA takes this year\'s money until the April tax deadline)' : '') : '') : 'maxed for the year') + '</span>' : '') + '</div>';
   }
   const investAt67 = slRound2(f.rows.filter(r => r.retirement || r.type.id === 'brokerage').reduce((s, r) => s + (r.at67 || 0), 0));
-  h += '<div class="bill total fc"><span class="name">All accounts</span><span class="num">' + money(f.totals.balance, { whole: true }) + '</span><span class="num">' + money(f.totals.yearEnd, { whole: true }) + '</span><span class="num">' + (m.age ? money(investAt67, { whole: true }) : '') + '</span></div></div>';
+  h += '<div class="bill total fc"><span class="name">All accounts</span><span class="num">' + money(f.totals.balance, { whole: true }) + '</span><span class="num">' + money(f.totals.yearEnd, { whole: true }) + '</span><span class="num">' + (m.age ? money(approx(investAt67), { whole: true }) : '') + '</span></div></div>';
+  if (+state.limits.year < f.year && f.rows.some(x => x.limit != null)) h += '<p class="notice">The contribution limits on file are for ' + esc(state.limits.year) + '. The IRS sets each year\'s limits the fall before; update them under Checkup, Retirement extras &amp; limits.</p>';
   if (m.age && m.grossY) {
     const mult = slRetireMultiple(m.age); const target = mult * m.grossY; const st = slStatusFloor(f.totals.retireBalance, target);
-    h += '<p class="hud-note">' + sdot(st) + 'Retirement accounts hold ' + money(f.totals.retireBalance, { whole: true }) + ' at ' + m.age + ' against a ' + mult.toFixed(1) + '× benchmark of ' + money(target, { whole: true }) + ' (' + fword(st) + '). At the current pace the investing accounts reach about ' + money(investAt67, { whole: true }) + ' by 67 in today\'s dollars, ' + (investAt67 / m.grossY).toFixed(1) + '× pay against the 10× benchmark' + (investAt67 / m.grossY >= 10 ? '.' : '; the Retirement check above shows what closes the gap.') + '</p>';
-    const bump = [100, 250, 500].map(x => [x, slRound2(slFVMonthly(0, x, f.yearsTo * 12, 7 - 2.5))]);
+    const ret67 = retireAt67(m), brok67 = slRound2(f.rows.filter(r => r.type.id === 'brokerage').reduce((s0, r) => s0 + (r.at67 || 0), 0));
+    h += '<p class="hud-note">' + sdot(st) + 'Retirement accounts hold ' + money(f.totals.retireBalance, { whole: true }) + ' at ' + m.age + ' against a ' + mult.toFixed(1) + '× benchmark of ' + money(target, { whole: true }) + ' (' + fword(st) + '). At the current pace retirement savings reach about ' + money(approx(ret67), { whole: true }) + ' by 67 in today\'s dollars, ' + (ret67 / m.grossY).toFixed(1) + '× pay against the 10× benchmark' + (brok67 >= 1000 ? ', and the brokerage accounts add about ' + money(approx(brok67), { whole: true }) : '') + (ret67 / m.grossY >= 10 ? '.' : '; the Retirement check above shows what closes the gap.') + '</p>';
+    const bump = [100, 250, 500].map(x => [x, approx(slFVMonthly(0, x, f.yearsTo * 12, 7 - 2.5))]);
     h += '<p class="hint">Each extra ' + bump.map(([x, v]) => money(x, { whole: true }) + '/mo adds about ' + money(v, { whole: true })).join('; ') + ' by 67 (7% growth, today\'s dollars).</p>';
   } else if (!m.age) h += '<p class="hint">Add your age and gross pay under Your numbers to carry this to 67.</p>';
   h += '<details class="why"><summary>How this is figured</summary><p class="hint">Dec 31: today\'s balance grows at the account\'s rate, compounded monthly, with the monthly amount added each month for the rest of the year. Year-to-date contributions are estimated from the monthly amount unless you type the stub\'s figure. At 67: the same math over the remaining years with inflation (2.5%) taken out of the growth rate, so the answer reads in today\'s dollars. Savings and checking are not projected that far because they are not meant to be invested for decades.</p></details></section>';
@@ -6804,8 +7044,8 @@ function bindAccounts() {
 function renderGuide() {
   const el = $('#guideBody');
   const step = (n, title, body, go, label) => '<section class="section gstep"><h2><span class="gnum">' + n + '</span>' + title + '</h2>' + body + (go ? '<div class="actions"><button class="btn" data-go="' + go + '">' + label + '</button></div>' : '') + '</section>';
-  let h = '<section class="section" style="margin-top:4px"><h2>How to use PFAT</h2><p class="sub">Twenty minutes the first time, two minutes a month after that. Everything stays on your device; for a safety net, download a backup from Data when you are done.</p></section>';
-  h += step(1, 'Get your transactions in', '<p>Four ways, mix freely:</p><ul class="insights"><li><b>From a file</b> — download a CSV from your bank\'s website (any "export" or "download transactions" link), or drop the monthly PDF statement. OFX/QFX and QIF work too.</li><li><b>Screenshots and scanned statements</b> — banking-app screenshots, photos, and image-only PDFs are read by the open-source Tesseract engine in this browser (' + (PFAT_OFFLINE ? 'built into this file, so it reads them on this device, completely offline' : 'after you agree, it and its English model download from jsDelivr the first time; your pictures stay on this device') + '). Card and investment statements also fill in balances, APR, limits, contributions, and fees. Rows marked "check" deserve a look; fix anything under Recognized text.</li><li><b>Paste text</b> — select the transaction table on the bank\'s website or in a PDF, copy, paste.</li><li><b>By hand</b> — cash, Venmo to a friend, anything a statement leaves out.</li></ul><p>Every import shows a preview first: check that money out is negative and money in is positive (flip a row or the whole file when needed), untick anything already saved, name the account, import. Start with the last three months; more history makes the "usual" numbers better.</p>', 'add:file', 'Go to Add');
+  let h = '<section class="section" style="margin-top:4px"><h2>How to use PFAT</h2><p class="sub">About twenty minutes the first time, then about ten a month: import the month\'s statements and update the balances. Everything stays on your device; for a safety net, download a backup from Data when you are done.</p></section>';
+  h += step(1, 'Get your transactions in', '<p>Four ways, mix freely:</p><ul class="insights"><li><b>From a file</b> — download a CSV from your bank\'s website (any "export" or "download transactions" link), or drop the monthly PDF statement. OFX/QFX and QIF work too.</li><li><b>Screenshots and scanned statements</b> — banking-app screenshots, photos, and image-only PDFs are read by the open-source Tesseract engine in this browser (' + (PFAT_OFFLINE ? 'built into this file, so it reads them on this device, completely offline' : 'after you agree, it and its English model download from jsDelivr the first time; your pictures stay on this device') + '). Card and investment statements also fill in balances, APR, limits, contributions, and fees. Rows marked "check" deserve a look; fix anything under Recognized text.</li><li><b>Paste text</b> — select the transaction table on the bank\'s website or in a PDF, copy, paste.</li><li><b>By hand</b> — cash, Venmo to a friend, anything a statement leaves out. Name the account <b>Cash</b> for cash spending: in the months you type cash, ATM withdrawals count as moving money into cash, so each dollar counts once.</li></ul><p>Every import shows a preview first: check that money out is negative and money in is positive (flip a row or the whole file when needed), untick anything already saved, name the account, import. Start with the last three months; more history makes the "usual" numbers better.</p>', 'add:file', 'Go to Add');
   h += step(2, 'Fix the categories once', '<p>Most transactions are sorted automatically. Open <b>Transactions</b>, search for anything marked Uncategorized or wrong, tap it, pick the category, and tick "use this category for every … transaction" so it stays fixed in future imports. Card payments and transfers to savings are left out of spending totals on purpose, so nothing counts twice.</p>', 'transactions', 'Go to Transactions');
   h += step(3, 'Read the HUD', '<p>Money in, money out, what is left, for this month or any period. Routine bills show expected against actual with "paid on the 5th" or "not seen yet". During the month, totals run through today and compare with the same days last month; a yellow note says when your newest records are over ten days old or an account runs behind the rest. Type card and loan balances at the bottom; they power the debt planner later. Tap any bill to rename it or change the keywords it looks for.</p>', 'hud', 'Go to HUD');
   h += step(4, 'Enter your numbers on Plan', '<p>Age, how often you are paid, gross pay per check, what you and your employer put into retirement. Then list each <b>account</b>: TSP or 401k, IRA, high-yield savings, investing apps such as Fidelity, Robinhood, Stash, or Acorns, with today\'s balance and what goes in monthly. From that the Plan tab shows:</p><ul class="insights"><li>the ideal paycheck split (50/30/20) against your actual spending;</li><li>rent, car, debt, retirement, and emergency-fund guidelines with green / amber / red;</li><li>a retirement check for your age, the room left under this year\'s IRS limits, where each account lands by December 31, and what the investing accounts reach by 67 in today\'s dollars.</li></ul>', 'plan', 'Go to Plan');
@@ -7058,7 +7298,7 @@ function verdictBlock(p) {
   const how = {}; (res.txns || []).forEach(t => { how[t.signBy] = (how[t.signBy] || 0) + 1; });
   const signedRows = (how['printed minus'] || 0) + (how['printed +'] || 0) + (how.CR || 0) + (how.DR || 0);
   const byWords = { column: 'the Debit and Credit columns', heading: 'the section headings', balance: 'the running balance', card: 'the card rule (purchases are money out)', keyword: 'words in the descriptions', default: 'a fallback (money out)' };
-  const printed = !signedRows && c.kind !== 'card' ? 'no signs printed; signs from ' + Object.keys(how).filter(k => byWords[k]).map(k => byWords[k]).join(', ') : c.kind === 'card' ? (c.printed === 'issuer' ? 'printed as the issuer shows it (purchases +, payments \u2212)' : 'printed in your view (purchases \u2212, payments +)') : c.printed === 'issuer' ? 'a minus on this statement means money in' : 'signs as printed (money out \u2212)';
+  const printed = !(res.txns || []).length ? 'no rows read' : !signedRows && c.kind !== 'card' ? 'no signs printed; signs from ' + Object.keys(how).filter(k => byWords[k]).map(k => byWords[k]).join(', ') : c.kind === 'card' ? (c.printed === 'issuer' ? 'printed as the issuer shows it (purchases +, payments \u2212)' : 'printed in your view (purchases \u2212, payments +)') : c.printed === 'issuer' ? 'a minus on this statement means money in' : 'signs as printed (money out \u2212)';
   const outName = c.kind === 'card' ? 'charges' : 'out', inName = c.kind === 'card' ? (inn.length === 1 ? 'payment or credit' : 'payments and credits') : 'in';
   const cs = (p.checks || []).filter(x => x.what !== 'count');
   // after the member applied suggested readings the balance does not prove, a match says so
@@ -7073,6 +7313,18 @@ function verdictBlock(p) {
   if (cs.some(x => !x.ok)) warns.push('The amounts don\'t add up to the statement\'s own totals (listed below).');
   if (warns.length) h += '<ul class="checks warnings">' + warns.map(w => '<li>' + sdot('bad') + '<b>' + esc(w) + '</b></li>').join('') + '</ul>';
   return h + '</div>';
+}
+// A dated line ending in a whole number ("12") is likely a row missing its cents
+function needsLook(u) { return u.reason === 'dated line, no amount read' && /\s\$?\d[\d,]*\s*$/.test(u.text); }
+// A minus read as money in, with nothing on the page to prove it (no totals, no card or bank wording): ask
+function signQRows(p) { return ((p.result || {}).txns || []).filter(t => t.signBy === 'printed minus' && t.amount > 0 && !p.flipRow[t._i]); }
+function signQuestion(p) {
+  const res = p.result || {}, c = res.convention || {};
+  if (p.signAsked || c.printed !== 'issuer' || c.kind === 'card' || (c.evidence || []).length) return '';
+  const cs = (p.checks || []).filter(x => x.what !== 'count'); if (cs.length && cs.every(x => x.ok)) return '';
+  const rows = signQRows(p); if (!rows.length) return '';
+  const names = rows.slice(0, 3).map(t => '<b>' + esc(t.desc) + ' −' + money(t.amount) + '</b>'); if (rows.length > 3) names.push((rows.length - 3) + ' more');
+  return '<div class="notice signq"><p>' + andList(names) + (rows.length === 1 ? ' was' : ' were') + ' printed with a minus. PFAT read ' + (rows.length === 1 ? 'it' : 'them') + ' as money in, the way card statements print credits. Is that right?</p><div class="actions"><button class="btn small" data-signq="in">Yes, money in</button><button class="btn small" data-signq="out">No, a minus means money out</button></div></div>';
 }
 // "Page 1 of 2" in a 1-page file: say which printed pages are not in this file
 function pageGaps(p) {
@@ -7545,6 +7797,7 @@ function feedSheet(sync) {
     '<br><span class="muted small" id="feedCnt' + i + '"></span></div><label>Save as <input type="text" data-feedacct="' + i + '" list="accountList" value="' + esc(a.account) + '"></label></div>').join('') + '</div>';
   if (first.skipped.length) h += '<p class="muted small">Left out, since PFAT works in one currency: ' + esc(first.skipped.join(', ')) + '.</p>';
   h += '<label class="check" id="feedMaybeBox" hidden><input type="checkbox" id="feedMaybe"> <span id="feedMaybeText"></span></label>';
+  if (first.accts.some(a => a.balance != null && !a.bad)) h += '<label class="check"><input type="checkbox" id="feedBal" checked> Keep the balances too: an amount owed on a card counts toward debts and card use, and a checking account\'s balance sets the start of Next 30 days.</label>';
   h += '<div class="actions"><button class="btn primary" id="feedAdd"></button><button class="btn" id="feedNo">Not now</button></div></div>';
   const sheet = $('#sheet'); sheet.innerHTML = h; sheet.hidden = false; trapSheet(); sheetOnClose = null;
   const names = () => { const o = Object.assign({}, m0.map); first.accts.forEach((a, i) => { o[a.key] = ($('[data-feedacct="' + i + '"]').value || '').trim() || a.label; }); return o; };
@@ -7569,6 +7822,20 @@ function feedSheet(sync) {
     paint();
     const withMaybe = $('#feedMaybe').checked, map = names(), added = [];
     for (const a of res.accts) for (const r of withMaybe ? a.fresh.concat(a.maybe) : a.fresh) { const t = makeTxn({ date: r.date, desc: r.desc, amount: r.amount }, a.account, 'simplefin'); t.extId = r.extId; added.push(t); }
+    // balances (unless unticked): a negative one is owed, on a card or (by its name) a loan; the account's kind lets transfers pair;
+    // with one checking account, its balance starts Next 30 days
+    let kept = 0;
+    if ($('#feedBal') && $('#feedBal').checked) {
+      ensureAhead(); const kinds = state.ui.accountKinds = state.ui.accountKinds || {}, checking = [];
+      for (const a of res.accts) {
+        if (a.balance == null || a.bad) continue;
+        const name = a.account, loan = /\b(loan|mortgage|auto|student)\b/i.test(name + ' ' + a.label); kept++;
+        if (a.balance < 0) { state.balances['feed:' + a.key] = Object.assign({}, state.balances['feed:' + a.key], { name, kind: loan ? 'loan' : 'card', balance: slRound2(-a.balance), asOf: a.asOf || slTodayISO() }); if (!loan) kinds[name] = Object.assign({}, kinds[name], { type: 'card' }); }
+        else { const type = /sav/i.test(name + ' ' + a.label) ? 'hysa' : 'checking'; kinds[name] = Object.assign({}, kinds[name], { type }); if (type === 'checking') checking.push(a); }
+      }
+      if (checking.length === 1) state.cash.balance = String(slRound2(checking[0].balance));
+      if (kept && !added.length) slPairTransfers(state.txns, { accounts: accountKinds() });
+    }
     if (added.length) {
       state.txns.push(...added);
       slPairTransfers(state.txns, { accounts: accountKinds() });
@@ -7592,7 +7859,7 @@ function feedSheet(sync) {
     }
     feedHeld = null;
     save(); closeSheet(); renderAll(); renderFeed();
-    toast(added.length ? 'Added ' + added.length + ' transaction' + (added.length === 1 ? '' : 's') + ' from SimpleFIN Bridge' : 'Up to date');
+    toast((added.length ? 'Added ' + added.length + ' transaction' + (added.length === 1 ? '' : 's') + ' from SimpleFIN Bridge' : 'Up to date') + (kept ? '; kept ' + kept + ' balance' + (kept === 1 ? '' : 's') : ''));
   };
   $('#feedNo').onclick = () => closeSheet();
   $('#feedAdd').focus();
@@ -7701,7 +7968,8 @@ function bind() {
       return;
     }
     if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.row[data-id], .crow[data-cat]')) { e.preventDefault(); e.target.click(); } if (e.key === 'Escape' && !$('#sheet').hidden) closeSheet(); });
-  $('#sheet').addEventListener('click', e => { if (e.target === $('#sheet')) closeSheet(); });
+  $('#sheet').addEventListener('click', e => { if (e.target === $('#sheet') && performance.now() - sheetOpened >= 600) closeSheet(); });
+  $('#sheet').addEventListener('mousedown', e => { if (e.target === $('#sheet')) e.preventDefault(); }); // focus stays inside the sheet
   $('#sheet').addEventListener('keydown', sheetKeydown);
   document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.setup')) { if (d.open) openSetups.add(d.dataset.setup); else openSetups.delete(d.dataset.setup); const lbl = d.querySelector('.st-edit'); if (lbl && lbl.textContent) lbl.textContent = d.open ? 'Done' : 'Edit'; } }, true);
   $('#fab').addEventListener('click', () => { showTab('add'); setMode(state.ui.mode || 'manual', true); });
@@ -7779,6 +8047,7 @@ function bind() {
     if (t.id === 'pvReread') { const acct = pending.account, nt = $('#pvOcrText').value; if (nt !== pending.text) pending.applyFixes = false; pending.text = nt; pending.ocrDraft = null; pending.ocrOpen = true; reparse(); pending.account = acct; renderPreview(); toast('Read again'); return; }
     if (t.id === 'pvCancel') { pending = null; renderPreview(); if (fileQueue.length) nextInQueue(); return; }
     if (t.id === 'pvAll' || t.id === 'pvNone') { pending.include = pending.include.map(() => t.id === 'pvAll'); renderPreview(); return; }
+    const sq = t.closest('[data-signq]'); if (sq) { if (sq.dataset.signq === 'out') for (const x of signQRows(pending)) pending.flipRow[x._i] = true; pending.signAsked = sq.dataset.signq; renderPreview(); $('#preview').focus({ preventScroll: true }); return; }
     const flip = t.closest('[data-flip]'); if (flip) { const i = +flip.dataset.flip; pending.flipRow[i] = !pending.flipRow[i]; renderPreview(); const again = $('[data-flip="' + i + '"]'); if (again) again.focus({ preventScroll: true }); return; }
     const fs = t.closest('[data-flipsec]'); if (fs) { const k = +fs.dataset.flipsec; const f = pending.opts.flipSections = pending.opts.flipSections || {}; f[k] = !f[k]; reparse(); renderPreview(); return; }
   });
@@ -7840,7 +8109,24 @@ function bind() {
     const id = e.target.id;
     if (id === 'saveNow') { const was = state.settings.autosave; state.settings.autosave = true; save(); state.settings.autosave = was; renderData(); toast('Saved'); }
     if (id === 'ocrWithdraw') { state.settings.ocrOk = false; save(); renderData(); toast('PFAT will ask before reading pictures again'); return; }
-    if (id === 'clearAll') armConfirm(e.target, 'Tap again to delete everything', () => { state.imports = []; state.settings.ocrOk = false; state.txns = []; state.rules = []; state.customCats = []; state.catOverrides = {}; state.budgets = {}; recentAdds = []; state.bills = null; state.balances = {}; state.plan = null; state.goals = null; state.accounts = null; state.cash = null; state.paycheck = null; state.snapshots = null; state.insurance = null; state.limits = null; state.ui.lastAccount = ''; state.ui.accountKinds = {}; ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup(); try { localStorage.removeItem(STORE_KEY); localStorage.removeItem(OLD_STORE_KEY); localStorage.removeItem('pfat.feed'); } catch (e2) { /* ignore */ } if (!PFAT_OFFLINE) feedForget(); saveWarn(false); renderAll(); renderData(); toast('Everything deleted'); });
+    if (id === 'clearAll') openDeleteSheet();
+  });
+  // Delete everything: a sheet says what goes, offers a backup first, and confirms there (a click within 0.6 s of it opening waits)
+  function openDeleteSheet() {
+    const n = state.txns.length, what = [n + (n === 1 ? ' transaction' : ' transactions')];
+    if (state.rules.length) what.push(state.rules.length + (state.rules.length === 1 ? ' rule' : ' rules'));
+    what.push('your bills, balances, plan numbers, goals, accounts, and snapshots');
+    if (!PFAT_OFFLINE && feedMeta()) what.push('the bank feed\'s saved link');
+    const sheet = $('#sheet');
+    sheet.innerHTML = '<div class="card" role="dialog" aria-modal="true" aria-labelledby="delTitle"><h2 id="delTitle">Delete everything?</h2><p>This removes ' + andList(what) + ' from this browser. Download a backup first to bring it all back later.</p><div class="actions"><button type="button" class="btn primary" id="delBackup">Download a backup first</button><button type="button" class="btn danger" id="delGo">Delete everything</button><button type="button" class="btn" id="delCancel">Cancel</button></div></div>';
+    sheet.hidden = false; trapSheet(); $('#delBackup').focus();
+    $('#delCancel').onclick = closeSheet;
+    $('#delBackup').onclick = () => { saveFile('pfat-backup.json', backupJSON(), 'application/json'); $('#delBackup').textContent = 'Backup downloaded'; };
+    $('#delGo').onclick = () => { if (performance.now() - sheetOpened < 600) return; closeSheet(); deleteEverything(); };
+  }
+  function deleteEverything() { state.imports = []; state.settings.ocrOk = false; state.settings.countCardPayments = false; delete state.settings.cardPayAsked; state.txns = []; state.rules = []; state.customCats = []; state.catOverrides = {}; state.budgets = {}; recentAdds = []; state.bills = null; state.balances = {}; state.plan = null; state.goals = null; state.accounts = null; state.cash = null; state.paycheck = null; state.snapshots = null; state.insurance = null; state.limits = null; state.ui.lastAccount = ''; state.ui.accountKinds = {}; ensureBills(); ensurePlan(); ensureAhead(); ensureCheckup(); try { localStorage.removeItem(STORE_KEY); localStorage.removeItem(OLD_STORE_KEY); localStorage.removeItem('pfat.feed'); } catch (e2) { /* ignore */ } if (!PFAT_OFFLINE) feedForget(); saveWarn(false); renderAll(); renderData(); toast('Everything deleted'); }
+  db.addEventListener('click', e => {
+    const id = e.target.id;
     if (id === 'expCsv') saveFile('pfat-transactions.csv', slToCSV([...state.txns].sort((a, b) => a.date < b.date ? -1 : 1)), 'text/csv');
     if (id === 'expJson') saveFile('pfat-backup.json', backupJSON(), 'application/json');
     if (id === 'copyCsv') copyText(slToCSV(state.txns)).then(ok => toast(ok ? 'CSV copied' : 'Could not copy', !ok));
