@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-MHCg9P+6LYyu7C50vzkfOkLdV3d0VdCBWTT2tEV6bvs=' 'sha256-ZpQI7RjugrvUZQ+I93T8JktBnsprQziHGydfaoAdaCY=' 'sha256-uvebheRNxCcm7FISyQNlQ671HtUeowOWZdNoPpE5t0k=' 'sha256-xLupVAZSr7UsgeUCLOQFctEBJUTLw+Rld1SS7jbA44I=' 'sha256-yqFPYN768BBANUZxjrDG/GFxppOSx5y3kspPKiRUdzk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-MHCg9P+6LYyu7C50vzkfOkLdV3d0VdCBWTT2tEV6bvs=' 'sha256-QJjQobNl7EQfb7s98eDEJXIOc5S+RddlfmY7+7tNTRM=' 'sha256-ZpQI7RjugrvUZQ+I93T8JktBnsprQziHGydfaoAdaCY=' 'sha256-uvebheRNxCcm7FISyQNlQ671HtUeowOWZdNoPpE5t0k=' 'sha256-yqFPYN768BBANUZxjrDG/GFxppOSx5y3kspPKiRUdzk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/defense-ladder/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%8E%93%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -984,7 +984,7 @@ const FLASH=(id,title,cards)=>({t:'flash',id,title,cards});
 const QUIZ=(id,title,items)=>({t:'quiz',id,title,items});
 const MATCH=(id,title,intro,pairs,bloom)=>({t:'match',id,title,intro,pairs,bloom});
 const SPOT=(id,title,intro,lines)=>({t:'spot',id,title,intro,lines});
-const ORDER=(id,title,intro,items,bloom)=>({t:'order',id,title,intro,items,bloom});
+const ORDER=(id,title,intro,items,bloom,o)=>({t:'order',id,title,intro,items,bloom,o:o||{}});
 const LAB=(id,title,intro,steps)=>({t:'lab',id,title,intro,steps});
 const REFLECT=(id,title,prompt,checks)=>({t:'reflect',id,title,prompt,checks});
 const BUILDER=(id,title,intro,sections)=>({t:'builder',id,title,intro,sections});
@@ -2237,7 +2237,7 @@ COMPARE('Snapshot or backup: what is copied, and where the copy lives',[
      ['Network','Layer 3, under the ports: IP addresses and routing carry the data between networks. Routers work here.'],
      ['Data link','Layer 2: once routing picks the next hop, frames and MAC addresses carry the data across one local network. Switches work here.'],
      ['Physical','Bottom, layer 1: every layer above ends here, as bits sent as signals on copper, light in fiber, or radio.']
-   ]),
+   ],null,{layers:true}),
    ORDER('f7o2','TCP/IP drill: the four layers','Now the TCP/IP model, top (closest to the user) to bottom. Each item says which OSI layers it covers.',[
      ['Application: Covers three OSI layers','Top, closest to the user: protocols such as HTTP, DNS, and SSH handle their own formatting and sessions, so this one layer covers the top three OSI layers.'],
      ['Transport: Covers a single OSI layer','Second, right under the programs: TCP and UDP pick the program on each end with port numbers, the same job as OSI layer 4.'],
@@ -4309,18 +4309,20 @@ function renderReplace(oldNode,newNode){
    check on it names the step where it belongs, and the full order opens on request. Marks stay with their step, so
    taking one step out clears only its own mark; the full order stays until the next Check. Focus stays on the list
    after every tap. ---- */
+/* a layer stack (o.layers) is built from the top down and numbered the same way, so the first pick is layer N
+   (layer 7 for OSI) and each number names the layer that belongs there; other orders number their steps from 1 */
 function renderOrder(b){
   const c=el('div','card');
   c.appendChild(el('h3',null,`${b.title}<span class="blm">${b.bloom||'Apply'}</span>`));
   if(b.intro) c.appendChild(el('p','sum',b.intro));
+  const N=b.items.length, L=!!(b.o&&b.o.layers), noun=L?'layer':'step', num=pos=>L?N-pos:pos+1;
   const wrap=el('div','ord');
-  const poolH=el('h4',null,'Steps (tap to add in order)');
+  const poolH=el('h4',null,L?'Layers (tap to add, from the top down)':'Steps (tap to add in order)');
   const pool=el('div','pool');
-  const seqH=el('h4',null,'Your sequence');
+  const seqH=el('h4',null,L?'Your stack, top to bottom':'Your sequence');
   const seq=el('div','seq');
   wrap.append(poolH,pool,seqH,seq);
   c.appendChild(wrap);
-  const N=b.items.length;
   const order=shuffle(b.items.map((it,i)=>({it,i})));
   /* marks: each step's result from the last Check, by step; fails: the failed checks so far */
   let chosen=[], marks=new Map(), fails=0;
@@ -4349,19 +4351,19 @@ function renderOrder(b){
       btn.addEventListener('click',()=>{ const k=[...pool.querySelectorAll('button.oi')].indexOf(btn); chosen.push(o.i); redraw(); refocus(pool,k); });
       pool.appendChild(btn);
     });
-    if(!pool.children.length) pool.appendChild(el('p','sum','Every step is placed. Check the order, or tap a step below to take it out.'));
+    if(!pool.children.length) pool.appendChild(el('p','sum',`Every ${noun} is placed. Check the order, or tap a ${noun} below to take it out.`));
   }
   function drawSeq(){
     seq.innerHTML='';
     chosen.forEach((ci,pos)=>{
       const it=b.items[ci], m=marks.get(ci);
       const w=el('div','ost');
-      const btn=el('button','oi'+(m?(m.ok?' ok':' off'):''),`<span class="n" aria-hidden="true">${pos+1}</span><span><span class="sr">Step ${pos+1}: </span>${it[0]}</span>`);
+      const btn=el('button','oi'+(m?(m.ok?' ok':' off'):''),`<span class="n" aria-hidden="true">${num(pos)}</span><span><span class="sr">${L?'Layer':'Step'} ${num(pos)}: </span>${it[0]}</span>`);
       btn.type='button';btn.title='Tap to take it out';
       btn.addEventListener('click',()=>{ chosen.splice(pos,1); marks.delete(ci); redraw(); refocus(seq,pos); });
       w.appendChild(btn);
       if(m){
-        const lead=m.ok?'In place.':(m.dir==='earlier'?'Comes earlier':m.dir==='later'?'Comes later':'Belongs at another step')+(m.at?': step '+m.at+'.':'.');
+        const lead=m.ok?'In place.':(m.dir==='earlier'?(L?'Sits higher':'Comes earlier'):m.dir==='later'?(L?'Sits lower':'Comes later'):'Belongs at another '+noun)+(m.at?`: ${noun} ${m.at}.`:'.');
         const r=el('div','oreason'+(m.ok?' ok':''),`<b>${lead}</b> ${it[1]}`);
         r.id=b.id+'-or'+ci; btn.setAttribute('aria-describedby',r.id);
         w.appendChild(r);
@@ -4377,7 +4379,7 @@ function renderOrder(b){
     if(pill.textContent!=='Completed before.'){ pill.textContent=''; pill.className='pill'; }
   }
   check.addEventListener('click',()=>{
-    if(chosen.length<N){ pill.textContent=`Place every step first: ${N-chosen.length} to go`; pill.className='pill'; return; }
+    if(chosen.length<N){ pill.textContent=`Place every ${noun} first: ${N-chosen.length} to go`; pill.className='pill'; return; }
     const res=chosen.map((ci,pos)=>({ci,pos,ps:spots(ci)}));
     res.forEach(x=>{ x.ok=x.ps.includes(x.pos); });
     const ok=res.every(x=>x.ok), right=res.filter(x=>x.ok).length;
@@ -4385,17 +4387,18 @@ function renderOrder(b){
     marks=new Map();
     res.forEach(x=>{
       const lo=Math.min(...x.ps), hi=Math.max(...x.ps);
-      marks.set(x.ci,{ok:x.ok,dir:x.ok?null:x.pos<lo?'later':x.pos>hi?'earlier':null,at:!x.ok&&fails>1?x.ps.map(k=>k+1).join(' or '):''});
+      /* a layer's reason already names its layer, so only steps get the "belongs at" hint */
+      marks.set(x.ci,{ok:x.ok,dir:x.ok?null:x.pos<lo?'later':x.pos>hi?'earlier':null,at:!x.ok&&fails>1&&!L?x.ps.map(num).join(' or '):''});
     });
     drawSeq();
     whyWrap.innerHTML='';
-    if(ok){ pill.textContent='Perfect order'; pill.className='pill ok'; store.set(b.id,{done:true}); refreshChrome(); whyWrap.appendChild(el('p','sum','Each step shows why it sits where it does.')); }
+    if(ok){ pill.textContent='Perfect order'; pill.className='pill ok'; store.set(b.id,{done:true}); refreshChrome(); whyWrap.appendChild(el('p','sum',`Each ${noun} shows why it sits where it does.`)); }
     else{
-      pill.textContent=`${right} of ${N} steps in place`; pill.className='pill';
-      whyWrap.appendChild(el('p','sum',fails>1?'Each step shows its reason, and each step to move now names the step where it belongs. Tap it to take it out, place it again, and check.':'Each step shows its reason, and each step to move says whether it comes earlier or later. Tap it to take it out, place it again, and check.'));
+      pill.textContent=`${right} of ${N} ${noun}s in place`; pill.className='pill';
+      whyWrap.appendChild(el('p','sum',L?'Each layer shows its reason, which names its layer, and each layer to move says whether it sits higher or lower. Tap it to take it out, place it again, and check.':fails>1?'Each step shows its reason, and each step to move now names the step where it belongs. Tap it to take it out, place it again, and check.':'Each step shows its reason, and each step to move says whether it comes earlier or later. Tap it to take it out, place it again, and check.'));
       if(fails>1){
         const d=el('details','ofull');d.innerHTML='<summary>Show the full order with every reason</summary>';
-        b.items.forEach((it,i)=>d.appendChild(el('div','why',`<b>${i+1}. ${it[0]}.</b> ${it[1]}`)));
+        b.items.forEach((it,i)=>d.appendChild(el('div','why',`<b>${L?'':num(i)+'. '}${it[0]}.</b> ${it[1]}`)));
         whyWrap.appendChild(d);
       }
     }
