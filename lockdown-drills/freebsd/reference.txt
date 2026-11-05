@@ -55,6 +55,7 @@
 [B-01] List users, UID 0 accounts, and the wheel group
   AREA: Account management (CIS Control 5)
   # pw usershow -a | awk -F: '$3>=1000 && $3<65534 {print $1" uid="$3" shell="$10}'
+  # cat /etc/passwd     (same 7 fields as Linux; the third is the UID)
   # awk -F: '$3==0 {print $1}' /etc/passwd
   # awk -F: '$1=="toor" {print $1": "$2}' /etc/master.passwd
   # pw groupshow wheel
@@ -65,14 +66,17 @@
   NOTE: toor with a real hash instead of * means someone set it a password. That
         is a finding.
 
-[B-02] Remove or lock an unauthorized user
+[B-02] Remove, lock, or add a user to match the brief
   AREA: Account management (CIS Control 5)
   # pw userdel -n baduser -r
   # pw lock baduser
   # pw unlock baduser
   # pw usermod baduser -s /usr/sbin/nologin
+  # pw useradd -n lani -m -s /bin/sh; passwd lani     (a user the brief lists is missing)
   WHY: userdel -r removes the home directory and its planted files; pw lock
-       keeps the account for the investigation but no password works.
+       keeps the account for the investigation but no password works. pw useradd
+       -m makes the home directory, and adduser asks the same questions one at a
+       time.
   NOTE: Check ps -U baduser first and kill their processes. The brief decides.
 
 [B-03] Fix wheel membership
@@ -150,10 +154,12 @@
       pass out all keep state
       pass in on $ext_if proto tcp to port 22 keep state     (only if SSH is required)
       anchor "blocklistd/*" in on $ext_if
-  # sysrc pf_enable=YES pflog_enable=YES
+  # sysrc pf_enable=YES pf_rules=/etc/pf.conf pflog_enable=YES     (every boot: pf on, this ruleset, and pflog0)
   # pfctl -nf /etc/pf.conf
   # service pf start
   # pfctl -sr; pfctl -si
+  # pfctl -f /etc/pf.conf     (reload after each edit; pf stays on or off as it was)
+  # pfctl -e     (when pfctl -si shows Status: Disabled)
   WHY: Default-deny inbound covers the service you have not found yet. pfctl -nf
        parses without loading, so a typo cannot leave you with no rules.
   NOTE: Enabling pf over SSH without a pass rule for 22 drops your session;
@@ -161,12 +167,15 @@
         firewall_enable=YES firewall_type=workstation
         firewall_myservices="22/tcp" firewall_allowservices="any"; service
         ipfw start.
+  ALSO: After each later edit to pf.conf, test it with pfctl -nf, then load it
+        with pfctl -f. pfctl -e turns filtering on and prints pf enabled.
 
 [B-08] Updates: base system and packages
   AREA: Patching (CIS Control 7)
   # pkg which /bin/sh            (names a FreeBSD- base package only on a pkgbase install)
   # freebsd-update fetch install            (classic install: base system and kernel)
   # pkg update && pkg upgrade -y            (packages; on a pkgbase install, the base system too)
+  # pkg upgrade -r FreeBSD-base     (pkgbase: the base system only; reboot for a new kernel)
   # pkg audit -F
   # freebsd-version -kru
   WHY: Classic installs patch base and kernel with freebsd-update and packages
@@ -199,6 +208,7 @@
   # service -e
   # sysrc -a | grep -i enable
   # sockstat -46l
+  # sockstat -4 -l     (IPv4 listeners only; -46l adds IPv6)
   # sysrc rpcbind_enable=NO; service rpcbind stop     (when nothing needs NFS or NIS)
   # grep -vE '^#' /etc/inetd.conf
   # sysrc inetd_enable=NO; service inetd stop
@@ -216,12 +226,17 @@
   # sysrc syslogd_flags="-ss"
   # sysrc sendmail_enable=NONE
   # cat /etc/rc.local 2>/dev/null
+  OK boot -s     (loader prompt, from boot menu option 3; test last, after the sysrc lines)
   WHY: An insecure console makes single-user mode ask for root's password.
        syslogd -ss keeps syslog off the network; clear_tmp empties /tmp at
        boot; sendmail_enable=NONE (now the default) keeps sendmail listeners
        off.
   NOTE: If the machine has a desktop (slim, lightdm, gdm), also turn off
         auto-login in its config under /usr/local/etc.
+  ALSO: To test the console setting, reboot, pick 3 at the boot menu to reach
+        the OK loader prompt, and type boot -s; menu option 2, Boot Single user,
+        does the same. With the console insecure, single-user mode asks for
+        root's password before it opens a shell.
 
 ------------------------------ WATCHMAN ----------------------------------------
  Check the windows. sshd, sudo and doas, cron and periodic, rc.d and shell
@@ -236,12 +251,18 @@
       PermitRootLogin no        PermitEmptyPasswords no     MaxAuthTries 3
       LoginGraceTime 30         X11Forwarding no            UseBlocklist yes
       PasswordAuthentication yes or no per the brief      AllowUsers alice bob
+  # sysrc sshd_enable=YES; service sshd start; service sshd status     (SSH required but off)
+  # service sshd onestart     (instead: runs until reboot; sshd_enable stays NO)
   # sshd -t && service sshd restart
   # find / -name authorized_keys -exec ls -l {} \; -exec cat {} \; 2>/dev/null
   WHY: Root over SSH means no accountability and the prime brute-force target. A
        planted authorized_keys file is a password-less backdoor that survives
        every password you fix.
-  NOTE: Not required: sysrc sshd_enable=NO; service sshd stop.
+  NOTE: Not required: sysrc sshd_enable=NO; service sshd stop. Required but off:
+        sysrc turns SSH on at every boot, service sshd start makes any missing
+        host keys and checks the config before it starts sshd, and service sshd
+        status prints sshd is running as pid 655. service sshd onestart runs it
+        until the next reboot while sshd_enable stays NO.
 
 [I-02] sudo and doas audit
   AREA: Access control (CIS Control 6)
@@ -281,6 +302,7 @@
   # chmod 600 /etc/master.passwd /etc/spwd.db; chown root:wheel /etc/master.passwd /etc/spwd.db
   # chmod 644 /etc/passwd /etc/pwd.db /etc/group
   # pwd_mkdb -p /etc/master.passwd
+  # vipw     (safe master.passwd edit; runs pwd_mkdb for you)
   # find / -xdev -type f -perm -0002 2>/dev/null
   # find / -xdev -type d -perm -0002 ! -perm -1000 2>/dev/null
   # find / -xdev -type f \( -perm -4000 -o -perm -2000 \) 2>/dev/null
@@ -290,17 +312,22 @@
        it for you). Unexpected SUID binaries are instant root.
   NOTE: Normal SUID set includes su, sudo, passwd, chpass, login, ping, and
         mount-related helpers. Anything in /tmp, /home or /usr/local/bin that is
-        SUID: investigate.
+        SUID: investigate. vipw locks master.passwd, checks each line when you
+        save, and rebuilds the databases; use it to set toor's hash back to *.
 
 [I-06] File flags: the chattr of FreeBSD
   AREA: Secure configuration (CIS Control 4)
   # ls -lo /etc/master.passwd /etc/passwd /etc/group /etc/rc.conf /etc/ssh/sshd_config
   # chflags noschg /etc/master.passwd
   # chflags -R noschg /tmp/evil && rm -rf /tmp/evil
+  # chflags schg /etc/pf.conf     (only when the brief asks; ls -lo shows schg)
   # sysctl kern.securelevel
   WHY: schg makes a file immutable: pw, passwd, and vi fail with a misleading
        Operation not permitted; sappnd is append-only. ls -lo shows flags;
        kern.securelevel 1+ locks them until single-user reboot.
+  NOTE: chflags schg freezes a finished file, such as pf.conf, against every
+        change, yours included. chflags noschg undoes it while kern.securelevel
+        is 0 or -1.
 
 [I-07] Processes and connections: find the backdoor
   AREA: Malware defenses (CIS Control 10)
@@ -394,6 +421,7 @@
 [A-02] Package integrity, vulnerable packages, rootkits
   AREA: Malware defenses (CIS Control 10)
   # pkg check -s -a
+  # freebsd-update IDS     (classic install: base files that differ from the release)
   # pkg audit -F
   # pkg install -y rkhunter chkrootkit clamav
   # rkhunter --propupd && rkhunter -c --sk
@@ -403,6 +431,11 @@
   WHY: pkg check -s checksums every installed file, exposing a replaced sshd
        or ls. pkg audit names packages with known CVEs. nc ships in base; a
        copy elsewhere is a backdoor.
+  ALSO: freebsd-update IDS lists each base-system file whose hash differs from
+        the signed release, in lines such as /usr/sbin/sshd has SHA256 hash
+        1f0c..., but should have SHA256 hash 7a9e... A changed binary in /bin,
+        /sbin, or /usr/sbin is a finding, and edited files in /etc are expected.
+        On a pkgbase install, pkg check -s -a covers the base too.
 
 [A-03] PAM deep dive
   AREA: Access control (CIS Control 6)
