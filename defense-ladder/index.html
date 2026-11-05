@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-MHCg9P+6LYyu7C50vzkfOkLdV3d0VdCBWTT2tEV6bvs=' 'sha256-QJjQobNl7EQfb7s98eDEJXIOc5S+RddlfmY7+7tNTRM=' 'sha256-ZpQI7RjugrvUZQ+I93T8JktBnsprQziHGydfaoAdaCY=' 'sha256-uvebheRNxCcm7FISyQNlQ671HtUeowOWZdNoPpE5t0k=' 'sha256-yqFPYN768BBANUZxjrDG/GFxppOSx5y3kspPKiRUdzk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-MHCg9P+6LYyu7C50vzkfOkLdV3d0VdCBWTT2tEV6bvs=' 'sha256-QJjQobNl7EQfb7s98eDEJXIOc5S+RddlfmY7+7tNTRM=' 'sha256-o8frsSmzFODT6MgqAQuP60nJU69PZP5OjlcNq+Em9Jc=' 'sha256-uvebheRNxCcm7FISyQNlQ671HtUeowOWZdNoPpE5t0k=' 'sha256-yqFPYN768BBANUZxjrDG/GFxppOSx5y3kspPKiRUdzk='; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="canonical" href="https://freeapp4that.store/defense-ladder/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%8E%93%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -10321,7 +10321,7 @@ LADDER.addLevel({
    ],{intro:'A file’s first bytes, its signature, give its real type whatever the name says. Read them without running the file.',
      note:'<b>Two kinds of signature.</b> A file signature names the type; a digital signature is a publisher’s cryptographic seal (Get-AuthenticodeSignature checks it). Check both: a signed file can be the wrong type, and a right-type file can be unsigned.',
      bloom:'Apply'}),
-     P('Format-Hex in PowerShell 7 on Windows, and <code>xxd</code> or <code>file</code> on Linux, show the signature. Kai checks invoice_0412.pdf, a second attachment Pua left unopened:'),
+     P('Format-Hex on Windows, and <code>xxd</code> or <code>file</code> on Linux, show the signature. PowerShell 7 takes <code>-Count 8</code>; Windows PowerShell 5.1, built into Windows, shows the first row with <code>| Select-Object -First 1</code>. Kai checks invoice_0412.pdf, a second attachment Pua left unopened:'),
      TERM('PS> Format-Hex .\\invoice_0412.pdf -Count 8\n          Offset Bytes                    Ascii\n0000000000000000 4D 5A 90 00 03 00 00 00  MZ......\n\n$ file invoice_0412.pdf\ninvoice_0412.pdf: PE32+ executable (GUI) x86-64, for MS Windows')),
    QUIZ('j13ck3','Check yourself',[
      ['Format-Hex shows statement.pdf begins 4D 5A. What is it?',['A PDF with a damaged header','A ZIP archive','A JPEG photo','A Windows program named to look like a PDF'],3,'4D 5A is MZ, the signature of a Windows program. A real PDF begins %PDF.',{whys:['A damaged PDF still begins %PDF.','A ZIP begins PK (50 4B).','A JPEG begins FF D8 FF.','4D 5A is MZ: a Windows program in costume.'],imp:'core',c:'det-forensics'}]
