@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <!-- tool4that:head -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-7aW1WjrL4vJRDgHvsOoHXGyjM/OWtVAeQdMNtyGMCvw=' 'sha256-JF3u9vsNxHD3z4Bur2Xpd6M8PxCIQsaw0FYLi+ZEPU4=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/ https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/ https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/; connect-src data: https://beta-bridge.simplefin.org/simplefin/ https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eRyzXa7mwZp7JkI4L5RG4yB106JzuyK2RvoTErF3ESs=' 'sha256-loHkRvokmaQZXV9rAG0Krfi9YvavelacUiEiE5BTUqA=' 'sha256-ltkjnw66bIy7opiUE9KThzttAvGthjR29/4l9KdBAjs=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1/ https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/ https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/; connect-src data: https://beta-bridge.simplefin.org/simplefin/ https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng@1.0.0/4.0.0_best_int/; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
-<meta name="description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out HUD, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
+<meta name="description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out Home summary, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
 <link rel="canonical" href="https://freeapp4that.store/spend-lens/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2790%27%3E%F0%9F%93%8A%3C%2Ftext%3E%3C%2Fsvg%3E">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tool4That">
 <meta property="og:title" content="PFAT — Personal Finance Advisor Tool">
-<meta property="og:description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out HUD, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
+<meta property="og:description" content="See where your money goes. Add transactions by hand, paste text, or import bank, card, and investment statements (CSV, PDF, scanned PDFs, and screenshots, read on your device), then get a money-in, money-out Home summary, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.">
 <meta property="og:url" content="https://freeapp4that.store/spend-lens/">
 <meta property="og:image" content="https://freeapp4that.store/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -232,6 +232,8 @@ summary { cursor: pointer; color: var(--accent); font-weight: 500; }
 
 /* HUD */
 .hud-table { border-top: 1px solid var(--line); overflow-x: auto; }
+.verdict-line { margin: 12px 0 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); line-height: 1.5; }
+.verdict-line .btn.link { padding: 0 2px; min-height: 0; font-weight: 600; }
 /* a table wider than the screen (very large text) scrolls inside itself; its rows keep their focus ring inside it */
 .hud-table [tabindex]:focus-visible { outline-offset: -2px; }
 .bill { display: grid; grid-template-columns: 1fr 6rem 6rem; gap: 4px 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line-2); cursor: pointer; }
@@ -450,9 +452,9 @@ footer { margin-top: 40px; color: var(--ink-3); font-size: 0.8rem; }
 
   <div class="tabwrap">
   <nav class="tabs" role="tablist" aria-label="Sections">
-    <button class="tab is-active" role="tab" id="tabbtn-hud" aria-controls="tab-hud" aria-selected="true" data-tab="hud">HUD</button>
+    <button class="tab is-active" role="tab" id="tabbtn-hud" aria-controls="tab-hud" aria-selected="true" data-tab="hud">Home</button>
     <button class="tab" role="tab" id="tabbtn-plan" aria-controls="tab-plan" aria-selected="false" tabindex="-1" data-tab="plan">Plan</button>
-    <button class="tab" role="tab" id="tabbtn-ahead" aria-controls="tab-ahead" aria-selected="false" tabindex="-1" data-tab="ahead">Ahead</button>
+    <button class="tab" role="tab" id="tabbtn-ahead" aria-controls="tab-ahead" aria-selected="false" tabindex="-1" data-tab="ahead">Next 30 days</button>
     <button class="tab" role="tab" id="tabbtn-check" aria-controls="tab-check" aria-selected="false" tabindex="-1" data-tab="check">Checkup</button>
     <button class="tab" role="tab" id="tabbtn-overview" aria-controls="tab-overview" aria-selected="false" tabindex="-1" data-tab="overview">Overview</button>
     <button class="tab" role="tab" id="tabbtn-transactions" aria-controls="tab-transactions" aria-selected="false" tabindex="-1" data-tab="transactions">Transactions <span class="count" id="txCount" hidden></span></button>
@@ -610,7 +612,7 @@ const SL_DEFAULT_RULES = [
   ['walmart','Groceries'],['wal-mart','Groceries'],['wm supercenter','Groceries'],['target','Groceries'],['safeway','Groceries'],['kroger','Groceries'],
   ['albertsons','Groceries'],['publix','Groceries'],['h-e-b','Groceries'],['heb ','Groceries'],['wegmans','Groceries'],['aldi','Groceries'],['lidl','Groceries'],
   ['trader joe','Groceries'],['whole foods','Groceries'],['wholefds','Groceries'],['foodland','Groceries'],['times supermarket','Groceries'],['don quijote','Groceries'],
-  ['commissary','Groceries'],['deca ','Groceries'],['costco','Groceries'],["sam's club",'Groceries'],['sams club','Groceries'],['samsclub','Groceries'],['food lion','Groceries'],
+  ['commissary','Groceries'],['supermarket','Groceries'],['auto ins','Insurance'],['car ins','Insurance'],['deca ','Groceries'],['costco','Groceries'],["sam's club",'Groceries'],['sams club','Groceries'],['samsclub','Groceries'],['food lion','Groceries'],
   ['giant food','Groceries'],['stop & shop','Groceries'],['meijer','Groceries'],['winco','Groceries'],['sprouts','Groceries'],['fred meyer','Groceries'],['ralphs','Groceries'],
   ['vons','Groceries'],['harris teeter','Groceries'],['hy-vee','Groceries'],['instacart','Groceries'],['grocery','Groceries'],['market basket','Groceries'],
   ['7-eleven','Groceries'],['7 eleven','Groceries'],['piggly','Groceries'],['smiths food','Groceries'],['shoprite','Groceries'],['king soopers','Groceries'],['tamura','Groceries'],
@@ -739,7 +741,7 @@ const SL_DEFAULT_RULES = [
   // Income (only applied to positive amounts)
   ['dfas','Income'],['dfas-cleveland','Income'],['dfas-in','Income'],['payroll','Income'],['direct dep','Income'],['direct deposit','Income'],['salary','Income'],['paycheck','Income'],
   ['pay roll','Income'],['va benefit','Income'],['ssa treas','Income'],['irs treas','Income'],['tax ref','Income'],['tax refund','Income'],['deposit','Income'],['interest paid','Income'],
-  ['interest earned','Income'],['interest credit','Income'],['dividend','Income'],['cashback','Income'],['cash back','Income'],['reward','Income'],['refund','Refunds (unsorted)'],['return','Refunds (unsorted)'],['reimburse','Income'],
+  ['interest earned','Income'],['interest credit','Income'],['dividend','Income'],['cashback','Income'],['cash back','Income'],['reward','Income'],['refund','Refunds (unsorted)'],['return','Refunds (unsorted)'],['reimburse','Refunds (unsorted)'],
   ['rebate','Income'],['mobile deposit','Income'],['check deposit','Income'],['bonus','Income'],
   ['payout','Income'],['earnings','Income'],['dasher pay','Income'],['shopper pay','Income'],['driver pay','Income'],['stripe transfer','Income'],
   ['cashout','Transfer'],['cash out','Transfer'],['cash app cash out','Transfer'],['instant pay','Income'],['express pay','Income'],['fast pay','Income'],['maplebear','Income'],['spark driver','Income'],['amazon flex','Income']
@@ -3316,9 +3318,9 @@ function slStatementDetails(text, opts) {
       const m = l.match(/(?<![\d.])(\d{1,2}(?:\.\d{1,3})?)\s?%/); if (m && +m[1] >= 5 && +m[1] <= 40) { d.apr = +m[1]; break; }
     }
   } else if (kind === 'investment') {
-    d.subtype = /roth/i.test(title) ? 'Roth IRA' : /individual retirement|\bira\b/i.test(title) ? 'IRA' : /401\s?\(?k\)?|thrift savings|\btsp\b|403\s?\(?b\)?/i.test(title) ? '401(k)/TSP'
+    d.subtype = /roth/i.test(title) ? 'Roth IRA' : /individual retirement|\bira\b/i.test(title) ? 'IRA' : /401\s?\(?k\)?|thrift savings|\btsp\b|403\s?\(?b\)?/i.test(title) ? '401(k)'
       : (SL_CRYPTO_INST.includes(d.institution) || /\bcrypto/i.test(title)) ? 'Crypto' : /\b529\b/.test(title) ? '529' : 'Brokerage';
-    d.accountType = /IRA/.test(d.subtype) ? 'ira' : d.subtype === '401(k)/TSP' ? 'tsp' : d.subtype === '529' ? 'other' : 'brokerage';
+    d.accountType = /IRA/.test(d.subtype) ? 'ira' : d.subtype === '401(k)' ? 'tsp' : d.subtype === '529' ? 'other' : 'brokerage';
     const skip = /^(beginning|opening|previous|starting)\b/i, lend = /\b(loan|loaned|lending|collateral)\b/i;
     // the table a line sits in: the nearest heading above it (up to 60 lines); a lending, loaned or collateral table's
     // totals are never the account's value or its holdings total
@@ -4619,8 +4621,8 @@ function slSampleData(todayISO) {
   for (let m = 0; m < 4; m++) months.push(slAddMonths(start, m).slice(0, 7));
   for (const ym of months) {
     const d = (day) => { const last = +slMonthEnd(ym + '-01').slice(8, 10); return ym + '-' + slPad2(Math.min(day, last)); };
-    if (d(1) <= today) add(d(1), 'DFAS-CLEVELAND FED SALARY', 2850.00);
-    if (d(15) <= today) add(d(15), 'DFAS-CLEVELAND FED SALARY', 2850.00);
+    if (d(1) <= today) add(d(1), 'KAIAULU HEALTH PAYROLL DIRECT DEP', 2850.00);
+    if (d(15) <= today) add(d(15), 'KAIAULU HEALTH PAYROLL DIRECT DEP', 2850.00);
     if (d(1) <= today) add(d(1), 'ONLINE PAYMENT TO PACIFIC PROPERTY MGMT RENT', -2350.00);
     if (d(3) <= today) add(d(3), 'HAWAIIAN ELECTRIC CO ONLINE PMT', -(210 + rnd() * 60));
     if (d(6) <= today) add(d(6), 'SPECTRUM INTERNET', -89.99);
@@ -4628,13 +4630,13 @@ function slSampleData(todayISO) {
     if (d(12) <= today) add(d(12), 'NETFLIX.COM', -15.49);
     if (d(14) <= today) add(d(14), 'SPOTIFY USA', -11.99);
     if (d(18) <= today) add(d(18), 'APPLE.COM/BILL 866-712-7753 CA', -2.99);
-    if (d(20) <= today) add(d(20), 'USAA P&C AUTOPAY INSURANCE', -168.40);
+    if (d(20) <= today) add(d(20), 'MAUNA KEA AUTO INS PREMIUM', -168.40);
     if (d(16) <= today) add(d(16), 'ONLINE TRANSFER TO SAVINGS XXXX5521', -400.00);
     if (d(22) <= today) add(d(22), 'CAPITAL ONE CRCARDPMT AUTOPAY', -(300 + rnd() * 400));
     if (d(25) <= today) add(d(25), 'CHEWY.COM', -(45 + rnd() * 20));
     for (let w = 0; w < 4; w++) {
       const day = 2 + w * 7 + Math.floor(rnd() * 3);
-      if (d(day) <= today) add(d(day), pick(['COMMISSARY HICKAM HI', 'FOODLAND KAPOLEI HI', 'SAFEWAY #1234 KAPOLEI HI', 'COSTCO WHSE #1251 KAPOLEI HI']), -(95 + rnd() * 110));
+      if (d(day) <= today) add(d(day), pick(['MAKAI GROCERY KAPOLEI HI', 'FOODLAND KAPOLEI HI', 'SAFEWAY #1234 KAPOLEI HI', 'COSTCO WHSE #1251 KAPOLEI HI']), -(95 + rnd() * 110));
       if (d(day + 1) <= today) add(d(day + 1), pick(['ALOHA PETROLEUM #42 KAPOLEI HI', 'COSTCO GAS #1251 KAPOLEI HI', 'SHELL OIL 12345678 EWA BEACH HI']), -(48 + rnd() * 30));
       if (d(day + 2) <= today) add(d(day + 2), pick(['STARBUCKS 1234 KAPOLEI HI', "ZIPPY'S KAPOLEI", 'TST* L&L HAWAIIAN BBQ', 'CHICK-FIL-A #03741', 'DD *DOORDASH PANDAEXPRESS', 'UBER *EATS']), -(9 + rnd() * 38));
       if (d(day + 3) <= today) add(d(day + 3), pick(['AMZN MKTP US*2K4LM31Q0 AMZN.COM/BILL WA', 'AMAZON.COM*HK7Y55C21', 'TARGET 00011234 KAPOLEI HI', 'WAL-MART #2213 KAPOLEI HI']), -(14 + rnd() * 90));
@@ -4666,7 +4668,7 @@ const SL_DEFAULT_BILLS = [
   { id: 'car-payment', name: 'Car payment', kind: 'loan', kws: ['auto loan', 'car payment', 'car loan', 'honda fin', 'toyota fin', 'ford credit', 'gm financial', 'ally auto', 'capital one auto', 'nissan motor', 'hyundai capital', 'kia finance', 'carmax auto', 'nfcu auto', 'usaa auto', 'santander consumer', 'chase auto', 'wells fargo auto', 'toyota motor credit', 'honda finance'], cat: '' },
   { id: 'student-loan', name: 'Student loan', kind: 'loan', kws: ['student loan', 'navient', 'nelnet', 'mohela', 'sallie mae', 'great lakes', 'fedloan', 'aidvantage', 'edfinancial'], cat: '' },
   { id: 'car-insurance', name: 'Car insurance', kind: 'bill', kws: ['geico', 'progressive', 'state farm', 'allstate', 'liberty mutual', 'farmers ins', 'nationwide', 'usaa p&c', 'usaa insurance', 'auto ins', 'car ins', 'armed forces ins', 'afi '], cat: '' },
-  { id: 'renters-insurance', name: 'Renters / home insurance', kind: 'bill', kws: ['renter', 'lemonade', 'home ins', 'homeowner', 'usaa renters', 'hippo'], cat: '' },
+  { id: 'renters-insurance', name: 'Renters / home insurance', kind: 'bill', kws: ['renter', 'home ins', 'homeowner', 'lemonade', 'hippo', 'usaa renters'], cat: '' },
   { id: 'phone', name: 'Phone', kind: 'bill', kws: ['t-mobile', 'tmobile', 'verizon', 'at&t', 'att*', 'mint mobile', 'cricket wireless', 'google fi', 'boost mobile', 'visible', 'metro by t', 'us cellular', 'wireless'], cat: '' },
   { id: 'internet', name: 'Internet', kind: 'bill', kws: ['spectrum', 'xfinity', 'comcast', 'cox comm', 'hawaiian telcom', 'hawaiiantel', 'centurylink', 'lumen', 'starlink', 'internet', 'fiber', 'frontier comm'], cat: '' },
   { id: 'power', name: 'Power', kind: 'bill', kws: ['electric', 'heco', 'hawaiian electric', 'pg&e', 'duke energy', 'energy', 'power co', 'edison', 'utility'], cat: '' },
@@ -4850,7 +4852,7 @@ function slPlanActuals(txns, bills, catMap, n, todayISO, opts) {
   const set = new Set(months);
   const inRange = txns.filter(t => set.has(t.date.slice(0, 7)) && t.date <= today);
   const k = partial ? 1 : months.length;
-  const byCat = {}; let income = 0, cardPay = 0, saveOut = 0, unsortedIn = 0;
+  const byCat = {}; let income = 0, oneOff = 0, cardPay = 0, saveOut = 0, unsortedIn = 0;
   for (const t of inRange) {
     if (t.excluded) continue;
     // a matched transfer counts once, on the savings side, whichever way it went (in is saving, out is a withdrawal)
@@ -4864,7 +4866,7 @@ function slPlanActuals(txns, bills, catMap, n, todayISO, opts) {
       if (catMap[t.category] && catMap[t.category].excluded) continue;
       byCat[t.category] = (byCat[t.category] || 0) + (-t.amount);
     } else if (t.amount > 0) {
-      if (t.category === 'Income') income += t.amount;
+      if (t.category === 'Income') { if (slOneOffIncome(t)) oneOff += t.amount; else income += t.amount; }
       else if (t.category === 'Uncategorized') unsortedIn += t.amount;
       else if (!(catMap[t.category] && catMap[t.category].excluded) && t.category !== 'Credit card payment') byCat[t.category] = (byCat[t.category] || 0) - t.amount;
     }
@@ -4879,8 +4881,29 @@ function slPlanActuals(txns, bills, catMap, n, todayISO, opts) {
   let needs = 0, wants = 0, unsorted = 0, spend = 0, cardBuys = 0;
   for (const [c, v] of Object.entries(byCat)) { const vv = Math.max(0, v); spend += vv; if (SL_NEEDS.includes(c)) needs += vv; else if (c === 'Uncategorized') unsorted += vv; else if (c === SL_CARD_PURCHASES) cardBuys += vv; else wants += vv; }
   const essentials = needs;
-  return { months, k, partial, days, cardBuys: slRound2(cardBuys / k), income: slRound2(income / k), spend: slRound2(spend / k), needs: slRound2(needs / k), wants: slRound2(wants / k), unsorted: slRound2(unsorted / k), cardPay: slRound2(cardPay / k), saveOut: slRound2(saveOut / k), unsortedIn: slRound2(unsortedIn / k), essentials: slRound2(essentials / k), billAvg, byCat: Object.fromEntries(Object.entries(byCat).map(([c, v]) => [c, slRound2(Math.max(0, v) / k)])) };
+  return { months, k, partial, days, oneOff: slRound2(oneOff), cardBuys: slRound2(cardBuys / k), income: slRound2(income / k), spend: slRound2(spend / k), needs: slRound2(needs / k), wants: slRound2(wants / k), unsorted: slRound2(unsorted / k), cardPay: slRound2(cardPay / k), saveOut: slRound2(saveOut / k), unsortedIn: slRound2(unsortedIn / k), essentials: slRound2(essentials / k), billAvg, byCat: Object.fromEntries(Object.entries(byCat).map(([c, v]) => [c, slRound2(Math.max(0, v) / k)])) };
 }
+/* ---------- Steady or varying pay ---------- */
+/* A tax refund is your own overpaid tax coming back: a one-off, outside monthly income */
+const SL_ONEOFF_IN = /\b(?:tax ref(?:und)?|tax rfd|irs treas|treas 310)\b/i;
+function slOneOffIncome(t) { return t.category === 'Income' && t.amount > 0 && SL_ONEOFF_IN.test(String(t.desc || '') + ' ' + String(t.merchant || '')); }
+/* Pay that varies from month to month: paychecks, or (for monthly and twice-a-month pay) month totals, that spread more than 20%
+   around their average (commission, tips, shifts, side gigs), or income with no regular payday across three or more months. lowest: the smallest recent full month's
+   pay, a planner's base for the budget. Returns null with too little pay to judge. */
+function slPaySteadiness(txns, todayISO) {
+  const today = todayISO || slTodayISO();
+  const pay = txns.filter(t => t.category === 'Income' && t.amount > 0 && !t.excluded && !slOneOffIncome(t));
+  if (pay.length < 3) return null;
+  const months = slRecentMonths(pay, 6, today).filter(m => m < today.slice(0, 7));
+  const byMonth = months.map(m => pay.filter(t => t.date.slice(0, 7) === m).reduce((a, t) => a + t.amount, 0));
+  const pat = slPaydayPattern(pay, today);
+  const spread = (v) => { if (v.length < 3) return 0; const mean = v.reduce((a, x) => a + x, 0) / v.length; return mean > 0 ? Math.sqrt(v.reduce((a, x) => a + (x - mean) * (x - mean), 0) / v.length) / mean : 0; };
+  // paychecks that differ, or (for monthly and twice-a-month pay, whose months hold the same number of paychecks) month totals
+  // that differ because other pay comes in around the paychecks
+  const varies = !pat ? months.length >= 3 : spread(pat.amounts || []) > 0.2 || (['monthly', 'semimonthly'].includes(pat.cadence) && spread(byMonth) > 0.2);
+  return { varies, regular: !!pat, lowest: byMonth.length ? slRound2(Math.min(...byMonth)) : null, months: months.length };
+}
+if (typeof module !== 'undefined') Object.assign(module.exports, { SL_ONEOFF_IN, slOneOffIncome, slPaySteadiness });
 if (typeof module !== 'undefined') Object.assign(module.exports, { SL_RULES, SL_RETIRE_MULTIPLES, SL_NEEDS, SL_CARD_PURCHASES, SL_PAY_KWS, slRetireMultiple, slChecksPerMonth, slStatusCap, slStatusFloor, slFutureValue, slRecentMonths, slPlanActuals });
 
 /* ---------- Ahead: debt payoff ---------- */
@@ -4942,7 +4965,7 @@ function slSemiAnchors(dates) {
 function slPayShift(iso) { const w = slWeekday(iso); return w === 6 ? slAddDays(iso, -1) : w === 0 ? slAddDays(iso, -2) : iso; }
 function slPaydayPattern(txns, todayISO) {
   const today = todayISO || slTodayISO();
-  const inc = txns.filter(t => t.amount > 0 && t.category === 'Income' && !t.excluded).sort((a, b) => a.date < b.date ? -1 : 1);
+  const inc = txns.filter(t => t.amount > 0 && t.category === 'Income' && !t.excluded && !slOneOffIncome(t)).sort((a, b) => a.date < b.date ? -1 : 1);
   if (inc.length < 2) return null;
   // merge same-day deposits
   const byDay = {}; for (const t of inc) byDay[t.date] = (byDay[t.date] || 0) + t.amount;
@@ -4986,7 +5009,7 @@ function slPaydayPattern(txns, todayISO) {
   } else {
     const step = cadence === 'weekly' ? 7 : 14; let d = last; while (next.length < 6) { d = slAddDays(d, step); if (d >= today) next.push(d); }
   }
-  return { cadence, typical, last, next: next.slice(0, 5) };
+  return { cadence, typical, last, next: next.slice(0, 5), amounts: amounts.slice(-8) };
 }
 
 /* ---------- Ahead: 30-day projection ---------- */
@@ -5053,7 +5076,7 @@ if (typeof module !== 'undefined') Object.assign(module.exports, { slDebtPlan, s
 
 /* ---------- Accounts & year forecast ---------- */
 const SL_ACCOUNT_TYPES = [
-  { id: 'tsp', label: '401k / TSP / 403b', rate: 7, retirement: true, limit: 'deferral' },
+  { id: 'tsp', label: '401k / 403b / 457', rate: 7, retirement: true, limit: 'deferral' },
   { id: 'ira', label: 'IRA (traditional or Roth)', rate: 7, retirement: true, limit: 'ira' },
   { id: 'brokerage', label: 'Brokerage / investing app', rate: 7, retirement: false, limit: null },
   { id: 'hysa', label: 'High-yield savings / emergency fund', rate: 4, retirement: false, limit: null },
@@ -5122,7 +5145,7 @@ const PFAT_DOWNLOADS = 'https://freeapp4that.store/finance/'; // PFAT's hub card
 const state = {
   txns: [], rules: [], customCats: [], catOverrides: {}, budgets: {}, bills: null, balances: {}, plan: null, accounts: null, goals: null, cash: null, paycheck: null, snapshots: null, insurance: null, limits: null,
   settings: { currency: '$', autosave: true, dayFirst: false, theme: 'auto', countCardPayments: false },
-  ui: { aheadSec: 'debts', checkSec: 'paycheck', moreSec: 'guide', tab: 'hud', period: 'thisMonth', from: '', to: '', account: '', q: '', cat: '', sort: 'date-desc', shown: 150, mode: 'manual', lastAccount: '' }
+  ui: { aheadSec: 'cash', checkSec: 'paycheck', moreSec: 'guide', tab: 'hud', period: 'thisMonth', from: '', to: '', account: '', q: '', cat: '', sort: 'date-desc', shown: 150, mode: 'manual', lastAccount: '' }
 };
 let pending = null;
 let fileQueue = [];
@@ -5307,12 +5330,15 @@ function load() {
       state.txns = c.txns.map(cleanTxn);
       for (const k of ['imports', 'rules', 'customCats', 'catOverrides', 'budgets', 'bills', 'balances', 'plan', 'goals', 'snapshots', 'accounts', 'cash', 'paycheck', 'insurance', 'limits']) state[k] = c[k];
       Object.assign(state.settings, cleanSettings(d.settings, false));
-      if (d.ui) Object.assign(state.ui, { period: d.ui.period || 'thisMonth', from: d.ui.from || '', to: d.ui.to || '', lastAccount: d.ui.lastAccount || '', aheadSec: d.ui.aheadSec || 'debts', checkSec: d.ui.checkSec || 'paycheck', moreSec: d.ui.moreSec || 'guide', accountKinds: cleanKinds(d.ui.accountKinds) });
+      if (d.ui) Object.assign(state.ui, { period: d.ui.period || 'thisMonth', from: d.ui.from || '', to: d.ui.to || '', lastAccount: d.ui.lastAccount || '', aheadSec: d.ui.aheadSec || 'cash', checkSec: d.ui.checkSec || 'paycheck', moreSec: d.ui.moreSec || 'guide', accountKinds: cleanKinds(d.ui.accountKinds) });
     }
   } catch (e) { console.warn('Could not load saved data', e); }
 }
 function storageBytes() { try { return (localStorage.getItem(STORE_KEY) || '').length; } catch (e) { return 0; } }
-function applyHudLabel() { const b = $('.tab[data-tab="hud"]'); if (b) b.textContent = state.settings.hudLabel === 'Home' ? 'Home' : 'HUD'; }
+// The first tab's name: Home, unless the member picks HUD under Data; text that names the tab follows the choice
+function homeName() { return state.settings.hudLabel === 'HUD' ? 'HUD' : 'Home'; }
+function theHome() { return homeName() === 'HUD' ? 'the HUD' : 'Home'; }
+function applyHudLabel() { const b = $('.tab[data-tab="hud"]'); if (b) b.textContent = homeName(); }
 function applyTheme() { const t = state.settings.theme; if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); else document.documentElement.removeAttribute('data-theme'); }
 
 /* ---------- formatting ---------- */
@@ -5559,7 +5585,7 @@ function insights(s, prev, cur, rec, r, span) {
   if (s.largest.length) { const L = s.largest[0]; out.push('Largest single expense: <b>' + money(-L.amount) + '</b> at ' + esc(L.desc) + ' on ' + esc(slFmtDate(L.date)) + '.'); }
   if (s.income > 0) out.push(s.net >= 0 ? (r && r.partial ? 'So far, you kept <b>' : 'You kept <b>') + money(s.net) + '</b> (' + pct(s.net, s.income) + ') of what came in.' : 'You spent <b>' + money(-s.net) + '</b> more than came in this period.');
   const dupCount = slFindDuplicates(cur).length;
-  if (dupCount) out.push(dupCount + (dupCount === 1 ? ' possible duplicate charge' : ' possible duplicate charges') + ' in this period — listed under <button class="btn link" data-go="ahead:alerts">Ahead → Alerts</button>.');
+  if (dupCount) out.push(dupCount + (dupCount === 1 ? ' possible duplicate charge' : ' possible duplicate charges') + ' in this period — listed under <button class="btn link" data-go="ahead:alerts">Next 30 days → Alerts</button>.');
   if (s.uncategorized.count) out.push('<b>' + s.uncategorized.count + '</b> transactions (' + money(s.uncategorized.amount) + ' out' + (s.unsortedIn ? ', ' + money(s.unsortedIn) + ' in, not counted as income or refunds' : '') + ') are still uncategorized. <button class="btn link" data-cat="Uncategorized">Sort them</button> for a sharper picture.');
   return out.slice(0, 7);
 }
@@ -5803,7 +5829,7 @@ function reparse(first) {
     if (p.kind === 'csv') { res = slRowsToTxns(p.rows, p.map, { dayFirst: p.opts.dayFirst, flip: p.opts.flip }); if (first) p.opts.flip = res.flip; }
     else if (p.kind === 'ofx') { res = slParseOFX(p.text); if (first && res.account) p.account = res.account; if (p.opts.flip) res.txns.forEach(t => t.amount = -t.amount); }
     else if (p.kind === 'qif') { res = slParseQIF(p.text, { dayFirst: p.opts.dayFirst }); if (p.opts.flip) res.txns.forEach(t => t.amount = -t.amount); }
-    else if (p.kind === 'json') { res = slParseJSON(p.text); if (p.opts.flip) res.txns.forEach(t => t.amount = -t.amount); }
+    else if (p.kind === 'json') { p.locked = p.locked || lockedOf(p.text); if (p.locked) res = { txns: [], locked: true }; else { res = slParseJSON(p.text); if (p.opts.flip) res.txns.forEach(t => t.amount = -t.amount); } }
     else {
       const kind = p.opts.kind || undefined;
       res = slParseStatementText(p.text, { dayFirst: p.opts.dayFirst, lastIsBalance: p.opts.lastIsBalance, defaultYear: p.opts.defaultYear || null, ocr: !!p.fromOcr, ocrCents: p.opts.ocrCents !== false, lineConf: p.lineConf, ocrRows: p.ocrRows && p.text === p.ocrText ? p.ocrRows : null, kind, flipSections: p.opts.flipSections || {} });
@@ -5894,7 +5920,7 @@ function reparse(first) {
   p.flipRow = {}; res.txns.forEach(t => { if (!first && oldFlip[t._key]) p.flipRow[t._i] = true; });
   p.result = res;
 }
-// The kind of each own account, for pairing transfers (statements imported, cards on the HUD, Plan accounts)
+// The kind of each own account, for pairing transfers (statements imported, cards on Home, Plan accounts)
 function accountKinds() {
   const out = Object.assign({}, (state.ui && state.ui.accountKinds) || {});
   for (const v of Object.values(state.balances || {})) if (v && v.kind === 'card' && v.name) out[v.name] = Object.assign({ type: 'card' }, out[v.name] || {}, { type: 'card', last4: v.last4 || (out[v.name] || {}).last4 || null });
@@ -5935,6 +5961,11 @@ function renderPreview() {
   const dupes = res.txns.filter(t => t._dupe).length;
   let h = '<h2>Check before importing</h2><p class="muted small">' + esc(p.name) + ' · read as ' + esc(kindName) + (fileQueue.length ? ' · ' + fileQueue.length + ' more file' + (fileQueue.length > 1 ? 's' : '') + ' waiting' : '') + '</p>';
   if (res.error) h += '<div class="notice">Could not read this: ' + esc(res.error) + '</div>';
+  if (res.locked) {
+    pv.innerHTML = h + '<p>This backup is locked. Its passphrase opens it here, on this device.</p><div class="form"><label>Passphrase <input type="password" id="pvPass" autocomplete="off"></label></div><div class="actions"><button class="btn primary" id="pvUnlock">Unlock</button><button class="btn" id="pvCancel">Cancel</button></div>';
+    pv.hidden = false; $('#pvPass').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); unlockPending(); } });
+    return;
+  }
   const unread = res.unread || [], skippedLines = res.skippedLines || [];
   const look = skippedLines.filter(needsLook), quiet = skippedLines.filter(u => !needsLook(u));
   if (p.kind === 'text') {
@@ -6097,10 +6128,12 @@ function renderData() {
   let h = '<section class="section" style="margin-top:4px"><h2>Your data</h2><dl class="kv"><dt>Transactions</dt><dd>' + state.txns.length + (b.min ? ' (' + esc(slFmtDate(b.min)) + ' – ' + esc(slFmtDate(b.max)) + ')' : '') + '</dd><dt>Accounts</dt><dd>' + (esc(accounts().join(', ')) || '—') + '</dd><dt>Saved in this browser</dt><dd>' + (bytes ? (bytes / 1024).toFixed(1) + ' KB' : 'nothing yet') + '</dd></dl>' +
     '<label class="check" style="margin-top:10px"><input type="checkbox" id="autosave"' + (state.settings.autosave ? ' checked' : '') + '> Keep my data in this browser between visits</label>' +
     '<div class="actions"><button class="btn" id="saveNow">Save now</button><button class="btn danger" id="clearAll">Delete everything</button></div></section>';
-  h += '<section class="section"><h2>Export</h2><p class="sub">A CSV opens in any spreadsheet. The backup file restores transactions, rules, categories, budgets, and display settings on another device, via Add → From a file. It holds your data as plain text, so keep it somewhere private.</p><div class="actions"><button class="btn primary" id="expCsv">Download CSV</button><button class="btn" id="expJson">Download backup</button><button class="btn" id="copyCsv">Copy CSV to clipboard</button></div></section>';
-  h += '<section class="section"><h2>Print a report</h2><p class="sub">Prints the tab you choose, without the controls. Pick HUD or Overview and a period, then print; save as PDF from the print dialog to share.</p><div class="actions"><button class="btn" id="printHud">Print the HUD</button><button class="btn" id="printOverview">Print the Overview</button></div></section>';
+  h += '<section class="section"><h2>Export</h2><p class="sub">A CSV opens in any spreadsheet. The backup file restores transactions, rules, categories, budgets, and display settings on another device, via Add → From a file. It holds your data as plain text unless you lock it, so keep it somewhere private.</p>' +
+    (canLock() ? '<label class="check"><input type="checkbox" id="expLock"> Lock the backup with a passphrase</label><div class="form" id="expLockBox" hidden><div class="grid2"><label>Passphrase (8 or more characters) <input type="password" id="expPass" autocomplete="new-password"></label><label>Passphrase again <input type="password" id="expPass2" autocomplete="new-password"></label></div><p class="hint">A locked backup opens only with this passphrase, here or on another device. Keep it somewhere safe: it is the only way to open the file.</p></div>' : '') +
+    '<div class="actions"><button class="btn primary" id="expCsv">Download CSV</button><button class="btn" id="expJson">Download backup</button><button class="btn" id="copyCsv">Copy CSV to clipboard</button></div></section>';
+  h += '<section class="section"><h2>Print a report</h2><p class="sub">Prints the tab you choose, without the controls. Pick ' + homeName() + ' or Overview and a period, then print; save as PDF from the print dialog to share.</p><div class="actions"><button class="btn" id="printHud">Print ' + theHome() + '</button><button class="btn" id="printOverview">Print the Overview</button></div></section>';
   h += '<section class="section"><h2>Sample data</h2><p class="sub">Four months of made-up transactions for trying things out.</p><div class="actions">' + (hasSample ? '<button class="btn" data-act="removeSample">Remove sample data</button>' : '<button class="btn" data-act="sample">Load sample data</button>') + '</div></section>';
-  h += '<section class="section"><h2>Appearance</h2><div class="grid2"><label>Theme <select id="theme"><option value="auto"' + (state.settings.theme === 'auto' ? ' selected' : '') + '>Match device</option><option value="light"' + (state.settings.theme === 'light' ? ' selected' : '') + '>Light</option><option value="dark"' + (state.settings.theme === 'dark' ? ' selected' : '') + '>Dark</option></select></label><label>Currency symbol <input type="text" id="currency" maxlength="4" value="' + esc(state.settings.currency) + '"></label><label>Call the first tab <select id="hudLabel"><option value="HUD"' + (state.settings.hudLabel !== 'Home' ? ' selected' : '') + '>HUD</option><option value="Home"' + (state.settings.hudLabel === 'Home' ? ' selected' : '') + '>Home</option></select></label></div><label class="check"><input type="checkbox" id="dayFirst"' + (state.settings.dayFirst ? ' checked' : '') + '> My bank writes dates day-first (DD/MM/YYYY)</label></section>';
+  h += '<section class="section"><h2>Appearance</h2><div class="grid2"><label>Theme <select id="theme"><option value="auto"' + (state.settings.theme === 'auto' ? ' selected' : '') + '>Match device</option><option value="light"' + (state.settings.theme === 'light' ? ' selected' : '') + '>Light</option><option value="dark"' + (state.settings.theme === 'dark' ? ' selected' : '') + '>Dark</option></select></label><label>Currency symbol <input type="text" id="currency" maxlength="4" value="' + esc(state.settings.currency) + '"></label><label>Call the first tab <select id="hudLabel"><option value="Home"' + (homeName() === 'Home' ? ' selected' : '') + '>Home</option><option value="HUD"' + (homeName() === 'HUD' ? ' selected' : '') + '>HUD</option></select></label></div><label class="check"><input type="checkbox" id="dayFirst"' + (state.settings.dayFirst ? ' checked' : '') + '> My bank writes dates day-first (DD/MM/YYYY)</label></section>';
   h += '<section class="section"><h2>Privacy</h2><div class="privacy"><p>Everything you add is parsed and analyzed in this browser tab and stays on this device.' + (PFAT_OFFLINE ? ' This file works completely offline.' : '') + '</p><p>If you keep data between visits, it lives in this browser\'s local storage on this device only. Data saved in a private window disappears when that window closes, and clearing site data removes it.</p>' +
     (PFAT_OFFLINE ? '<p>Two open-source libraries are built into this file and run on this device: pdf.js 3.11.174 (Apache-2.0) reads PDFs, and Tesseract (tesseract.js and tesseract.js-core 5.1.1, Apache-2.0, with the English model from @tesseract.js-data/eng 1.0.0, MIT) reads screenshots and scanned statements. Their license notices, with those of the libraries built into them, sit at the end of this file; open it in a text editor to read them.</p>'
       : '<p>Two open-source libraries can be fetched when you need them: pdf.js from cdnjs to read PDFs, and Tesseract (Apache 2.0) from jsDelivr to read screenshots and scanned statements. Only the libraries and the English model download; your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in and reads PDFs and pictures completely offline.</p>') + (!PFAT_OFFLINE && state.settings.ocrOk ? '<p>You agreed to read pictures with Tesseract. <button class="btn small" id="ocrWithdraw">Stop reading pictures</button> (PFAT asks again next time).</p>' : '') + (PFAT_OFFLINE ? '' : feedPrivacyNote()) + '</div></section>';
@@ -6128,6 +6161,33 @@ async function saveFile(filename, text, mime) {
   return ok;
 }
 async function copyText(text) { try { await navigator.clipboard.writeText(text); return true; } catch (e) { try { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok; } catch (e2) { return false; } } }
+/* ---------- Locked backups: AES-GCM, with a key from the passphrase (PBKDF2-SHA256, 600,000 rounds) ---------- */
+const LOCK_ITER = 600000;
+function lockB64(u8) { let s = ''; for (let i = 0; i < u8.length; i += 32768) s += String.fromCharCode.apply(null, u8.subarray(i, i + 32768)); return btoa(s); }
+function lockUnB64(s) { return Uint8Array.from(atob(s), ch => ch.charCodeAt(0)); }
+function canLock() { return !!(window.crypto && crypto.subtle); }
+async function lockKey(pass, salt, iter) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function lockText(text, pass) {
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const data = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await lockKey(pass, salt, LOCK_ITER), new TextEncoder().encode(text)));
+  return JSON.stringify({ app: 'pfat', version: 1, locked: { cipher: 'AES-GCM', kdf: 'PBKDF2-SHA256', iter: LOCK_ITER, salt: lockB64(salt), iv: lockB64(iv), data: lockB64(data) } });
+}
+async function unlockText(lk, pass) { return new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: lockUnB64(lk.iv) }, await lockKey(pass, lockUnB64(lk.salt), lk.iter), lockUnB64(lk.data))); }
+// A locked PFAT backup's lock (its rounds kept within reason, so a file can't stall the page), else null
+function lockedOf(text) {
+  try {
+    const o = JSON.parse(text), lk = o && o.app === 'pfat' && isObj(o.locked) ? o.locked : null;
+    return lk && ['salt', 'iv', 'data'].every(k => typeof lk[k] === 'string') && Number.isInteger(lk.iter) && lk.iter >= 100000 && lk.iter <= 2000000 ? lk : null;
+  } catch (e) { return null; }
+}
+async function unlockPending() {
+  const p = pending, inp = $('#pvPass'); if (!p || !p.locked || !inp) return;
+  try { p.text = await unlockText(p.locked, inp.value); p.locked = null; reparse(true); renderPreview(); $('#preview').focus({ preventScroll: true }); }
+  catch (e) { fieldErr(inp, 'This backup opens with a different passphrase. Check it and try again.'); }
+}
 function backupJSON() { return JSON.stringify({ app: 'pfat', version: 1, exported: new Date().toISOString(), imports: state.imports || [], txns: state.txns, rules: state.rules, customCats: state.customCats, catOverrides: state.catOverrides, budgets: state.budgets, bills: state.bills, balances: state.balances, plan: state.plan, accounts: state.accounts, goals: state.goals, cash: state.cash, paycheck: state.paycheck, snapshots: state.snapshots, insurance: state.insurance, limits: state.limits, settings: state.settings }, null, 1); }
 function loadSample() {
   const rows = slSampleData();
@@ -6166,6 +6226,26 @@ function recordsPast(fresh, day, accts) {
   if (own.length) latest = own[own.length - 1];
   const today = slTodayISO(); return latest.slice(0, 7) === today.slice(0, 7) && +latest.slice(8, 10) > day;
 }
+// One line on Home answers "how am I doing": last month's result, what is due in the next 14 days, a category running
+// high this month, and the alerts. It shows for This month across all accounts, once a full month is on record.
+function homeVerdict(r) {
+  if (state.ui.period !== 'thisMonth' || state.ui.account) return '';
+  ensureAhead();
+  const today = slTodayISO(), parts = [], txns = moneyTxns();
+  const lm = slPeriodRange('lastMonth', null, null, null, today), first = dataBounds().min;
+  if (first && first <= lm.from) {
+    const s = slSummarize(slFilter(txns, { from: lm.from, to: lm.to }), catMap, lm);
+    if (s.income > 0 || s.spend > 0) { const left = slRound2(s.income - s.spend); parts.push('<b>' + SL_MON[+lm.from.slice(5, 7) - 1] + ':</b> ' + (left >= 0 ? 'kept ' + money(left, { whole: true }) + (s.income ? ' (' + pct(left, s.income) + ' of money in)' : '') : money(-left, { whole: true }) + ' more went out than came in')); }
+  }
+  const due = cashEvents(today, slAddDays(today, 14)).events.filter(e => e.amount < 0 && ['bill', 'card', 'recurring'].includes(e.kind));
+  if (due.length) { const names = [...new Set(due.map(e => e.label))], shown = names.slice(0, 2); if (names.length > 2) shown.push((names.length - 2) + ' more'); parts.push('<b>Next 14 days:</b> ' + money(-due.reduce((a, e) => a + e.amount, 0), { whole: true }) + ' due (' + esc(andList(shown)) + ')'); }
+  const pa = slPlanActuals(txns, state.bills, catMap, 3, null, planOpts());
+  const hot = slPacing(txns, catMap, state.budgets, pa ? pa.byCat : null).find(x => x.status !== 'good');
+  if (hot) parts.push('<b>Watch:</b> ' + esc(hot.category) + (hot.status === 'bad' ? ' is over ' : ' is on pace to pass ') + (hot.isBudget ? 'its budget' : 'its usual'));
+  const n = (renderAlerts().match(/class="sdot/g) || []).length;
+  parts.push(n ? '<button class="btn link" data-go="ahead:alerts">' + n + (n === 1 ? ' alert' : ' alerts') + '</button> to look at' : '<b>Alerts:</b> all clear');
+  return parts.length > 1 ? '<p class="verdict-line">' + parts.join(' · ') + '</p>' : '';
+}
 function renderHud() {
   const el = $('#hudBody');
   if (!state.txns.length) { el.innerHTML = emptyState(); return; }
@@ -6184,7 +6264,7 @@ function renderHud() {
   const left = slRound2(s.income - s.spend);
   const single = !!(r.from && r.to && r.from.slice(0, 7) === r.to.slice(0, 7) && r.from.slice(8) === '01');
   const months = Math.max(1, Math.round(s.days / 30.4));
-  let h = '<div class="figures hud">' +
+  let h = homeVerdict(r) + '<div class="figures hud">' +
     '<div class="figure"><div class="label">Money in</div><div class="value in">' + money(s.income) + '</div><div class="delta">' + (months > 1 ? money(s.income / months) + ' per month' : '') + '</div></div>' +
     '<div class="figure"><div class="label">Money out</div><div class="value out">' + money(s.spend) + '</div><div class="delta">' + (months > 1 ? money(s.spend / months) + ' per month' : '') + '</div></div>' +
     '<div class="figure"><div class="label">Left over</div><div class="value ' + (left < 0 ? 'out' : '') + '">' + money(left) + '</div><div class="delta">' + (s.income ? (left < 0 ? 'more out than in' : pct(left, s.income) + ' of money in') : '') + '</div></div></div>';
@@ -6288,7 +6368,7 @@ function openBillEdit(id) {
 }
 function openAccountAdd() {
   const sheet = $('#sheet');
-  sheet.innerHTML = '<div class="card" role="dialog" aria-modal="true" aria-label="Add card or loan"><h2>Add a card or loan</h2><form id="acctForm" class="form" autocomplete="off"><label>Name <input type="text" id="aName" required placeholder="e.g. Discover"></label><div class="grid2"><label>Type <select id="aKind"><option value="card">Credit card</option><option value="loan">Loan</option></select></label><label>Balance owed <input type="text" inputmode="decimal" id="aBal" placeholder="0.00"></label></div><p class="hint">Payments for it will still be picked up automatically when a matching transaction exists; this just keeps the balance on the HUD.</p><div class="actions"><button type="submit" class="btn primary">Add</button><button type="button" class="btn" id="aCancel">Cancel</button></div></form></div>';
+  sheet.innerHTML = '<div class="card" role="dialog" aria-modal="true" aria-label="Add card or loan"><h2>Add a card or loan</h2><form id="acctForm" class="form" autocomplete="off"><label>Name <input type="text" id="aName" required placeholder="e.g. Discover"></label><div class="grid2"><label>Type <select id="aKind"><option value="card">Credit card</option><option value="loan">Loan</option></select></label><label>Balance owed <input type="text" inputmode="decimal" id="aBal" placeholder="0.00"></label></div><p class="hint">Payments for it will still be picked up automatically when a matching transaction exists; this just keeps the balance on ' + theHome() + '.</p><div class="actions"><button type="submit" class="btn primary">Add</button><button type="button" class="btn" id="aCancel">Cancel</button></div></form></div>';
   sheet.hidden = false; trapSheet(); $('#aName').focus();
   $('#aCancel').onclick = closeSheet;
   $('#acctForm').onsubmit = (ev) => { ev.preventDefault(); const name = $('#aName').value.trim(); if (!name) return; const a = slParseAmountToken($('#aBal').value); state.balances['manual:' + slUid()] = { name, kind: $('#aKind').value, balance: a ? Math.abs(a.value) : 0 }; save(); closeSheet(); renderHud(); renderAhead(); toast('Added'); };
@@ -6333,14 +6413,16 @@ function planModel() {
   let retireFromAccounts = false;
   if (p.contrib === '' && p.match === '' && grossM > 0) { const tspMonthly = accountsOfType(['tsp']).reduce((a, x) => a + num(x.monthly), 0); if (tspMonthly > 0) { contrib = tspMonthly / grossM; match = 0; retireFromAccounts = true; } }
   const retireM = grossM * contrib, matchM = grossM * match;
-  return { p, cpm, act, grossCheck, grossM, grossY, netM, netCheck, netFromData: !netCheckIn, contrib, match, retireM, matchM, age: +p.age || 0, retireBal: retAcc.length ? accountsSum(['tsp', 'ira']) : num(p.retireBal), efBal: efAcc.length ? accountsSum(['hysa']) : num(p.efBal), retFromAccounts: retAcc.length > 0, efFromAccounts: efAcc.length > 0, retireFromAccounts };
+  // pay that varies month to month: planners suggest 6 to 12 months of essentials, where steady pay needs 3 to 6
+  const steady = history.length ? slPaySteadiness(history) : null, efLo = steady && steady.varies ? 6 : SL_RULES.efMonthsMin, efHi = steady && steady.varies ? 12 : SL_RULES.efMonthsMax;
+  return { p, cpm, act, steady, efLo, efHi, grossCheck, grossM, grossY, netM, netCheck, netFromData: !netCheckIn, contrib, match, retireM, matchM, age: +p.age || 0, retireBal: retAcc.length ? accountsSum(['tsp', 'ira']) : num(p.retireBal), efBal: efAcc.length ? accountsSum(['hysa']) : num(p.efBal), retFromAccounts: retAcc.length > 0, efFromAccounts: efAcc.length > 0, retireFromAccounts };
 }
 function renderPlan() {
   const el = $('#planBody');
   const m = planModel(); const p = m.p; const R = SL_RULES;
   const per = (monthly) => money(monthly / m.cpm) + ' per check · ' + money(monthly) + ' a month';
   const planSummary = m.grossM ? (m.age ? 'Age ' + m.age + ' · ' : '') + esc(FREQ_LABEL[p.freq]) + ' · ' + money(m.grossCheck, { whole: true }) + ' gross per check' + (p.contrib !== '' || p.match !== '' ? ' · retirement ' + Math.round(m.contrib * 100) + '% + ' + Math.round(m.match * 100) + '%' : '') : 'Add your age and gross pay to start';
-  let h = '<section class="section" style="margin-top:4px">' + setupBlock('plan', 'Your numbers', planSummary, !!(m.grossM && m.age), '<p class="hint" style="margin-top:10px">Only what the guidelines need; they follow US rules of thumb and IRS limits. Nothing here leaves your device. Changes apply as you type.</p>' +
+  let h = '<section class="section" style="margin-top:4px">' + setupBlock('plan', 'Your numbers', planSummary, !!(m.grossM && m.age), '<p class="hint" style="margin-top:10px">Only what the guidelines need; they follow US rules of thumb and the federal contribution limits. Nothing here leaves your device. Changes apply as you type.</p>' +
     '<form id="planForm" class="form"><div class="grid3">' +
     '<label>Age <input type="number" id="pAge" min="16" max="100" value="' + esc(p.age) + '" placeholder="e.g. 34"></label>' +
     '<label>Paid <select id="pFreq">' + Object.entries(FREQ_LABEL).map(([k, v]) => '<option value="' + k + '"' + (p.freq === k ? ' selected' : '') + '>' + v + '</option>').join('') + '</select></label>' +
@@ -6348,7 +6430,7 @@ function renderPlan() {
     '<label>Take-home per check <input type="text" inputmode="decimal" id="pNet" value="' + esc(p.net) + '" placeholder="' + (m.act && m.act.income ? money(m.act.income / m.cpm, { whole: true }) + ' seen' : '0.00') + '"></label>' +
     '<label>You put into retirement (% of gross) <input type="text" inputmode="decimal" id="pContrib" value="' + esc(p.contrib) + '" placeholder="' + (m.retireFromAccounts ? 'from your account: ' + Math.round(m.contrib * 100) + '%' : 'e.g. 5, or set $/mo on the account below') + '"></label>' +
     '<label>Employer adds (% of gross) <input type="text" inputmode="decimal" id="pMatch" value="' + esc(p.match) + '" placeholder="e.g. 5"></label>' +
-    '<label>Retirement balance today (TSP, 401k, IRA…) <input type="text" inputmode="decimal" id="pRetireBal" value="' + esc(p.retireBal) + '" placeholder="' + (m.retFromAccounts ? esc(money(m.retireBal, { whole: true })) + ' (accounts)' : '0.00') + '"' + (m.retFromAccounts ? ' disabled' : '') + '></label>' +
+    '<label>Retirement balance today (401k, 403b, IRA…) <input type="text" inputmode="decimal" id="pRetireBal" value="' + esc(p.retireBal) + '" placeholder="' + (m.retFromAccounts ? esc(money(m.retireBal, { whole: true })) + ' (accounts)' : '0.00') + '"' + (m.retFromAccounts ? ' disabled' : '') + '></label>' +
     '<label>Emergency fund balance <input type="text" inputmode="decimal" id="pEfBal" value="' + esc(p.efBal) + '" placeholder="' + (m.efFromAccounts ? esc(money(m.efBal, { whole: true })) + ' (accounts)' : '0.00') + '"' + (m.efFromAccounts ? ' disabled' : '') + '></label>' +
     '</div><div class="actions" style="margin-top:0;padding-bottom:12px"><button type="submit" class="btn small">Save</button></div></form>') + '</section>';
   h += renderAccountsSection(m);
@@ -6384,16 +6466,19 @@ function renderPlan() {
   const cardDebt = cards.filter(v => +v.balance > 0 && +v.apr > 0).reduce((s0, v) => s0 + +v.balance, 0);
   const dti = a ? rent + loans + cardMins : null;
   const retirePct = m.contrib + m.match;
-  const efTargetLo = a ? a.essentials * R.efMonthsMin : 0, efTargetHi = a ? a.essentials * R.efMonthsMax : 0;
+  const efTargetLo = a ? a.essentials * m.efLo : 0, efTargetHi = a ? a.essentials * m.efHi : 0;
   const efMonths = a && a.essentials ? m.efBal / a.essentials : null;
   h += '<section class="section"><h2>Guidelines against your numbers</h2><p class="sub">' + note + '</p><div class="hud-table"><div class="bill head"><span class="name">Rule of thumb</span><span class="num">Guideline</span><span class="num">Yours</span></div>';
   const line = (name, rule, target, actualText, status, detail) => '<div class="bill plan"><span class="name">' + name + '<span class="pm">' + rule + '</span></span><span class="num">' + target + '</span><span class="num actual">' + (actualText == null ? '—' : sdot(status) + actualText) + '</span>' + (detail ? '<span class="status">' + detail + '</span>' : '') + '</div>';
-  h += line('Rent or mortgage', 'no more than 30% of gross pay', money(m.grossM * R.rentPctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.rentPctGross) + ' per check</span>', rent == null ? null : money(rent) + '<span class="pm">' + Math.round(rent / m.grossM * 100) + '% of gross</span>', rent == null ? 'none' : capR(rent, m.grossM * R.rentPctGross), 'Lenders use 28%; above 30% is what HUD calls cost-burdened. ' + cap(sword(rent == null ? 'none' : capR(rent, m.grossM * R.rentPctGross))));
+  h += line('Rent or mortgage', 'no more than 30% of gross pay', money(m.grossM * R.rentPctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.rentPctGross) + ' per check</span>', rent == null ? null : money(rent) + '<span class="pm">' + Math.round(rent / m.grossM * 100) + '% of gross</span>', rent == null ? 'none' : capR(rent, m.grossM * R.rentPctGross), 'Lenders use 28%; above 30% is what housing agencies call cost-burdened. ' + cap(sword(rent == null ? 'none' : capR(rent, m.grossM * R.rentPctGross))));
   h += line('Car payment + insurance', 'no more than 10% of gross pay (20/4/10 rule)', money(m.grossM * R.carPctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.carPctGross) + ' per check</span>', car == null ? null : money(car) + '<span class="pm">' + Math.round(car / m.grossM * 100) + '% of gross</span>', car == null ? 'none' : capR(car, m.grossM * R.carPctGross), '20% down, 4-year loan at most, all car costs under 10% of gross. Fuel is counted under needs instead. ' + cap(sword(car == null ? 'none' : capR(car, m.grossM * R.carPctGross))));
-  h += line('Housing + loans + card minimums', 'no more than 36% of gross pay (28/36 rule)', money(m.grossM * R.dtiPctGross) + '<span class="pm">/mo</span>', dti == null ? null : money(dti) + '<span class="pm">' + Math.round(dti / m.grossM * 100) + '% of gross</span>', dti == null ? 'none' : capR(dti, m.grossM * R.dtiPctGross), 'What mortgage lenders call debt-to-income' + (a && a.cardPay > 0 && !cardMins ? '; add each card\'s minimum payment on the HUD to count cards here' : '') + '. ' + cap(sword(dti == null ? 'none' : capR(dti, m.grossM * R.dtiPctGross))));
-  h += line('Retirement contributions', 'at least 15% of gross, counting what your employer adds', money(m.grossM * R.retirePctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.retirePctGross) + ' per check, all in</span>', (p.contrib === '' && p.match === '' && !m.retireFromAccounts) ? null : Math.round(retirePct * 100) + '%<span class="pm">' + money(m.retireM + m.matchM) + '/mo ' + (m.retireFromAccounts ? '(from your 401k/TSP account, match included)' : '(you ' + Math.round(m.contrib * 100) + '% + employer ' + Math.round(m.match * 100) + '%)') + '</span>', (p.contrib === '' && p.match === '' && !m.retireFromAccounts) ? 'none' : slStatusFloor(retirePct, R.retirePctGross), (p.contrib !== '' || p.match !== '' || m.retireFromAccounts) ? (retirePct >= R.retirePctGross ? 'On track. ' : 'Raising your share to ' + Math.max(0, Math.round((R.retirePctGross - m.match) * 100)) + '% would get you there: about ' + money(Math.max(0, (R.retirePctGross - m.match - m.contrib)) * m.grossCheck) + ' more per check. ') + cap(fword(slStatusFloor(retirePct, R.retirePctGross))) : 'Enter your contribution above.');
-  h += line('Emergency fund', '3 to 6 months of essential expenses', a && a.essentials ? money(efTargetLo, { whole: true }) + ' – ' + money(efTargetHi, { whole: true }) + '<span class="pm">essentials run ' + money(a.essentials) + '/mo</span>' : '—', (p.efBal === '' && !m.efFromAccounts) ? null : money(m.efBal) + (efMonths != null ? '<span class="pm">' + efMonths.toFixed(1) + ' months covered</span>' : ''), (p.efBal === '' && !m.efFromAccounts) || efMonths == null ? 'none' : floorS(efMonths, R.efMonthsMin), holdSplit ? 'This waits for ' + heldWhy + '. ' : (p.efBal !== '' || m.efFromAccounts) && a && a.essentials ? (m.efBal >= efTargetLo ? (m.efBal >= efTargetHi ? 'Fully funded; extra can go to retirement or goals. ' : 'Floor reached; 6 months gives more room. ') : 'To reach 3 months in a year: about ' + money((efTargetLo - m.efBal) / 12 / m.cpm) + ' per check. ') + cap(fword(floorS(efMonths, R.efMonthsMin))) : 'Enter your balance above.');
+  h += line('Housing + loans + card minimums', 'no more than 36% of gross pay (28/36 rule)', money(m.grossM * R.dtiPctGross) + '<span class="pm">/mo</span>', dti == null ? null : money(dti) + '<span class="pm">' + Math.round(dti / m.grossM * 100) + '% of gross</span>', dti == null ? 'none' : capR(dti, m.grossM * R.dtiPctGross), 'What mortgage lenders call debt-to-income' + (a && a.cardPay > 0 && !cardMins ? '; add each card\'s minimum payment on ' + theHome() + ' to count cards here' : '') + '. ' + cap(sword(dti == null ? 'none' : capR(dti, m.grossM * R.dtiPctGross))));
+  h += line('Retirement contributions', 'at least 15% of gross, counting what your employer adds', money(m.grossM * R.retirePctGross) + '<span class="pm">/mo · ' + money(m.grossCheck * R.retirePctGross) + ' per check, all in</span>', (p.contrib === '' && p.match === '' && !m.retireFromAccounts) ? null : Math.round(retirePct * 100) + '%<span class="pm">' + money(m.retireM + m.matchM) + '/mo ' + (m.retireFromAccounts ? '(from your 401k account, match included)' : '(you ' + Math.round(m.contrib * 100) + '% + employer ' + Math.round(m.match * 100) + '%)') + '</span>', (p.contrib === '' && p.match === '' && !m.retireFromAccounts) ? 'none' : slStatusFloor(retirePct, R.retirePctGross), (p.contrib !== '' || p.match !== '' || m.retireFromAccounts) ? (retirePct >= R.retirePctGross ? 'On track. ' : 'Raising your share to ' + Math.max(0, Math.round((R.retirePctGross - m.match) * 100)) + '% would get you there: about ' + money(Math.max(0, (R.retirePctGross - m.match - m.contrib)) * m.grossCheck) + ' more per check. ') + cap(fword(slStatusFloor(retirePct, R.retirePctGross))) : 'Enter your contribution above.');
+  h += line('Emergency fund', m.efLo === 6 ? '6 to 12 months of essential expenses, since your pay varies' : '3 to 6 months of essential expenses', a && a.essentials ? money(efTargetLo, { whole: true }) + ' – ' + money(efTargetHi, { whole: true }) + '<span class="pm">essentials run ' + money(a.essentials) + '/mo</span>' : '—', (p.efBal === '' && !m.efFromAccounts) ? null : money(m.efBal) + (efMonths != null ? '<span class="pm">' + efMonths.toFixed(1) + ' months covered</span>' : ''), (p.efBal === '' && !m.efFromAccounts) || efMonths == null ? 'none' : floorS(efMonths, m.efLo), holdSplit ? 'This waits for ' + heldWhy + '. ' : (p.efBal !== '' || m.efFromAccounts) && a && a.essentials ? (m.efBal >= efTargetLo ? (m.efBal >= efTargetHi ? 'Fully funded; extra can go to retirement or goals. ' : 'Floor reached; ' + m.efHi + ' months gives more room. ') : 'To reach ' + m.efLo + ' months in a year: about ' + money((efTargetLo - m.efBal) / 12 / m.cpm) + ' per check. ') + cap(fword(floorS(efMonths, m.efLo))) : 'Enter your balance above.');
   h += '</div></section>';
+  // pay that varies, and a tax refund kept apart from monthly pay
+  if (m.steady && m.steady.varies) h += '<p class="hud-note">Your pay varies from month to month. Planners suggest 6 to 12 months of essentials in the emergency fund, and a budget built on your lowest recent month' + (m.steady.lowest ? ' (about ' + money(m.steady.lowest, { whole: true }) + ')' : '') + '; in a better month, the extra goes to savings first.</p>';
+  if (a && a.oneOff > 0) h += '<p class="hud-note">A tax refund (' + money(a.oneOff, { whole: true }) + ') stays out of the monthly income figures: it is your own overpaid tax coming back, so planners treat it as a one-off for the emergency fund, debt, or a goal.</p>';
 
   // Retirement check
   if (m.age && m.grossY) {
@@ -6402,7 +6487,7 @@ function renderPlan() {
     const years = Math.max(0, R.retireAge - m.age);
     const fv = retireAt67(m);
     h += '<section class="section"><h2>Retirement check at ' + m.age + '</h2><div class="hud-table">' +
-      line('Saved so far', 'about ' + (mult < 1 ? mult.toFixed(1) : mult % 1 ? mult.toFixed(1) : mult) + '× your yearly pay by age ' + m.age + ' (Fidelity\'s 1× by 30 … 10× by 67)', money(target, { whole: true }) + '<span class="pm">' + mult.toFixed(1) + ' × ' + money(m.grossY, { whole: true }) + '</span>', (p.retireBal === '' && !m.retFromAccounts) ? null : money(m.retireBal, { whole: true }) + '<span class="pm">' + (target ? Math.round(m.retireBal / target * 100) + '% of benchmark' : '') + '</span>', st, (p.retireBal === '' && !m.retFromAccounts) ? 'Enter your balance above.' : cap(fword(st)) + (st !== 'good' ? '. The benchmark assumes no pension; a military or other pension covers part of this.' : '.')) +
+      line('Saved so far', 'about ' + (mult < 1 ? mult.toFixed(1) : mult % 1 ? mult.toFixed(1) : mult) + '× your yearly pay by age ' + m.age + ' (a common benchmark: 1× by 30 … 10× by 67)', money(target, { whole: true }) + '<span class="pm">' + mult.toFixed(1) + ' × ' + money(m.grossY, { whole: true }) + '</span>', (p.retireBal === '' && !m.retFromAccounts) ? null : money(m.retireBal, { whole: true }) + '<span class="pm">' + (target ? Math.round(m.retireBal / target * 100) + '% of benchmark' : '') + '</span>', st, (p.retireBal === '' && !m.retFromAccounts) ? 'Enter your balance above.' : cap(fword(st)) + (st !== 'good' ? '. The benchmark assumes no pension; a pension covers part of this.' : '.')) +
       (years > 0 && (m.retireM + m.matchM || m.retireBal) ? line('If nothing changes', 'keep contributing ' + Math.round(retirePct * 100) + '% of gross for ' + years + ' more years', '10×<span class="pm">benchmark at 67</span>', (fv / m.grossY).toFixed(1) + '×<span class="pm">about ' + money(approx(fv), { whole: true }) + ' in today\'s dollars</span>', slStatusFloor(fv / m.grossY, 10), 'Illustration only: 7% growth less 2.5% inflation, as in From here to December 31, with contributions rising with pay.') : '') +
       '</div></section>';
   } else h += '<section class="section"><h2>Retirement check</h2><p class="muted small">Add your age above to compare your balance with the age-based benchmark.</p></section>';
@@ -6414,12 +6499,12 @@ function renderPlan() {
   else steps.push('If your employer matches retirement contributions, contribute enough to get all of it: it is an immediate 100% return.');
   steps.push('Starter emergency fund: one month of essentials' + (a && a.essentials ? ' (' + money(a.essentials, { whole: true }) + ')' : '') + ((p.efBal !== '' || m.efFromAccounts) && a && a.essentials && !holdSplit ? (m.efBal >= a.essentials ? ' — done' : ' — ' + money(a.essentials - m.efBal, { whole: true }) + ' to go') : '') + '.');
   steps.push('Pay down high-interest debt, cards first' + (cardDebt > 0 ? ' — ' + money(cardDebt, { whole: true }) + ' on cards that charge interest' : ', when a balance carries over from month to month') + '.');
-  steps.push('Grow the emergency fund to 3 months' + (a && a.essentials ? ' (' + money(efTargetLo, { whole: true }) + ')' : '') + ((p.efBal !== '' || m.efFromAccounts) && a && a.essentials && !holdSplit ? (m.efBal >= efTargetLo ? ' — done' : ' — ' + money(Math.max(0, efTargetLo - m.efBal), { whole: true }) + ' to go') : '') + ', then 6 months if your income is less steady.');
+  steps.push('Grow the emergency fund to ' + m.efLo + ' months' + (a && a.essentials ? ' (' + money(efTargetLo, { whole: true }) + ')' : '') + ((p.efBal !== '' || m.efFromAccounts) && a && a.essentials && !holdSplit ? (m.efBal >= efTargetLo ? ' — done' : ' — ' + money(Math.max(0, efTargetLo - m.efBal), { whole: true }) + ' to go') : '') + (m.efLo === 6 ? ', since your pay varies, then toward 12.' : ', then 6 months if your income is less steady.'));
   steps.push('Raise retirement to 15% of gross including the match' + ((p.contrib !== '' || p.match !== '') ? (retirePct >= R.retirePctGross ? ' — done' : ' — ' + Math.round((R.retirePctGross - retirePct) * 100) + ' points to go') : '') + '.');
   steps.push('Then goals: house down payment, car replacement fund, college, travel — ideally as named savings transfers so they show up here.');
   h += '<section class="section"><h2>What to do with each check, in order</h2><p class="sub">A common order of operations; each step builds on the one before.</p><ol class="steps">' + steps.map(s => '<li>' + s + '</li>').join('') + '</ol></section>';
 
-  h += '<section class="section"><h2>Where these numbers come from</h2><div class="privacy"><p>50/30/20 (needs, wants, savings) popularized by Elizabeth Warren\'s <i>All Your Worth</i>. Rent under 30% of gross is the HUD threshold for being cost-burdened; 28/36 are the housing and total-debt ratios mortgage lenders use. 20/4/10 is a common car-buying rule. 15% retirement savings and the age multiples (1× by 30, 3× by 40, 6× by 50, 8× by 60, 10× by 67) are Fidelity\'s guidelines. 3 to 6 months of essentials is the usual emergency-fund range.</p><p>These are general rules of thumb; a licensed professional can advise on your own situation. High cost-of-living areas, tax-free allowances, a pension, or expensive debt can all justify different targets.</p></div></section>';
+  h += '<section class="section"><h2>Where these numbers come from</h2><div class="privacy"><p>50/30/20 (needs, wants, savings) is a widely used budgeting split. Rent under 30% of gross is the common affordability line; above it, housing agencies call a household cost-burdened. 28/36 are the housing and total-debt ratios mortgage lenders use, and 20/4/10 is a common car-buying rule. 15% retirement savings and the age multiples (1× by 30, 3× by 40, 6× by 50, 8× by 60, 10× by 67) are common planning benchmarks. 3 to 6 months of essentials is the usual emergency-fund range, and 6 to 12 months when pay varies.</p><p>These are general rules of thumb; a licensed professional can advise on your own situation. High cost-of-living areas, tax-free allowances, a pension, or expensive debt can all justify different targets.</p></div></section>';
   el.innerHTML = h; nameRowInputs(el);
 }
 function bindPlan() {
@@ -6444,7 +6529,7 @@ function hudGuideline(billId, billAvgs) {
 }
 
 /* ---------- Ahead (Tier 1: forward-looking) ---------- */
-const AHEAD_SECTIONS = [['debts', 'Debt payoff'], ['goals', 'Goals & sinking funds'], ['cash', 'Next 30 days'], ['alerts', 'Alerts']];
+const AHEAD_SECTIONS = [['cash', 'Safe to spend'], ['alerts', 'Alerts'], ['debts', 'Debt payoff'], ['goals', 'Goals & sinking funds']];
 function ensureAhead() {
   if (!Array.isArray(state.goals)) state.goals = [];
   if (!state.cash || typeof state.cash !== 'object') state.cash = { balance: '', buffer: '200', extra: '', method: 'avalanche', payNet: '', nextPay: '' };
@@ -6481,8 +6566,8 @@ function renderAhead() {
 /* Debt payoff */
 function renderDebts() {
   const debts = debtList(); const c = state.cash;
-  let h = '<section class="section" style="margin-top:4px"><h2>Debt payoff</h2><p class="sub">Balances come from the HUD. Add each one\'s interest rate and minimum payment, then compare payoff orders.</p>';
-  if (!debts.length) return h + '<div class="empty"><h2>No balances entered</h2><p>Add each card and loan with what you owe, or type balances on the HUD under Cards & loans.</p><div class="actions"><button class="btn primary" data-ahead="addAccount">Add a card or loan</button><button class="btn" data-go="hud">Go to HUD</button></div></div></section>';
+  let h = '<section class="section" style="margin-top:4px"><h2>Debt payoff</h2><p class="sub">Balances come from ' + theHome() + '. Add each one\'s interest rate and minimum payment, then compare payoff orders.</p>';
+  if (!debts.length) return h + '<div class="empty"><h2>No balances entered</h2><p>Add each card and loan with what you owe, or type balances on ' + theHome() + ' under Cards & loans.</p><div class="actions"><button class="btn primary" data-ahead="addAccount">Add a card or loan</button><button class="btn" data-go="hud">Go to ' + homeName() + '</button></div></div></section>';
   h += '<div class="hud-table"><div class="acct head debt"><span class="name">Debt</span><span class="num">Balance</span><span class="num">APR %</span><span class="num">Min / mo</span></div>';
   for (const d of debts) h += '<div class="acct debt"><span class="name">' + esc(d.name) + '<span class="pm">' + (d.kind === 'card' ? 'card' : 'loan') + '</span></span><span class="num">' + money(d.balance, { whole: true }) + '</span><input type="text" inputmode="decimal" data-debt="' + esc(d.id) + '" data-field="apr" value="' + (d.apr ? esc(d.apr) : '') + '" placeholder="24.9" aria-label="APR"><input type="text" inputmode="decimal" data-debt="' + esc(d.id) + '" data-field="min" value="' + (d.min ? esc(d.min) : '') + '" placeholder="' + esc(Math.max(25, slRound2(d.balance * 0.02)).toFixed(0)) + '" aria-label="Minimum payment"></div>';
   const noApr = debts.filter(d => d.balance > 0 && !(+d.apr > 0));
@@ -6546,7 +6631,7 @@ function renderGoals() {
   const sinks = yearlyBills().filter(x => !goals.some(g => String(g.name).toLowerCase() === x.b.name.toLowerCase()));
   if (sinks.length) h += '<h3 style="margin-top:16px">Bills that come every few months</h3><ul class="insights">' + sinks.map(x => '<li><b>' + esc(x.b.name) + '</b>: about ' + money(x.st.expected) + ' ' + (x.st.every === 12 ? 'once a year' : 'every ' + x.st.every + ' months') + ', next around ' + esc(slFmtDate(x.st.next)) + '. Setting aside ' + money(sinkMonthly(x.st)) + ' a month from now covers it' + (Math.abs(sinkMonthly(x.st) - x.st.share) >= 1 ? ', then about ' + money(x.st.share) + ' a month' : '') + '. <button class="btn link" data-sink="' + esc(x.b.id) + '">Make it a sinking fund</button></li>').join('') + '</ul>';
   const m = planModel();
-  h += '<div class="actions"><button class="btn primary" data-ahead="addGoal">Add a goal</button>' + (!goals.some(g => /emergency/i.test(g.name)) && m.act && m.act.essentials && !m.act.partial && !(m.act.cardBuys > 0) ? '<button class="btn" data-ahead="addEf">Add emergency fund goal (' + money(m.act.essentials * SL_RULES.efMonthsMin, { whole: true }) + ')</button>' : '') + '</div>';
+  h += '<div class="actions"><button class="btn primary" data-ahead="addGoal">Add a goal</button>' + (!goals.some(g => /emergency/i.test(g.name)) && m.act && m.act.essentials && !m.act.partial && !(m.act.cardBuys > 0) ? '<button class="btn" data-ahead="addEf">Add emergency fund goal (' + money(m.act.essentials * m.efLo, { whole: true }) + ')</button>' : '') + '</div>';
   h += '<details class="why"><summary>Sinking funds, briefly</summary><p class="hint">A sinking fund is money set aside a little at a time for a cost you can see coming: the yearly insurance premium, tires, a trip. Dividing the amount by the months left turns a surprise into a line item. Keeping it in a named savings transfer lets the tool track it here.</p></details></section>';
   return h;
 }
@@ -6641,7 +6726,7 @@ function cashEvents(today, to) {
 function renderCash() {
   const c = state.cash; const today = slTodayISO(); const to = slAddDays(today, 30);
   const pay = slPaydayPattern(state.txns);
-  let h = '<section class="section" style="margin-top:4px"><h2>Next 30 days</h2><p class="sub">Today\'s checking balance, minus what is due before the next payday, minus a cushion, is what is safe to spend.</p>';
+  let h = '<section class="section" style="margin-top:4px"><h2>Safe to spend</h2><p class="sub">Today\'s checking balance, minus what is due before the next payday, minus a cushion, is what is safe to spend.</p>';
   const cashSummary = c.balance !== '' ? 'Balance ' + money(num(c.balance), { whole: true }) + ' · cushion ' + money(num(c.buffer), { whole: true }) + (c.nextPay ? ' · next payday ' + esc(slFmtDateShort(c.nextPay)) : (pay ? ' · paydays detected' : '')) : 'Enter today\'s balance to start';
   h += setupBlock('cash', 'Balance & paydays', cashSummary, c.balance !== '', '<form id="cashForm" class="form" style="margin-top:10px"><div class="grid3">' +
     '<label>Checking balance today <input type="text" inputmode="decimal" id="cBal" value="' + esc(c.balance) + '" placeholder="0.00"></label>' +
@@ -6662,7 +6747,7 @@ function renderCash() {
   if (pr.rows.length) {
     h += '<div class="hud-table" style="margin-top:12px"><div class="cf head"><span>Date</span><span>What</span><span class="num">Amount</span><span class="num">Balance</span></div>';
     for (const r of pr.rows) h += '<div class="cf' + (r.balance < 0 ? ' bad' : r.balance < buffer ? ' warn' : '') + '"><span>' + esc(slFmtDateShort(r.date)) + '</span><span>' + esc(r.label) + '</span><span class="num ' + (r.amount < 0 ? 'out' : 'in') + '">' + money(r.amount, { signed: true }) + '</span><span class="num">' + money(r.balance) + '</span></div>';
-    h += '</div><p class="hint">Fixed bills use their usual day and amount; variable spending (groceries, gas) is spread as a typical week; card payments and subscriptions follow their last pattern. Edit a bill on the HUD to change what is assumed.</p>';
+    h += '</div><p class="hint">Fixed bills use their usual day and amount; variable spending (groceries, gas) is spread as a typical week; card payments and subscriptions follow their last pattern. Edit a bill on ' + theHome() + ' to change what is assumed.</p>';
   } else h += '<p class="muted small">Nothing scheduled in the next 30 days from what the tool can see.</p>';
   return h + '</section>';
 }
@@ -6722,7 +6807,7 @@ function bindAhead() {
   ab.addEventListener('submit', e => { if (e.target.id !== 'cashForm') return; e.preventDefault(); applyCashForm(false); });
   ab.addEventListener('click', e => {
     const act = e.target.closest('[data-ahead]');
-    if (act) { if (act.dataset.ahead === 'addAccount') openAccountAdd(); if (act.dataset.ahead === 'addGoal') openGoalEdit(null); if (act.dataset.ahead === 'addEf') { const m = planModel(); openGoalEdit(null, { name: 'Emergency fund', target: m.act ? String(Math.round(m.act.essentials * SL_RULES.efMonthsMin)) : '', saved: state.plan.efBal || '', kw: 'savings' }); } return; }
+    if (act) { if (act.dataset.ahead === 'addAccount') openAccountAdd(); if (act.dataset.ahead === 'addGoal') openGoalEdit(null); if (act.dataset.ahead === 'addEf') { const m = planModel(); openGoalEdit(null, { name: 'Emergency fund', target: m.act ? String(Math.round(m.act.essentials * m.efLo)) : '', saved: state.plan.efBal || '', kw: 'savings' }); } return; }
     const sink = e.target.closest('[data-sink]'); if (sink) { const x = yearlyBills().find(y => y.b.id === sink.dataset.sink); if (x) openGoalEdit(null, { name: x.b.name, target: String(Math.round(x.st.expected)), by: x.st.next.slice(0, 7) }); return; }
     const row = e.target.closest('.bill[data-goal]'); if (row) openGoalEdit(row.dataset.goal);
   });
@@ -6751,9 +6836,9 @@ function renderCheckup() {
 function renderPaycheck() {
   const p = state.paycheck; const m = planModel(); const cpm = m.cpm;
   const f = (id, label, ph) => '<label>' + label + ' <input type="text" inputmode="decimal" id="' + id + '" value="' + esc(p[id.slice(2)]) + '" placeholder="' + (ph || '0.00') + '"></label>';
-  const paySummary = num(p.gross) ? 'Gross ' + money(num(p.gross), { whole: true }) + (num(p.net) ? ' · net ' + money(num(p.net), { whole: true }) : '') + ' per check' : 'Copy one pay stub or LES';
+  const paySummary = num(p.gross) ? 'Gross ' + money(num(p.gross), { whole: true }) + (num(p.net) ? ' · net ' + money(num(p.net), { whole: true }) : '') + ' per check' : 'Copy one pay stub';
   let h = '<section class="section" style="margin-top:4px"><h2>Paycheck breakdown</h2><p class="sub">Bank data starts at take-home. One pay stub (per check) shows the part that never reaches the account.</p>' +
-    setupBlock('paycheck', 'Pay stub figures', paySummary, !!num(p.gross), '<form id="payForm" class="form" style="margin-top:10px"><div class="grid3">' + f('pcgross', 'Gross pay', m.grossCheck ? money(m.grossCheck, { whole: true }).replace(/^\$/, '') : '0.00') + f('pcfed', 'Federal income tax') + f('pcst', 'State income tax') + f('pcfica', 'Social Security + Medicare (FICA)') + f('pcretire', 'Retirement, traditional (TSP/401k)') + f('pcroth', 'Retirement, Roth') + f('pcins', 'Insurance (health, dental, SGLI…)') + f('pcother', 'Other deductions') + f('pcnet', 'Net pay on the stub') + '</div><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button></div></form>');
+    setupBlock('paycheck', 'Pay stub figures', paySummary, !!num(p.gross), '<form id="payForm" class="form" style="margin-top:10px"><div class="grid3">' + f('pcgross', 'Gross pay', m.grossCheck ? money(m.grossCheck, { whole: true }).replace(/^\$/, '') : '0.00') + f('pcfed', 'Federal income tax') + f('pcst', 'State income tax') + f('pcfica', 'Social Security + Medicare (FICA)') + f('pcretire', 'Retirement, traditional (401k/403b)') + f('pcroth', 'Retirement, Roth') + f('pcins', 'Insurance (health, dental, life…)') + f('pcother', 'Other deductions') + f('pcnet', 'Net pay on the stub') + '</div><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button></div></form>');
   const g = num(p.gross); if (!g) return h + '<div class="empty"><h2>Enter the gross pay to start</h2><p>Each line is optional; the more you fill in, the clearer the picture.</p></div></section>';
   const fed = num(p.fed), st = num(p.st), fica = num(p.fica), ret = num(p.retire), roth = num(p.roth), ins = num(p.ins), oth = num(p.other), net = num(p.net);
   const taxes = fed + st + fica; const ded = taxes + ret + roth + ins + oth; const computedNet = g - ded; const gap = net ? slRound2(net - computedNet) : 0;
@@ -6762,9 +6847,9 @@ function renderPaycheck() {
   const rows = [['Taxes', taxes, 'federal + state + FICA'], ['Retirement', ret + roth, 'traditional + Roth, before any employer match'], ['Insurance & other', ins + oth, 'benefits and other deductions'], ['Take-home', computedNet, 'what reaches the bank']];
   h += '<div class="ribbon" aria-hidden="true">' + [['taxes', taxes, 'var(--out)'], ['retire', ret + roth, 'var(--in)'], ['ins', ins + oth, '#D6A32A'], ['net', computedNet, 'var(--accent)']].map(([, v, col]) => '<span style="width:' + Math.max(0, v / g * 100).toFixed(1) + '%;background:' + col + '"></span>').join('') + '</div>';
   h += '<div class="hud-table"><div class="bill head"><span class="name">Where the check goes</span><span class="num">Per check</span><span class="num">Of gross</span></div>' + rows.map(([n, v, d]) => '<div class="bill plan"><span class="name">' + n + '<span class="pm">' + d + '</span></span><span class="num">' + money(v) + '<span class="pm">' + money(v * cpm) + '/mo</span></span><span class="num actual">' + Math.round(v / g * 100) + '%</span></div>').join('') + '</div>';
-  if (net && Math.abs(gap) >= 1) h += '<p class="hud-note">The stub\'s net (' + money(net) + ') differs from gross minus the lines above by ' + money(Math.abs(gap)) + ' — a deduction is missing' + (gap > 0 ? ' or an allowance (BAH, BAS) is not in gross' : '') + '.</p>';
+  if (net && Math.abs(gap) >= 1) h += '<p class="hud-note">The stub\'s net (' + money(net) + ') differs from gross minus the lines above by ' + money(Math.abs(gap)) + ' — a deduction is missing' + (gap > 0 ? ' or a tax-free allowance sits outside gross' : '') + '.</p>';
   h += '<section class="section"><h2>What this says</h2><ul class="insights">';
-  h += '<li>Effective tax rate on this check: <b>' + Math.round(taxes / g * 100) + '%</b> (income tax ' + Math.round((fed + st) / g * 100) + '%, FICA ' + Math.round(fica / g * 100) + '%). FICA is normally 7.65% of taxable pay; military allowances like BAH and BAS are not taxed, which pulls the rate down.</li>';
+  h += '<li>Effective tax rate on this check: <b>' + Math.round(taxes / g * 100) + '%</b> (income tax ' + Math.round((fed + st) / g * 100) + '%, FICA ' + Math.round(fica / g * 100) + '%). FICA is normally 7.65% of taxable pay; pre-tax benefits and tax-free allowances bring the share of gross down.</li>';
   h += '<li>Retirement: <b>' + Math.round((ret + roth) / g * 100) + '% of gross</b> from you' + (m.match ? ' plus ' + Math.round(m.match * 100) + '% employer, ' + Math.round(((ret + roth) / g + m.match) * 100) + '% all in' : '') + ' (guideline 15% all in).</li>';
   h += '<li>True savings rate, counting ' + (saveAfterTax ? money(saveAfterTax) + ' per check of after-tax savings transfers seen in your data' : 'no after-tax savings transfers seen yet') + ': <b>' + Math.round(trueRate * 100) + '% of gross</b>.</li>';
   if (m.act && m.act.income && Math.abs(computedNet * cpm - m.act.income) > m.act.income * 0.15) h += '<li>Take-home here (' + money(computedNet * cpm) + '/mo) is far from the income seen in transactions (' + money(m.act.income) + '/mo). A second income, allowances, or an account not imported yet would explain it.</li>';
@@ -6787,7 +6872,7 @@ function renderNetWorth() {
   const n = currentNetWorth(); const snaps = state.snapshots.slice().sort((a, b) => a.date < b.date ? -1 : 1);
   let h = '<section class="section" style="margin-top:4px"><h2>Net worth over time</h2><p class="sub">Everything you own minus everything you owe, from the balances already entered. Take a snapshot each month to see the line move.</p>';
   h += '<div class="hud-table"><div class="bill head"><span class="name">Today</span><span class="num"></span><span class="num">Amount</span></div>' +
-    [['Checking', n.cash], ['Savings / emergency fund', n.ef], ['Retirement accounts', n.retire], ['Investing apps & other assets', n.other, true], ['Cards (HUD)', -n.cards], ['Loans (HUD)', -n.loans]].map(([name, v, editable]) => '<div class="bill plan"><span class="name">' + name + '</span><span class="num">' + (editable ? '<input type="text" inputmode="decimal" id="nwOther" value="' + (n.other ? esc(n.other) : '') + '" placeholder="vehicles, home equity, cash" aria-label="Other assets" style="min-height:36px;padding:6px 8px;text-align:right">' : '') + '</span><span class="num actual ' + (v < 0 ? 'out' : '') + '">' + money(v, { whole: true }) + '</span></div>').join('') +
+    [['Checking', n.cash], ['Savings / emergency fund', n.ef], ['Retirement accounts', n.retire], ['Investing apps & other assets', n.other, true], ['Cards (' + homeName() + ')', -n.cards], ['Loans (' + homeName() + ')', -n.loans]].map(([name, v, editable]) => '<div class="bill plan"><span class="name">' + name + '</span><span class="num">' + (editable ? '<input type="text" inputmode="decimal" id="nwOther" value="' + (n.other ? esc(n.other) : '') + '" placeholder="vehicles, home equity, cash" aria-label="Other assets" style="min-height:36px;padding:6px 8px;text-align:right">' : '') + '</span><span class="num actual ' + (v < 0 ? 'out' : '') + '">' + money(v, { whole: true }) + '</span></div>').join('') +
     '<div class="bill total"><span class="name">Net worth</span><span class="num"></span><span class="num ' + (n.net < 0 ? 'out' : 'in') + '">' + money(n.net, { whole: true }) + '</span></div></div>';
   h += '<div class="actions"><button class="btn primary" data-check="snapshot">Take a snapshot for today</button></div>';
   if (snaps.length >= 2) h += '<div class="chart" style="margin-top:14px">' + lineChart(snaps.map(s => ({ label: slFmtDateShort(s.date, true), v: s.net }))) + '</div>';
@@ -6815,7 +6900,7 @@ function lineChart(points) {
 function renderCredit() {
   const cards = Object.entries(state.balances).filter(([k, v]) => v && (v.kind || 'card') === 'card' && !k.startsWith('loan:')).map(([k, v]) => ({ id: k, name: k.startsWith('card:') ? cardName(v.name || k.slice(5)) : v.name, merchant: k.startsWith('card:') ? k.slice(5) : null, balance: +v.balance || 0, limit: +v.limit || 0, asOf: v.asOf || '', due: v.due || '' }));
   let h = '<section class="section" style="margin-top:4px"><h2>Credit cards</h2><p class="sub">Utilization is balance divided by limit. Under 30% is the usual guideline; under 10% is where scores do best. Limits are yours to enter.</p>';
-  if (!cards.length) return h + '<div class="empty"><h2>No cards yet</h2><p>Enter card balances on the HUD under Cards & loans, or add a card by hand there.</p><div class="actions"><button class="btn" data-go="hud">Go to HUD</button></div></div></section>';
+  if (!cards.length) return h + '<div class="empty"><h2>No cards yet</h2><p>Enter card balances on ' + theHome() + ' under Cards & loans, or add a card by hand there.</p><div class="actions"><button class="btn" data-go="hud">Go to ' + homeName() + '</button></div></div></section>';
   const today = slTodayISO(); let totB = 0, totL = 0;
   h += '<div class="hud-table"><div class="acct head debt"><span class="name">Card</span><span class="num">Balance</span><span class="num">Limit</span><span class="num">Used</span></div>';
   for (const c of cards) {
@@ -6840,10 +6925,10 @@ function renderInsurance() {
   let h = '<section class="section" style="margin-top:4px"><h2>Insurance checklist</h2><p class="sub">The coverage an advisor checks before anything else. Answer what applies; the flags use common rules of thumb.</p>' +
     setupBlock('insurance', 'Your coverage', answered ? answered + ' of 7 answered' : 'Seven quick questions', answered > 0, '<form id="insForm" class="form" style="margin-top:10px"><div class="grid3">' + yn('inhealth', 'Health coverage for everyone in your household?') + yn('independents', 'Anyone depends on your income?') + '<label>Life insurance in place <input type="text" inputmode="decimal" id="inlife" value="' + esc(i.life) + '" placeholder="0"></label>' + yn('indisability', 'Disability income coverage?') + yn('inrenters', 'Renters or homeowners policy?') + '<label>Auto liability limits <input type="text" id="inliab" value="' + esc(i.liab) + '" placeholder="e.g. 100/300/100"></label>' + yn('inumbrella', 'Umbrella policy?') + '</div><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button></div></form>');
   const rows = [];
-  if (i.health === 'no') rows.push(['bad', 'Health coverage', 'A medical bill without coverage is the biggest financial risk most households face. HealthCare.gov (the Marketplace, often with subsidies) and your state\'s Medicaid program are the places to check; losing a job or other coverage opens a special enrollment window.']);
+  if (i.health === 'no') rows.push(['bad', 'Health coverage', 'A medical bill without coverage is the biggest financial risk most households face. Your state\'s health insurance marketplace (often with subsidies) and its Medicaid program are the places to check; losing a job or other coverage opens a special enrollment window.']);
   else if (i.health === 'yes') rows.push(['good', 'Health coverage', 'Covered. Check the out-of-pocket maximum: the emergency fund should be able to cover it.']);
   const lifeTarget = incomeY * 10;
-  if (i.dependents === 'yes') { const life = num(i.life); const st = incomeY ? slStatusFloor(life, lifeTarget) : 'none'; rows.push([st, 'Life insurance', incomeY ? 'about ' + money(lifeTarget, { whole: true }) + ' (10× income) with people depending on you; you listed ' + money(life, { whole: true }) + '. Cheap term coverage fills the gap; SGLI tops out at $500,000 and ends when service does.' : 'about 10× income with people depending on you. Enter gross pay on the Plan tab to size it.']); }
+  if (i.dependents === 'yes') { const life = num(i.life); const st = incomeY ? slStatusFloor(life, lifeTarget) : 'none'; rows.push([st, 'Life insurance', incomeY ? 'about ' + money(lifeTarget, { whole: true }) + ' (10× income) with people depending on you; you listed ' + money(life, { whole: true }) + '. Cheap term coverage fills the gap; coverage through work usually ends with the job.' : 'about 10× income with people depending on you. Enter gross pay on the Plan tab to size it.']); }
   else if (i.dependents === 'no') rows.push(['good', 'Life insurance', 'With no one depending on your income, enough to cover final costs is plenty.']);
   if (i.disability === 'no') rows.push(['bad', 'Disability income', 'A long illness or injury is more likely than death during working years. Employer long-term disability or an individual policy replacing 60% of income is the usual target.']);
   else if (i.disability === 'yes') rows.push(['good', 'Disability income', 'Covered. Check whether it replaces 60% or more and how long the waiting period is.']);
@@ -6880,13 +6965,13 @@ function renderRetireExtras() {
   const defLimit = num(L.deferral) + (super63 ? num(L.superCatchup) : catch50 ? num(L.catchup) : 0);
   const iraLimit = num(L.ira) + (catch50 ? num(L.iraCatchup) : 0);
   const yours = m.grossY * m.contrib;
-  h += '<section class="section"><h2>Contribution limits (' + esc(L.year) + ')</h2><p class="sub">IRS limits for the year; employer match does not count against your own limit.</p>' +
-    setupBlock('limits', 'IRS limits', esc(L.year) + ': ' + money(num(L.deferral), { whole: true }) + ' 401k/TSP · ' + money(num(L.ira), { whole: true }) + ' IRA · catch-ups ' + money(num(L.catchup), { whole: true }) + ' / ' + money(num(L.iraCatchup), { whole: true }), true, '<form id="limForm" class="form" style="margin-top:10px"><div class="grid3"><label>Year <input type="text" id="lYear" value="' + esc(L.year) + '"></label><label>401k / TSP employee limit <input type="text" inputmode="decimal" id="lDeferral" value="' + esc(L.deferral) + '"></label><label>Catch-up, age 50+ <input type="text" inputmode="decimal" id="lCatchup" value="' + esc(L.catchup) + '"></label><label>Catch-up, ages 60–63 <input type="text" inputmode="decimal" id="lSuper" value="' + esc(L.superCatchup) + '"></label><label>IRA limit <input type="text" inputmode="decimal" id="lIra" value="' + esc(L.ira) + '"></label><label>IRA catch-up, 50+ <input type="text" inputmode="decimal" id="lIraCatchup" value="' + esc(L.iraCatchup) + '"></label></div><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button><button class="btn small" type="button" data-check="resetLimits">Reset to 2026 values</button></div></form>');
-  if (+L.year < +slTodayISO().slice(0, 4)) h += '<div class="notice">These limits are for ' + esc(L.year) + '. The IRS sets each year\'s limits the fall before; update them above with this year\'s figures.</div>';
+  h += '<section class="section"><h2>Contribution limits (' + esc(L.year) + ')</h2><p class="sub">Federal limits for the year; employer match does not count against your own limit.</p>' +
+    setupBlock('limits', 'Contribution limits', esc(L.year) + ': ' + money(num(L.deferral), { whole: true }) + ' 401k/403b · ' + money(num(L.ira), { whole: true }) + ' IRA · catch-ups ' + money(num(L.catchup), { whole: true }) + ' / ' + money(num(L.iraCatchup), { whole: true }), true, '<form id="limForm" class="form" style="margin-top:10px"><div class="grid3"><label>Year <input type="text" id="lYear" value="' + esc(L.year) + '"></label><label>401k / 403b employee limit <input type="text" inputmode="decimal" id="lDeferral" value="' + esc(L.deferral) + '"></label><label>Catch-up, age 50+ <input type="text" inputmode="decimal" id="lCatchup" value="' + esc(L.catchup) + '"></label><label>Catch-up, ages 60–63 <input type="text" inputmode="decimal" id="lSuper" value="' + esc(L.superCatchup) + '"></label><label>IRA limit <input type="text" inputmode="decimal" id="lIra" value="' + esc(L.ira) + '"></label><label>IRA catch-up, 50+ <input type="text" inputmode="decimal" id="lIraCatchup" value="' + esc(L.iraCatchup) + '"></label></div><div class="actions" style="margin-top:0;padding-bottom:12px"><button class="btn small" type="submit">Save</button><button class="btn small" type="button" data-check="resetLimits">Reset to 2026 values</button></div></form>');
+  if (+L.year < +slTodayISO().slice(0, 4)) h += '<div class="notice">These limits are for ' + esc(L.year) + '. New limits come out each fall for the year after; update them above with this year\'s figures.</div>';
   if (m.grossY) h += '<div class="hud-table"><div class="bill head"><span class="name">Your room this year</span><span class="num">Limit</span><span class="num">You</span></div>' +
-    '<div class="bill plan"><span class="name">401k / TSP<span class="pm">' + (super63 ? 'with the 60–63 catch-up' : catch50 ? 'with the 50+ catch-up' : 'under 50') + '</span></span><span class="num">' + money(defLimit, { whole: true }) + '</span><span class="num actual">' + money(yours, { whole: true }) + '<span class="pm">' + Math.round(yours / defLimit * 100) + '% of limit · ' + money(Math.max(0, defLimit - yours), { whole: true }) + ' left unused at this rate</span></span></div>' +
+    '<div class="bill plan"><span class="name">401k / 403b<span class="pm">' + (super63 ? 'with the 60–63 catch-up' : catch50 ? 'with the 50+ catch-up' : 'under 50') + '</span></span><span class="num">' + money(defLimit, { whole: true }) + '</span><span class="num actual">' + money(yours, { whole: true }) + '<span class="pm">' + Math.round(yours / defLimit * 100) + '% of limit · ' + money(Math.max(0, defLimit - yours), { whole: true }) + ' left unused at this rate</span></span></div>' +
     '<div class="bill plan"><span class="name">IRA<span class="pm">traditional and Roth combined</span></span><span class="num">' + money(iraLimit, { whole: true }) + '</span><span class="num actual">' + money(iraLimit / 12, { whole: true }) + '<span class="pm">per month to max it</span></span></div></div>';
-  h += '<details class="why"><summary>Roth or traditional</summary><p class="hint">Traditional contributions skip tax now and are taxed when withdrawn; Roth is taxed now and withdrawn tax-free. A rule of thumb: Roth while your tax rate is low (early career, deployments, tax-free combat pay), traditional when it is high. Mixing both keeps options open. Under the Blended Retirement System the service automatically adds 1% and matches up to another 4% when you contribute 5%.</p></details>';
+  h += '<details class="why"><summary>Roth or traditional</summary><p class="hint">Traditional contributions skip tax now and are taxed when withdrawn; Roth is taxed now and withdrawn tax-free. A rule of thumb: Roth while your tax rate is low (early career, a low-income year), traditional when it is high. Mixing both keeps options open.</p></details>';
   return h + '</section></section>';
 }
 
@@ -6895,8 +6980,7 @@ function renderHuman() {
   return '<section class="section" style="margin-top:4px"><h2>When to see a human</h2><p class="sub">This tool automates the routine advice for simple finances. These are the moments that call for a person.</p>' +
     '<ul class="insights">' +
     '<li><b>Taxes beyond a W-2</b> — side income, rental property, selling investments, multiple states, or a big refund or bill every year.</li>' +
-    '<li><b>Buying a home</b> — how much house, loan type, VA loan use, and what the full monthly cost really is.</li>' +
-    '<li><b>Military career decisions</b> — BRS continuation pay, retirement vs. separation, SBP election, VA disability and its interaction with retired pay, TSP withdrawal options.</li>' +
+    '<li><b>Buying a home</b> — how much house, which loan type, and what the full monthly cost really is.</li>' +
     '<li><b>Life changes</b> — marriage, divorce, a child, an inheritance, a death in the family, caring for a parent.</li>' +
     '<li><b>Estate basics</b> — a will, beneficiaries on every account (they override the will), powers of attorney, guardianship for children.</li>' +
     '<li><b>Debt that is not shrinking</b> — if the Debt payoff section says payments never catch the interest, a nonprofit credit counselor can negotiate rates; that is different from debt-settlement companies.</li>' +
@@ -6904,19 +6988,19 @@ function renderHuman() {
     '<li><b>Overdrafts that keep coming</b> — two or more overdraft or returned-payment fees in a few months: your bank can set a low-balance alert or link savings as a backup, many credit unions offer accounts built to avoid overdrafts, and a nonprofit credit counselor can help build a cushion.</li>' +
     '<li><b>High-cost borrowing</b> — payday, title, and rent-to-own loans, refund advances, or several buy-now-pay-later plans at once. A credit union\'s small-dollar loan or a nonprofit credit counselor usually costs far less.</li>' +
     '<li><b>Collections, garnishment, or bankruptcy</b> — a debt collector calling, wages being garnished, or bankruptcy on the table: a nonprofit credit counselor first, and a consumer or bankruptcy attorney (legal aid if money is tight).</li>' +
-    '<li><b>Student loans</b> — choosing a repayment plan, forgiveness programs, or loans in default: start with the free help at studentaid.gov before paying anyone.</li>' +
+    '<li><b>Student loans</b> — choosing a repayment plan, forgiveness programs, or loans in default: start with the free help on the federal student aid website before paying anyone.</li>' +
     '<li><b>Medical bills and insurance denials</b> — ask the hospital for an itemized bill and its financial-assistance policy, and appeal a denied claim; a patient advocate can help.</li>' +
     '<li><b>Retirement decisions</b> — rolling over a 401(k), a pension lump sum or monthly payments, and when to claim Social Security.</li>' +
-    '<li><b>A letter from the IRS</b> — read it the day it arrives; the deadlines are short. Free help: VITA and the Taxpayer Advocate Service.</li>' +
+    '<li><b>A letter from a tax agency</b> — read it the day it arrives; the deadlines are short. Free help: volunteer tax-prep sites and the taxpayer advocate office.</li>' +
     '</ul>' +
     '<section class="section"><h2>Where to find one</h2><ul class="insights">' +
-    '<li><b>Military and families</b> — free personal financial counselors through the installation Military & Family Readiness Center, and Military OneSource (financial counseling and free tax filing).</li>' +
+    '<li><b>Through work</b> — many employers offer free financial counseling through an employee assistance program; HR can say what the benefits include.</li>' +
     '<li><b>Everyone</b> — a fee-only fiduciary planner (paid only by you, with no commissions); for debt, a nonprofit credit counseling agency.</li>' +
-    '<li><b>Free tools</b> — the Consumer Financial Protection Bureau\'s guides, your bank or credit union\'s financial coaching, and Social Security\'s benefit estimates at ssa.gov.</li>' +
-    '<li><b>Free tax filing help</b> — IRS VITA and TCE sites, for most households earning under the VITA income limit, and for people 60 and older.</li>' +
+    '<li><b>Free tools</b> — the federal consumer-finance agency\'s guides, your bank or credit union\'s financial coaching, and your Social Security benefit estimate.</li>' +
+    '<li><b>Free tax filing help</b> — volunteer tax-prep sites, for households under their income limit and for people 60 and older.</li>' +
     '</ul></section>' +
     '<section class="section"><h2>Short glossary</h2><ul class="insights">' +
-    '<li><b>Emergency fund</b> — cash for income loss or a surprise bill, kept separate from spending money. Three to six months of essentials.</li>' +
+    '<li><b>Emergency fund</b> — cash for income loss or a surprise bill, kept separate from spending money. Three to six months of essentials, or six to twelve when pay varies.</li>' +
     '<li><b>Avalanche / snowball</b> — two orders for paying extra on debt: highest rate first (cheapest) or smallest balance first (fastest wins).</li>' +
     '<li><b>50/30/20</b> — needs, wants, savings as shares of take-home pay. A starting point to adjust to your life.</li>' +
     '<li><b>DTI</b> — debt-to-income: housing plus debt payments divided by gross pay. Lenders want it under 36%.</li>' +
@@ -6924,7 +7008,7 @@ function renderHuman() {
     '<li><b>Sinking fund</b> — saving monthly for a known future cost so it never hits the emergency fund.</li>' +
     '<li><b>4% rule</b> — a portfolio can usually support withdrawing 4% a year; so needed savings ≈ 25 × the yearly gap your pension does not cover.</li>' +
     '</ul></section>' +
-    '<div class="privacy" style="margin-top:16px"><p>PFAT gives general information from widely used US rules of thumb (HUD\'s 30% and lenders\' 28/36) and the IRS\'s contribution limits. A licensed professional can advise on your full situation.</p></div></section>';
+    '<div class="privacy" style="margin-top:16px"><p>PFAT gives general information from widely used US rules of thumb (30% of pay for housing, and lenders\' 28/36) and the federal contribution limits. A licensed professional can advise on your full situation.</p></div></section>';
 }
 
 function bindCheckup() {
@@ -6966,7 +7050,7 @@ function renderAccountsSection(m) {
   const typeOpts = (sel) => SL_ACCOUNT_TYPES.map(t => '<option value="' + t.id + '"' + (t.id === sel ? ' selected' : '') + '>' + esc(t.label) + '</option>').join('');
   const n = state.accounts.length; const totalBal = accountsSum(SL_ACCOUNT_TYPES.map(t => t.id)); const totalMo = state.accounts.reduce((s, a) => s + (+a.monthly || 0), 0);
   const accSummary = n ? n + (n === 1 ? ' account' : ' accounts') + ' · ' + money(totalBal, { whole: true }) + (totalMo ? ' · adding ' + money(totalMo, { whole: true }) + '/mo' : '') : 'List each place money sits';
-  let h = '<p class="hint" style="margin-top:10px">TSP or 401k, IRA, high-yield savings, investing apps (Fidelity, Robinhood, Stash, Acorns…). Balances feed the Plan, the year forecast and net worth; "adding per month" is what goes in on autopilot.</p>';
+  let h = '<p class="hint" style="margin-top:10px">401k or 403b, IRA, high-yield savings, investing apps. Balances feed the Plan, the year forecast and net worth; "adding per month" is what goes in on autopilot.</p>';
   if (state.accounts.length) {
     h += '<div class="hud-table"><div class="acct head acc"><span class="name">Account</span><span class="num">Balance</span><span class="num">Adding / mo</span><span class="num">Growth %</span></div>';
     for (const a of state.accounts) {
@@ -6978,7 +7062,7 @@ function renderAccountsSection(m) {
         (t.limit ? '<span class="status">Put in so far this year: <input type="text" inputmode="decimal" class="mini" data-acc="' + esc(a.id) + '" data-field="ytd" value="' + esc(a.ytd) + '" placeholder="estimate" aria-label="Contributed year to date"> <button class="btn link small" data-rmacc="' + esc(a.id) + '">remove</button></span>' : '<span class="status"><button class="btn link small" data-rmacc="' + esc(a.id) + '">remove</button></span>') + '</div>';
     }
     h += '<div class="acct total acc"><span class="name">All accounts</span><span class="num">' + money(accountsSum(SL_ACCOUNT_TYPES.map(t => t.id)), { whole: true }) + '</span><span class="num">' + money(state.accounts.reduce((s, a) => s + (+a.monthly || 0), 0), { whole: true }) + '</span><span class="num"></span></div></div>';
-    h += '<p class="hint">Growth is a yearly guess: 7% is a common long-run stock figure, savings accounts pay what they pay. Blank uses the default for the type. For TSP/401k the monthly amount should include the employer match.</p>';
+    h += '<p class="hint">Growth is a yearly guess: 7% is a common long-run stock figure, savings accounts pay what they pay. Blank uses the default for the type. For a 401k or 403b the monthly amount should include the employer match.</p>';
   } else h += '';
   h += '<div class="actions" style="padding-bottom:12px"><button class="btn" data-plan="addAcc">Add an account</button></div>';
   return '<section class="section">' + setupBlock('accounts', 'Accounts', accSummary, n > 0, h) + '</section>';
@@ -6987,11 +7071,11 @@ function renderAccountsSection(m) {
 // balance and contributions at 7% growth less 2.5% inflation (the defaults for a retirement account)
 function retireAt67(m) {
   const yf = yearForecast(m), months = Math.max(0, SL_RULES.retireAge - (m.age || 0)) * 12, stream = (m.retireM || 0) + (m.matchM || 0);
-  // with accounts listed but no 401k/TSP among them, the Plan's workplace contributions still count
+  // with accounts listed but no 401k among them, the Plan's workplace contributions still count
   if (yf && yf.rows.some(x => x.retirement)) return yf.totals.retireAt67 + (!yf.rows.some(x => x.type.id === 'tsp') && stream > 0 ? slFVMonthly(0, stream, months, 7 - 2.5) : 0);
   return slFVMonthly(m.retireBal, stream, months, 7 - 2.5);
 }
-// The accounts carried to Dec 31 and to 67; a 401k/TSP's own share (without the match) counts toward its limit
+// The accounts carried to Dec 31 and to 67; a 401k's own share (without the match) counts toward its limit
 function yearForecast(m) {
   ensureAccounts(); ensureCheckup();
   if (!state.accounts.length) return null;
@@ -7010,7 +7094,7 @@ function renderYearForecast(m) {
   }
   const investAt67 = slRound2(f.rows.filter(r => r.retirement || r.type.id === 'brokerage').reduce((s, r) => s + (r.at67 || 0), 0));
   h += '<div class="bill total fc"><span class="name">All accounts</span><span class="num">' + money(f.totals.balance, { whole: true }) + '</span><span class="num">' + money(f.totals.yearEnd, { whole: true }) + '</span><span class="num">' + (m.age ? money(approx(investAt67), { whole: true }) : '') + '</span></div></div>';
-  if (+state.limits.year < f.year && f.rows.some(x => x.limit != null)) h += '<p class="notice">The contribution limits on file are for ' + esc(state.limits.year) + '. The IRS sets each year\'s limits the fall before; update them under Checkup, Retirement extras &amp; limits.</p>';
+  if (+state.limits.year < f.year && f.rows.some(x => x.limit != null)) h += '<p class="notice">The contribution limits on file are for ' + esc(state.limits.year) + '. New limits come out each fall for the year after; update them under Checkup, Retirement extras &amp; limits.</p>';
   if (m.age && m.grossY) {
     const mult = slRetireMultiple(m.age); const target = mult * m.grossY; const st = slStatusFloor(f.totals.retireBalance, target);
     const ret67 = retireAt67(m), brok67 = slRound2(f.rows.filter(r => r.type.id === 'brokerage').reduce((s0, r) => s0 + (r.at67 || 0), 0));
@@ -7047,12 +7131,12 @@ function renderGuide() {
   let h = '<section class="section" style="margin-top:4px"><h2>How to use PFAT</h2><p class="sub">About twenty minutes the first time, then about ten a month: import the month\'s statements and update the balances. Everything stays on your device; for a safety net, download a backup from Data when you are done.</p></section>';
   h += step(1, 'Get your transactions in', '<p>Four ways, mix freely:</p><ul class="insights"><li><b>From a file</b> — download a CSV from your bank\'s website (any "export" or "download transactions" link), or drop the monthly PDF statement. OFX/QFX and QIF work too.</li><li><b>Screenshots and scanned statements</b> — banking-app screenshots, photos, and image-only PDFs are read by the open-source Tesseract engine in this browser (' + (PFAT_OFFLINE ? 'built into this file, so it reads them on this device, completely offline' : 'after you agree, it and its English model download from jsDelivr the first time; your pictures stay on this device') + '). Card and investment statements also fill in balances, APR, limits, contributions, and fees. Rows marked "check" deserve a look; fix anything under Recognized text.</li><li><b>Paste text</b> — select the transaction table on the bank\'s website or in a PDF, copy, paste.</li><li><b>By hand</b> — cash, Venmo to a friend, anything a statement leaves out. Name the account <b>Cash</b> for cash spending: in the months you type cash, ATM withdrawals count as moving money into cash, so each dollar counts once.</li></ul><p>Every import shows a preview first: check that money out is negative and money in is positive (flip a row or the whole file when needed), untick anything already saved, name the account, import. Start with the last three months; more history makes the "usual" numbers better.</p>', 'add:file', 'Go to Add');
   h += step(2, 'Fix the categories once', '<p>Most transactions are sorted automatically. Open <b>Transactions</b>, search for anything marked Uncategorized or wrong, tap it, pick the category, and tick "use this category for every … transaction" so it stays fixed in future imports. Card payments and transfers to savings are left out of spending totals on purpose, so nothing counts twice.</p>', 'transactions', 'Go to Transactions');
-  h += step(3, 'Read the HUD', '<p>Money in, money out, what is left, for this month or any period. Routine bills show expected against actual with "paid on the 5th" or "not seen yet". During the month, totals run through today and compare with the same days last month; a yellow note says when your newest records are over ten days old or an account runs behind the rest. Type card and loan balances at the bottom; they power the debt planner later. Tap any bill to rename it or change the keywords it looks for.</p>', 'hud', 'Go to HUD');
-  h += step(4, 'Enter your numbers on Plan', '<p>Age, how often you are paid, gross pay per check, what you and your employer put into retirement. Then list each <b>account</b>: TSP or 401k, IRA, high-yield savings, investing apps such as Fidelity, Robinhood, Stash, or Acorns, with today\'s balance and what goes in monthly. From that the Plan tab shows:</p><ul class="insights"><li>the ideal paycheck split (50/30/20) against your actual spending;</li><li>rent, car, debt, retirement, and emergency-fund guidelines with green / amber / red;</li><li>a retirement check for your age, the room left under this year\'s IRS limits, where each account lands by December 31, and what the investing accounts reach by 67 in today\'s dollars.</li></ul>', 'plan', 'Go to Plan');
-  h += step(5, 'Look ahead', '<p><b>Ahead</b> has four sections, picked from the row of buttons at its top: Debt payoff (add APR and minimum per debt, compare avalanche and snowball, see what extra money does), Goals (anything you are saving for, turned into a per-check amount), Next 30 days (enter today\'s checking balance for safe-to-spend until payday), and Alerts (pace, price increases, bills not seen, unusual charges).</p>', 'ahead', 'Go to Ahead');
+  h += step(3, 'Read ' + theHome(), '<p>Money in, money out, what is left, for this month or any period. Routine bills show expected against actual with "paid on the 5th" or "not seen yet". During the month, totals run through today and compare with the same days last month; a yellow note says when your newest records are over ten days old or an account runs behind the rest. Type card and loan balances at the bottom; they power the debt planner later. Tap any bill to rename it or change the keywords it looks for.</p>', 'hud', 'Go to ' + homeName());
+  h += step(4, 'Enter your numbers on Plan', '<p>Age, how often you are paid, gross pay per check, what you and your employer put into retirement. Then list each <b>account</b>: 401k or 403b, IRA, high-yield savings, and investing apps, with today\'s balance and what goes in monthly. From that the Plan tab shows:</p><ul class="insights"><li>the ideal paycheck split (50/30/20) against your actual spending;</li><li>rent, car, debt, retirement, and emergency-fund guidelines with green / amber / red;</li><li>a retirement check for your age, the room left under this year\'s contribution limits, where each account lands by December 31, and what the investing accounts reach by 67 in today\'s dollars.</li></ul>', 'plan', 'Go to Plan');
+  h += step(5, 'Look ahead', '<p><b>Next 30 days</b> has four sections, picked from the row of buttons at its top: Safe to spend (enter today\'s checking balance for what is safe to spend until payday), Alerts (pace, fees, price increases, bills not seen, unusual charges), Debt payoff (add APR and minimum per debt, compare avalanche and snowball, see what extra money does), and Goals (anything you are saving for, turned into a per-check amount).</p>', 'ahead', 'Go to Next 30 days');
   h += step(6, 'Run the checkup', '<p><b>Checkup</b> covers what bank data cannot show: a pay-stub breakdown (effective tax rate and true savings rate), net-worth snapshots over time, card utilization, an insurance checklist, pension and Social Security against the nest egg you actually need, and a plain list of when a professional is the right call.</p>', 'check', 'Go to Checkup');
-  h += step(7, 'Monthly routine', '<ul class="insights"><li>Import last month\'s statements (duplicates are caught automatically).</li><li>Glance at the HUD and Alerts.</li><li>Update balances on the HUD and Plan; take a net-worth snapshot.</li><li>Download a backup from Data.</li></ul>', 'data', 'Go to Data');
-  h += '<section class="section"><h2>Five-minute demo path</h2><p class="sub">If you are showing someone the tool with no data on hand.</p><ol class="steps"><li>Data → Load sample data.</li><li>HUD: switch the period to Last month; point out expected vs actual and the card balance field.</li><li>Plan: enter an age, pay, and a couple of accounts; watch the guideline colors and the year-end / 67 forecast appear.</li><li>Ahead → Debt payoff: type an APR and an extra $100; show the months and interest change.</li><li>Ahead → Next 30 days: enter a balance; show safe-to-spend.</li><li>Data → Remove sample data, then Add their own file.</li></ol></section>';
+  h += step(7, 'Monthly routine', '<ul class="insights"><li>Import last month\'s statements (duplicates are caught automatically).</li><li>Glance at ' + theHome() + ' and Alerts.</li><li>Update balances on ' + theHome() + ' and Plan; take a net-worth snapshot.</li><li>Download a backup from Data.</li></ul>', 'data', 'Go to Data');
+  h += '<section class="section"><h2>Five-minute demo path</h2><p class="sub">If you are showing someone the tool with no data on hand.</p><ol class="steps"><li>Data → Load sample data.</li><li>' + homeName() + ': switch the period to Last month; point out expected vs actual and the card balance field.</li><li>Plan: enter an age, pay, and a couple of accounts; watch the guideline colors and the year-end / 67 forecast appear.</li><li>Next 30 days → Safe to spend: enter a balance; show what is safe to spend.</li><li>Next 30 days → Debt payoff: type an APR and an extra $100; show the months and interest change.</li><li>Data → Remove sample data, then Add their own file.</li></ol></section>';
   h += '<section class="section"><h2>Good to know</h2><ul class="insights"><li>' + (PFAT_OFFLINE ? 'This file works completely offline. pdf.js reads PDFs and the Tesseract engine reads pictures, both built into this file and running on this device. Your files stay on this device.' : 'The app works offline once loaded. Two libraries can download, only when you need them: pdf.js from cdnjs when you open a PDF, and, after you agree, the Tesseract engine and its English model from jsDelivr when you read a picture. The browser runs each library file only when its bytes match the pinned version.' + feedGuideNote() + ' Your files stay on this device. The <a href="' + PFAT_DOWNLOADS + '" target="_blank" rel="noopener">offline download</a> builds both in, for reading PDFs and pictures completely offline.') + '</li><li>Data lives in this browser only. Clearing site data or switching devices starts fresh; restore a backup to bring your data back (Add → From a file → the backup JSON).</li><li>Guidelines are general rules of thumb, separate from personal advice. Checkup → When to see a human says where the line is.</li></ul></section>';
   el.innerHTML = h;
 }
@@ -8047,6 +8131,7 @@ function bind() {
     if (t.id === 'pvReread') { const acct = pending.account, nt = $('#pvOcrText').value; if (nt !== pending.text) pending.applyFixes = false; pending.text = nt; pending.ocrDraft = null; pending.ocrOpen = true; reparse(); pending.account = acct; renderPreview(); toast('Read again'); return; }
     if (t.id === 'pvCancel') { pending = null; renderPreview(); if (fileQueue.length) nextInQueue(); return; }
     if (t.id === 'pvAll' || t.id === 'pvNone') { pending.include = pending.include.map(() => t.id === 'pvAll'); renderPreview(); return; }
+    if (t.id === 'pvUnlock') { unlockPending(); return; }
     const sq = t.closest('[data-signq]'); if (sq) { if (sq.dataset.signq === 'out') for (const x of signQRows(pending)) pending.flipRow[x._i] = true; pending.signAsked = sq.dataset.signq; renderPreview(); $('#preview').focus({ preventScroll: true }); return; }
     const flip = t.closest('[data-flip]'); if (flip) { const i = +flip.dataset.flip; pending.flipRow[i] = !pending.flipRow[i]; renderPreview(); const again = $('[data-flip="' + i + '"]'); if (again) again.focus({ preventScroll: true }); return; }
     const fs = t.closest('[data-flipsec]'); if (fs) { const k = +fs.dataset.flipsec; const f = pending.opts.flipSections = pending.opts.flipSections || {}; f[k] = !f[k]; reparse(); renderPreview(); return; }
@@ -8128,15 +8213,22 @@ function bind() {
   db.addEventListener('click', e => {
     const id = e.target.id;
     if (id === 'expCsv') saveFile('pfat-transactions.csv', slToCSV([...state.txns].sort((a, b) => a.date < b.date ? -1 : 1)), 'text/csv');
-    if (id === 'expJson') saveFile('pfat-backup.json', backupJSON(), 'application/json');
+    if (id === 'expJson') {
+      if (!$('#expLock') || !$('#expLock').checked) { saveFile('pfat-backup.json', backupJSON(), 'application/json'); return; }
+      const p1 = $('#expPass'), p2 = $('#expPass2');
+      if (p1.value.length < 8) return fieldErr(p1, 'Use 8 or more characters.');
+      if (p2.value !== p1.value) return fieldErr(p2, 'Type the same passphrase twice.');
+      lockText(backupJSON(), p1.value).then(t => { saveFile('pfat-backup-locked.json', t, 'application/json'); p1.value = p2.value = ''; toast('Locked backup downloaded'); });
+    }
     if (id === 'copyCsv') copyText(slToCSV(state.txns)).then(ok => toast(ok ? 'CSV copied' : 'Could not copy', !ok));
     if (id === 'printHud' || id === 'printOverview') { showTab(id === 'printHud' ? 'hud' : 'overview'); $('.masthead .tag').dataset.printed = slFmtDate(slTodayISO()); setTimeout(() => window.print(), 150); }
   });
   db.addEventListener('change', e => {
     const t = e.target;
+    if (t.id === 'expLock') { $('#expLockBox').hidden = !t.checked; if (t.checked) $('#expPass').focus(); return; }
     if (t.id === 'autosave') { state.settings.autosave = t.checked; if (t.checked) save(); else { try { localStorage.removeItem(STORE_KEY); } catch (e2) { /* ignore */ } } if (!PFAT_OFFLINE) feedStore(feedMeta()); renderData(); }
     if (t.id === 'theme') { state.settings.theme = t.value; applyTheme(); save(); }
-    if (t.id === 'hudLabel') { state.settings.hudLabel = t.value; applyHudLabel(); save(); }
+    if (t.id === 'hudLabel') { state.settings.hudLabel = t.value; applyHudLabel(); save(); rerender(renderAll); }
     if (t.id === 'currency') { state.settings.currency = cleanCurrency(t.value); save(); renderAll(); }
     if (t.id === 'dayFirst') { state.settings.dayFirst = t.checked; save(); }
   });

@@ -83,7 +83,7 @@
       "slug": "spend-lens",
       "name": "PFAT \u2014 Personal Finance Advisor Tool",
       "tagline": "See where your money goes.",
-      "description": "Add transactions by hand, paste text, or import CSV, PDF, and scanned statements or app screenshots. Get a money-in, money-out HUD, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.",
+      "description": "Add transactions by hand, paste text, or import CSV, PDF, and scanned statements or app screenshots. Get a money-in, money-out Home summary, a paycheck plan, a 30-day look ahead, and a plain-language checkup. Everything stays on your device.",
       "badges": [
         "Finance",
         "Budgeting",
@@ -93,7 +93,7 @@
       "download_as": "pfat.html",
       "icon": "chart",
       "category": "finance",
-      "sha256": "1deaff9cc3e2487557bb487d0e73afb1f7e1657922554d87ce8ed370c30ac138",
+      "sha256": "6957dd755634cf84539ac112803518f8e69c6d738bda45f4136c6228e0511307",
       "updated": "2026-11-04",
       "download_label": "Download",
       "download_note": "Both downloads are the full app. Download: reads PDFs and pictures when online. Download for offline use: reads PDFs, screenshots, and scanned statements on your device, completely offline.",
@@ -102,7 +102,7 @@
           "label": "Download for offline use",
           "file": "spend-lens/pfat-offline.html",
           "download_as": "pfat-offline.html",
-          "sha256": "e9f20f19ee9c8bfd0a0dd06efe64a61147a96e120db0637348c1fc3cd2c583af",
+          "sha256": "7ef4695dfba77771150a8e166a7678620a5611a43390870213e8af625503c1c4",
           "updated": "2026-11-04"
         }
       ]
